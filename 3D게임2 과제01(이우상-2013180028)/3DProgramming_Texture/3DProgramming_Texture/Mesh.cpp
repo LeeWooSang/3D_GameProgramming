@@ -20,8 +20,10 @@ CMesh::~CMesh()
 
 void CMesh::ReleaseUploadBuffers() 
 {
-	if (m_pd3dVertexUploadBuffer) m_pd3dVertexUploadBuffer->Release();
-	if (m_pd3dIndexUploadBuffer) m_pd3dIndexUploadBuffer->Release();
+	if (m_pd3dVertexUploadBuffer) 
+		m_pd3dVertexUploadBuffer->Release();
+	if (m_pd3dIndexUploadBuffer) 
+		m_pd3dIndexUploadBuffer->Release();
 	m_pd3dVertexUploadBuffer = NULL;
 	m_pd3dIndexUploadBuffer = NULL;
 };

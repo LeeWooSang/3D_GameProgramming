@@ -135,7 +135,7 @@
     <ClInclude Include="TexturedRectMesh.h">
       <Filter>소스 파일\Vertex &amp; Mesh\Mesh\TexturedRectMesh</Filter>
     </ClInclude>
-    <ClInclude Include="Billboard_Tree.h">
+    <ClInclude Include="BillboardTree.h">
       <Filter>소스 파일\GameObject\Billboard_Tree</Filter>
     </ClInclude>
   </ItemGroup>
@@ -191,7 +191,7 @@
     <ClCompile Include="TexturedRectMesh.cpp">
       <Filter>소스 파일\Vertex &amp; Mesh\Mesh\TexturedRectMesh</Filter>
     </ClCompile>
-    <ClCompile Include="Billboard_Tree.cpp">
+    <ClCompile Include="BillboardTree.cpp">
       <Filter>소스 파일\GameObject\Billboard_Tree</Filter>
     </ClCompile>
   </ItemGroup>

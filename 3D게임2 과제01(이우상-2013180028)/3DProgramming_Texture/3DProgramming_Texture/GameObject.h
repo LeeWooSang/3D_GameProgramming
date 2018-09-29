@@ -7,31 +7,29 @@
 #include "Mesh.h"
 #include "Camera.h"
 
-#define DIR_FORWARD					0x01
-#define DIR_BACKWARD				0x02
+#define DIR_FORWARD		0x01
+#define DIR_BACKWARD		0x02
 #define DIR_LEFT					0x04
-#define DIR_RIGHT					0x08
-#define DIR_UP						0x10
-#define DIR_DOWN					0x20
+#define DIR_RIGHT				0x08
+#define DIR_UP					0x10
+#define DIR_DOWN				0x20
 
-#define RESOURCE_TEXTURE2D			0x01
-#define RESOURCE_TEXTURE2D_ARRAY	0x02	//[]
+#define RESOURCE_TEXTURE2D					0x01
+#define RESOURCE_TEXTURE2D_ARRAY		0x02	
 #define RESOURCE_TEXTURE2DARRAY		0x03
-#define RESOURCE_TEXTURE_CUBE		0x04
-#define RESOURCE_BUFFER				0x05
+#define RESOURCE_TEXTURE_CUBE				0x04
+#define RESOURCE_BUFFER							0x05
 
 class CShader;
 
 struct CB_GAMEOBJECT_INFO
 {
-	XMFLOAT4X4						m_xmf4x4World;
+	XMFLOAT4X4	m_xmf4x4World;
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 struct SRVROOTARGUMENTINFO
 {
-	UINT							m_nRootParameterIndex = 0;
+	UINT														m_nRootParameterIndex = 0;
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dSrvGpuDescriptorHandle;
 };
 
@@ -52,6 +50,7 @@ private:
 	SRVROOTARGUMENTINFO*		m_pRootArgumentInfos = NULL;
 
 	int		m_nSamplers = 0;
+
 	D3D12_GPU_DESCRIPTOR_HANDLE*	m_pd3dSamplerGpuDescriptorHandles = NULL;
 
 public:
@@ -87,7 +86,7 @@ public:
 	void AddRef() { m_nReferences++; }
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
-	XMFLOAT4						m_xmf4Albedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4	m_xmf4Albedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	CTexture*		m_pTexture = NULL;
 	CShader*		m_pShader = NULL;
@@ -102,8 +101,6 @@ public:
 	void ReleaseUploadBuffers();
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 class CGameObject
 {
 public:
@@ -116,7 +113,9 @@ public:
 	CMesh**			m_ppMeshes;
 	int						m_nMeshes;
 
-	CMaterial*		m_pMaterial = NULL;
+	CMesh*			m_pMesh = nullptr;
+
+	CMaterial*		m_pMaterial = nullptr;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorHandle;
 
@@ -160,8 +159,6 @@ public:
 	void Rotate(XMFLOAT3 *pxmf3Axis, float fAngle);
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 class CRotatingObject : public CGameObject
 {
 public:

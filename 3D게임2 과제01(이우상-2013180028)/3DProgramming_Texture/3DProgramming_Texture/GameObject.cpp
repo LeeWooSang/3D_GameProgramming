@@ -119,17 +119,20 @@ void CMaterial::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList
 
 void CMaterial::ReleaseShaderVariables()
 {
-	if (m_pShader) m_pShader->ReleaseShaderVariables();
-	if (m_pTexture) m_pTexture->ReleaseShaderVariables();
+	if (m_pShader) 
+		m_pShader->ReleaseShaderVariables();
+	if (m_pTexture) 
+		m_pTexture->ReleaseShaderVariables();
 }
 
 void CMaterial::ReleaseUploadBuffers()
 {
-	if (m_pTexture) m_pTexture->ReleaseUploadBuffers();
+	if (m_pTexture) 
+		m_pTexture->ReleaseUploadBuffers();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 CGameObject::CGameObject(int nMeshes)
 {
 	m_xmf4x4World = Matrix4x4::Identity();
@@ -157,14 +160,17 @@ CGameObject::~CGameObject()
 		}
 		delete[] m_ppMeshes;
 	}
-	if (m_pMaterial) m_pMaterial->Release();
+
+	if (m_pMaterial) 
+		m_pMaterial->Release();
 }
 
 void CGameObject::SetMesh(int nIndex, CMesh *pMesh)
 {
 	if (m_ppMeshes)
 	{
-		if (m_ppMeshes[nIndex]) m_ppMeshes[nIndex]->Release();
+		if (m_ppMeshes[nIndex]) 
+			m_ppMeshes[nIndex]->Release();
 		m_ppMeshes[nIndex] = pMesh;
 		if (pMesh) pMesh->AddRef();
 	}
@@ -239,7 +245,8 @@ void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 	{
 		for (int i = 0; i < m_nMeshes; i++)
 		{
-			if (m_ppMeshes[i]) m_ppMeshes[i]->Render(pd3dCommandList);
+			if (m_ppMeshes[i]) 
+				m_ppMeshes[i]->Render(pd3dCommandList);
 		}
 	}
 }

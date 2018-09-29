@@ -16,7 +16,7 @@ public:
 	virtual ~CShader();
 
 private:
-	int								m_nReferences = 0;
+	int						m_nReferences = 0;
 
 public:
 	void AddRef() { m_nReferences++; }
@@ -44,7 +44,7 @@ public:
 	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, XMFLOAT4X4 *pxmf4x4World);
 
 	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext=NULL) { }
-	virtual void AnimateObjects(float fTimeElapsed) { }
+	virtual void AnimateObjects(float fTimeElapsed, CCamera* pCamera) { }
 	virtual void ReleaseObjects() { }
 
 	virtual void ReleaseUploadBuffers();
