@@ -23,9 +23,6 @@ void CObjectsShader::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dComman
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	for (int j = 0; j < m_nObjects; j++)
 	{
-		//CB_GAMEOBJECT_INFO *pbMappedcbGameObject = (CB_GAMEOBJECT_INFO *)((UINT8 *)m_pcbMappedGameObjects + (j * ncbElementBytes));
-		//XMStoreFloat4x4(&pbMappedcbGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_ppObjects[j]->m_xmf4x4World)));
-
 		CB_GAMEOBJECT_INFO *pbMappedcbGameObject = (CB_GAMEOBJECT_INFO *)((UINT8 *)m_pcbMappedGameObjects + (j * ncbElementBytes));
 		XMStoreFloat4x4(&pbMappedcbGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_pBillboardTree[j].m_xmf4x4World)));
 	}
@@ -56,7 +53,8 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	int xObjects = int(fTerrainWidth / fxPitch);
 	int yObjects = 2;
 	int zObjects = int(fTerrainLength / fzPitch);
-	m_nObjects = (xObjects * yObjects * zObjects);
+	//m_nObjects = 100;
+	m_nObjects = xObjects * zObjects;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree01S.dds", 0);
@@ -77,61 +75,28 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	CMaterial *pCubeMaterial = new CMaterial();
 	pCubeMaterial->SetTexture(pTexture);
 #endif
-	m_pTexturedRectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 0.f, 12.f, 12.f, 200.f, 1000.f, 1000.f);
+	// 빌보드 나무 메쉬 생성
+	m_pTexturedRectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 12.f, 20.f, 0.f, 0.f, 0.f, 0.f);
 	m_pBillboardTree = new CBillboardTree[m_nObjects];
+	cout << "빌보드 나무 메쉬 생성" << endl;
 
-	for (int i = 0, x = 0; x < xObjects; x++)
+	default_random_engine dre;
+	uniform_real_distribution<double> urd_x(0.f, fTerrainWidth - 100);
+	uniform_real_distribution<double> urd_z(0.f, fTerrainLength - 100);
+	double x = 0, z = 0;
+	for (int i = 0; i < m_nObjects; ++i)
 	{
-		for (int z = 0; z < zObjects; z++)
-		{
-			for (int y = 0; y < yObjects; y++)
-			{
-				((CBillboardTree*)m_pBillboardTree)->SetMesh(m_pTexturedRectMesh);
-				float xPosition = x * fxPitch;
-				float zPosition = z * fzPitch;
-				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
-				m_pBillboardTree[i++].SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
-			}
-		}
+		x = urd_x(dre);
+		z = urd_z(dre);
+		((CBillboardTree*)m_pBillboardTree)[i].SetMesh(m_pTexturedRectMesh);
+		m_pBillboardTree[i].SetPosition(x, pTerrain->GetHeight(x, z) + 10.f, z);
+		m_pBillboardTree[i].SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+		
+		//cout << m_pBillboardTree[i].GetPosition().x << ", "
+		//	<< m_pBillboardTree[i].GetPosition().y << ", "
+		//	<< m_pBillboardTree[i].GetPosition().z << endl;
 	}
-
-	cout << "빌보드 나무 생성완료" << endl;
-//	CCubeMeshTextured* pCubeMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 12.0f, 12.0f, 12.0f);
-//	
-//	m_ppObjects = new CGameObject*[m_nObjects];
-//
-//	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
-//	CRotatingObject *pRotatingObject = NULL;
-//	for (int i = 0, x = 0; x < xObjects; x++)
-//	{
-//		for (int z = 0; z < zObjects; z++)
-//		{
-//			for (int y = 0; y < yObjects; y++)
-//			{
-//				pRotatingObject = new CRotatingObject(1);
-//				pRotatingObject->SetMesh(0, pCubeMesh);
-//#ifndef _WITH_BATCH_MATERIAL
-//				pRotatingObject->SetMaterial(pCubeMaterial);
-//#endif
-//				float xPosition = x * fxPitch;
-//				float zPosition = z * fzPitch;
-//				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
-//				pRotatingObject->SetPosition(xPosition, fHeight + (y * 3.0f * fyPitch) + 6.0f, zPosition);
-//				if (y == 0)
-//				{
-//					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
-//					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
-//					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
-//					float fAngle = acos(Vector3::DotProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal));
-//					pRotatingObject->Rotate(&xmf3RotateAxis, XMConvertToDegrees(fAngle));
-//				}
-//				pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
-//				pRotatingObject->SetRotationSpeed(36.0f * (i % 10) + 36.0f);
-//				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
-//				m_ppObjects[i++] = pRotatingObject;
-//			}
-//		}
-//	}
+	cout << "오브젝트(나무) 빌보드 개수 : " << m_nObjects << "개 생성완료" << endl;
 }
 
 void CObjectsShader::ReleaseObjects()
@@ -141,13 +106,6 @@ void CObjectsShader::ReleaseObjects()
 	if (m_pTexturedRectMesh)
 		delete m_pTexturedRectMesh;
 
-	if (m_ppObjects)
-	{
-		for (int j = 0; j < m_nObjects; j++) 
-			if (m_ppObjects[j]) 
-				delete m_ppObjects[j];
-		delete[] m_ppObjects;
-	}
 
 #ifdef _WITH_BATCH_MATERIAL
 	if (m_pMaterial) 
@@ -157,19 +115,13 @@ void CObjectsShader::ReleaseObjects()
 
 void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera* pCamera)
 {
-	//if (m_pBillboardTree != nullptr)
-	//{
-	//	for (int i = 0; i < m_nObjects; ++i)
-	//	{
-	//		((CBillboardTree*)m_pBillboardTree)[i].Animate(fTimeElapsed, pCamera);
-	//		//cout << m_pBillboardTree[i].GetPosition().x << ", " << m_pBillboardTree[i].GetPosition().y << ", " << m_pBillboardTree[i].GetPosition().z << endl;
-	//	}	
-	//}
-
-	//for (int j = 0; j < m_nObjects; j++)
-	//{
-	//	m_ppObjects[j]->Animate(fTimeElapsed);
-	//}
+	if (m_pBillboardTree != nullptr)
+	{
+		for (int i = 0; i < m_nObjects; ++i)
+		{
+			((CBillboardTree*)m_pBillboardTree)[i].Animate(fTimeElapsed, pCamera);
+		}	
+	}
 }
 
 void CObjectsShader::ReleaseUploadBuffers()
@@ -177,16 +129,8 @@ void CObjectsShader::ReleaseUploadBuffers()
 	if (m_pBillboardTree != nullptr)
 	{
 		for (int i = 0; i < m_nObjects; ++i)
-		{
 			m_pBillboardTree[i].ReleaseUploadBuffers();
-		}
 	}
-
-	//if (m_ppObjects)
-	//{
-	//	for (int j = 0; j < m_nObjects; j++) 
-	//		if (m_ppObjects[j]) m_ppObjects[j]->ReleaseUploadBuffers();
-	//}
 
 #ifdef _WITH_BATCH_MATERIAL
 	if (m_pMaterial) 
@@ -205,9 +149,6 @@ void CObjectsShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera 
 
 	for (int i = 0; i < m_nObjects; ++i)
 	{
-		//if (m_ppObjects[i]) 
-		//	m_ppObjects[i]->Render(pd3dCommandList, pCamera);
-
 		if (m_pBillboardTree != nullptr)
 			m_pBillboardTree[i].Render(pd3dCommandList, pCamera);
 	}

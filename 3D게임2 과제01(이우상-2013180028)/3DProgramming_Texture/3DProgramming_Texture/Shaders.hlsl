@@ -15,7 +15,6 @@ cbuffer cbGameObjectInfo : register(b2)
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 struct VS_DIFFUSED_INPUT
 {
 	float3 position : POSITION;
@@ -43,8 +42,7 @@ float4 PSPlayer(VS_DIFFUSED_OUTPUT input) : SV_TARGET
 	return(input.color);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Texture2D gtxtTexture : register(t0);
 SamplerState gSamplerState : register(s0);
 
@@ -73,6 +71,10 @@ VS_TEXTURED_OUTPUT VSTextured(VS_TEXTURED_INPUT input)
 float4 PSTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	float4 cColor = gtxtTexture.Sample(gSamplerState, input.uv);
+
+	// 나무의 테두리 검은색을 없애기 위해 사용
+	if (cColor.a == 0)
+		discard;
 
 	return(cColor);
 }

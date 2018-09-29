@@ -15,61 +15,51 @@ CTexturedRectMesh::CTexturedRectMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	
 	CTexturedVertex pVertices[6];
 
-	float x = (fWidth * 0.5f) + fxPosition;
-	float y = (fHeight * 0.5f) + fyPosition;
-	float z = (fDepth * 0.5f) + fzPosition;
+	float fx = (fWidth * 0.5f) + fxPosition;
+	float fy = (fHeight * 0.5f) + fyPosition;
+	float fz = (fDepth * 0.5f) + fzPosition;
 
-	int i = 0;
-
-	if (fWidth == 0.f)
+	if (fWidth == 0.f) 
 	{
 		if (fxPosition > 0.f)
 		{
-			// x가 +일때,
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, -z), XMFLOAT2(1.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, -y, -z), XMFLOAT2(1.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, -y, z), XMFLOAT2(0.f, 1.f));
-			
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, -y, z), XMFLOAT2(0.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, z), XMFLOAT2(0.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, -z), XMFLOAT2(1.f, 0.f));
+			pVertices[0] = CTexturedVertex(XMFLOAT3(fx, +fy, -fz), XMFLOAT2(1.f, 0.f));
+			pVertices[1] = CTexturedVertex(XMFLOAT3(fx, -fy, -fz), XMFLOAT2(1.f, 1.f));
+			pVertices[2] = CTexturedVertex(XMFLOAT3(fx, -fy, +fz), XMFLOAT2(0.f, 1.f));
+			pVertices[3] = CTexturedVertex(XMFLOAT3(fx, -fy, +fz), XMFLOAT2(0.f, 1.f));
+			pVertices[4] = CTexturedVertex(XMFLOAT3(fx, +fy, +fz), XMFLOAT2(0.f, 0.f));
+			pVertices[5] = CTexturedVertex(XMFLOAT3(fx, +fy, -fz), XMFLOAT2(1.f, 0.f));
 		}
-		else
+		else 
 		{
-			// x가 - 일때,
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, z), XMFLOAT2(1.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, -y, z), XMFLOAT2(1.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, -y, -z), XMFLOAT2(0.f, 1.f));
-
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, -y, -z), XMFLOAT2(0.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, -z), XMFLOAT2(0.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, z), XMFLOAT2(1.f, 0.f));
+			pVertices[0] = CTexturedVertex(XMFLOAT3(fx, +fy, +fz), XMFLOAT2(1.f, 0.f));
+			pVertices[1] = CTexturedVertex(XMFLOAT3(fx, -fy, +fz), XMFLOAT2(1.f, 1.f));
+			pVertices[2] = CTexturedVertex(XMFLOAT3(fx, -fy, -fz), XMFLOAT2(0.f, 1.f));
+			pVertices[3] = CTexturedVertex(XMFLOAT3(fx, -fy, -fz), XMFLOAT2(0.f, 1.f));
+			pVertices[4] = CTexturedVertex(XMFLOAT3(fx, +fy, -fz), XMFLOAT2(0.f, 0.f));
+			pVertices[5] = CTexturedVertex(XMFLOAT3(fx, +fy, +fz), XMFLOAT2(1.f, 0.f));
 		}
 	}
 
-	else if (fHeight == 0.f)
+	else if (fHeight == 0.f) 
 	{
-		if (fyPosition > 0.f)
+		if (fyPosition > 0.f) 
 		{
-			// y가 +일때,
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, -z), XMFLOAT2(1.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, z), XMFLOAT2(1.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, y, z), XMFLOAT2(0.f, 1.f));
-
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, y, z), XMFLOAT2(0.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, y, -z), XMFLOAT2(0.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, -z), XMFLOAT2(1.f, 0.f));
+			pVertices[0] = CTexturedVertex(XMFLOAT3(+fx, fy, -fz), XMFLOAT2(1.f, 0.f));
+			pVertices[1] = CTexturedVertex(XMFLOAT3(+fx, fy, +fz), XMFLOAT2(1.f, 1.f));
+			pVertices[2] = CTexturedVertex(XMFLOAT3(-fx, fy, +fz), XMFLOAT2(0.f, 1.f));
+			pVertices[3] = CTexturedVertex(XMFLOAT3(-fx, fy, +fz), XMFLOAT2(0.f, 1.f));
+			pVertices[4] = CTexturedVertex(XMFLOAT3(-fx, fy, -fz), XMFLOAT2(0.f, 0.f));
+			pVertices[5] = CTexturedVertex(XMFLOAT3(+fx, fy, -fz), XMFLOAT2(1.f, 0.f));
 		}
-		else
+		else 
 		{
-			// y가 -일때,
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, z), XMFLOAT2(1.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, -z), XMFLOAT2(1.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, y, z), XMFLOAT2(0.f, 0.f));
-
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, y, z), XMFLOAT2(0.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, y, -z), XMFLOAT2(0.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, -z), XMFLOAT2(1.f, 1.f));
+			pVertices[0] = CTexturedVertex(XMFLOAT3(+fx, fy, +fz), XMFLOAT2(1.f, 0.f));
+			pVertices[1] = CTexturedVertex(XMFLOAT3(+fx, fy, -fz), XMFLOAT2(1.f, 1.f));
+			pVertices[2] = CTexturedVertex(XMFLOAT3(-fx, fy, -fz), XMFLOAT2(0.f, 1.f));
+			pVertices[3] = CTexturedVertex(XMFLOAT3(-fx, fy, -fz), XMFLOAT2(0.f, 1.f));
+			pVertices[4] = CTexturedVertex(XMFLOAT3(-fx, fy, +fz), XMFLOAT2(0.f, 0.f));
+			pVertices[5] = CTexturedVertex(XMFLOAT3(+fx, fy, +fz), XMFLOAT2(1.f, 0.f));
 		}
 	}
 
@@ -77,25 +67,21 @@ CTexturedRectMesh::CTexturedRectMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	{
 		if (fzPosition > 0.f)
 		{
-			// z가 +일때,
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, z), XMFLOAT2(1.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, -y, z), XMFLOAT2(1.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, y, z), XMFLOAT2(0.f, 0.f));
-		
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, y, z), XMFLOAT2(0.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, -y, z), XMFLOAT2(0.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, -y, z), XMFLOAT2(1.f, 1.f));
+			pVertices[0] = CTexturedVertex(XMFLOAT3(+fx, +fy, fz), XMFLOAT2(1.f, 0.f));
+			pVertices[1] = CTexturedVertex(XMFLOAT3(+fx, -fy, fz), XMFLOAT2(1.f, 1.f));
+			pVertices[2] = CTexturedVertex(XMFLOAT3(-fx, -fy, fz), XMFLOAT2(0.f, 1.f));
+			pVertices[3] = CTexturedVertex(XMFLOAT3(-fx, -fy, fz), XMFLOAT2(0.f, 1.f));
+			pVertices[4] = CTexturedVertex(XMFLOAT3(-fx, +fy, fz), XMFLOAT2(0.f, 0.f));
+			pVertices[5] = CTexturedVertex(XMFLOAT3(+fx, +fy, fz), XMFLOAT2(1.f, 0.f));
 		}
-		else
+		else 
 		{
-			// z가 -일때,
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, y, z), XMFLOAT2(1.f, 0.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, y, z), XMFLOAT2(1.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, -y, z), XMFLOAT2(0.f, 1.f));
-		
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(x, -y, z), XMFLOAT2(0.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, -y, z), XMFLOAT2(1.f, 1.f));
-			pVertices[i++] = CTexturedVertex(XMFLOAT3(-x, y, z), XMFLOAT2(1.f, 0.f));
+			pVertices[0] = CTexturedVertex(XMFLOAT3(-fx, +fy, fz), XMFLOAT2(1.f, 0.f));
+			pVertices[1] = CTexturedVertex(XMFLOAT3(-fx, -fy, fz), XMFLOAT2(1.f, 1.f));
+			pVertices[2] = CTexturedVertex(XMFLOAT3(+fx, -fy, fz), XMFLOAT2(0.f, 1.f));
+			pVertices[3] = CTexturedVertex(XMFLOAT3(+fx, -fy, fz), XMFLOAT2(0.f, 1.f));
+			pVertices[4] = CTexturedVertex(XMFLOAT3(+fx, +fy, fz), XMFLOAT2(0.f, 0.f));
+			pVertices[5] = CTexturedVertex(XMFLOAT3(-fx, +fy, fz), XMFLOAT2(1.f, 0.f));
 		}
 	}
 

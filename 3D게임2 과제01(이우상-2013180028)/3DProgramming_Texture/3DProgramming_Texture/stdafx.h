@@ -64,6 +64,7 @@ using Microsoft::WRL::ComPtr;
 #include <iostream>
 #include <list>
 #include <string>
+#include <random>
 using namespace std;
 // ----------------------------------------------------------------------------------
 
