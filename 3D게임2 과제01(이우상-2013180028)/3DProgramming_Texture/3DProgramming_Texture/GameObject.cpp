@@ -20,8 +20,6 @@ CTexture::CTexture(int nTextures, UINT nTextureType, int nSamplers)
 	m_nSamplers = nSamplers;
 	if (m_nSamplers > 0) 
 		m_pd3dSamplerGpuDescriptorHandles = new D3D12_GPU_DESCRIPTOR_HANDLE[m_nSamplers];
-
-	cout << nTextures << endl;
 }
 
 CTexture::~CTexture()
@@ -108,8 +106,10 @@ CMaterial::CMaterial()
 
 CMaterial::~CMaterial()
 {
-	if (m_pTexture) m_pTexture->Release();
-	if (m_pShader) m_pShader->Release();
+	if (m_pTexture) 
+		m_pTexture->Release();
+	if (m_pShader) 
+		m_pShader->Release();
 }
 
 void CMaterial::SetTexture(CTexture *pTexture)
@@ -123,9 +123,11 @@ void CMaterial::SetTexture(CTexture *pTexture)
 
 void CMaterial::SetShader(CShader *pShader)
 {
-	if (m_pShader) m_pShader->Release();
+	if (m_pShader) 
+		m_pShader->Release();
 	m_pShader = pShader;
-	if (m_pShader) m_pShader->AddRef();
+	if (m_pShader) 
+		m_pShader->AddRef();
 }
 
 void CMaterial::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)

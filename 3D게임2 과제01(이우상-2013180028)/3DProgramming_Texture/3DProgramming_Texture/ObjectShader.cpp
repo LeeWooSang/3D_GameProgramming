@@ -57,31 +57,37 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nObjects = xObjects * zObjects;
 
 	// 텍스처 개수
-	const UINT TextureCount = 2;
+	const UINT TextureCount = 3;
 
-	//CTexture* pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	CTexture* pTexture = new CTexture(TextureCount, RESOURCE_TEXTURE2D, 0);
+	CTexture* pTexture[TextureCount];
+		
+	pTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	pTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree01S.dds", 0);
 
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree01S.dds", 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree02S.dds", 1);
-	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Lava(Diffuse).dds", 0);
-	//	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Lava(Emissive).dds", 0);
+	pTexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	pTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree02S.dds", 0);
+
+	pTexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	pTexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree03S.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
-	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 2);
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
-	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 3, false);
-	//CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 3, true);
+	
+	for (int i = 0; i < TextureCount; ++i)
+		CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture[i], 3, false);
 
-#ifdef _WITH_BATCH_MATERIAL
-	m_pMaterial = new CMaterial();
-	m_pMaterial->SetTexture(pTexture);
-#else
-	CMaterial *pCubeMaterial = new CMaterial();
-	pCubeMaterial->SetTexture(pTexture);
-#endif
+	CMaterial* pMaterial[TextureCount] = { nullptr };
+	
+	for (int i = 0; i < TextureCount; ++i)
+	{
+		pMaterial[i] = new CMaterial();
+		pMaterial[i]->SetTexture(pTexture[i]);
+		m_list_pMaterial.push_back(pMaterial[i]);
+	}
+
 	// 빌보드 나무 메쉬 생성
 	float Width = 35.f;
 	float Height = 70.f;
@@ -93,12 +99,17 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	default_random_engine dre;
 	uniform_real_distribution<double> urd_x(0.f, fTerrainWidth - 100);
 	uniform_real_distribution<double> urd_z(0.f, fTerrainLength - 100);
+	uniform_int_distribution<int> uid_texture(0, 2);
+
 	double x = 0, z = 0;
 	for (int i = 0; i < m_nObjects; ++i)
 	{
 		x = urd_x(dre);
 		z = urd_z(dre);
 		((CBillboardTree*)m_pBillboardTree)[i].SetMesh(m_pTexturedRectMesh);
+		// 텍스처 지정
+		m_pBillboardTree[i].SetMaterial(pMaterial[uid_texture(dre)]);
+
 		m_pBillboardTree[i].SetPosition(x, pTerrain->GetHeight(x, z) + Height/2.f, z);
 		m_pBillboardTree[i].SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 
@@ -116,11 +127,6 @@ void CObjectsShader::ReleaseObjects()
 	if (m_pTexturedRectMesh)
 		delete m_pTexturedRectMesh;
 
-
-#ifdef _WITH_BATCH_MATERIAL
-	if (m_pMaterial) 
-		delete m_pMaterial;
-#endif
 }
 
 void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera* pCamera)
@@ -142,20 +148,29 @@ void CObjectsShader::ReleaseUploadBuffers()
 			m_pBillboardTree[i].ReleaseUploadBuffers();
 	}
 
-#ifdef _WITH_BATCH_MATERIAL
-	if (m_pMaterial) 
-		m_pMaterial->ReleaseUploadBuffers();
-#endif
+	if (m_list_pMaterial.size() != 0)
+	{
+		for (auto iter = m_list_pMaterial.begin(); iter != m_list_pMaterial.end(); )
+		{
+			(*iter)->Release();
+			delete (*iter);
+			iter = m_list_pMaterial.erase(iter);
+		}
+		m_list_pMaterial.clear();
+	}
 }
 
 void CObjectsShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	CTexturedShader::Render(pd3dCommandList, pCamera);
 
-#ifdef _WITH_BATCH_MATERIAL
-	if (m_pMaterial) 
-		m_pMaterial->UpdateShaderVariables(pd3dCommandList);
-#endif
+	if (m_list_pMaterial.size() != 0)
+	{
+		for (auto iter = m_list_pMaterial.begin(); iter != m_list_pMaterial.end(); )
+		{
+			(*iter)->UpdateShaderVariables(pd3dCommandList);
+		}
+	}
 
 	for (int i = 0; i < m_nObjects; ++i)
 	{

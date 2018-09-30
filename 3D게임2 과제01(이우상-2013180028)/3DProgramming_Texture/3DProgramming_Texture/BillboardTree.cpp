@@ -49,14 +49,14 @@ void CBillboardTree::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera*
 
 	if (m_pMaterial)
 	{
-		if (m_pMaterial->m_pShader)
+		if (m_pMaterial->m_pShader != nullptr)
 		{
 			m_pMaterial->m_pShader->Render(pd3dCommandList, pCamera);
 			m_pMaterial->m_pShader->UpdateShaderVariables(pd3dCommandList);
 
 			UpdateShaderVariables(pd3dCommandList);
 		}
-		if (m_pMaterial->m_pTexture)
+		if (m_pMaterial->m_pTexture != nullptr)
 		{
 			m_pMaterial->m_pTexture->UpdateShaderVariables(pd3dCommandList);
 		}

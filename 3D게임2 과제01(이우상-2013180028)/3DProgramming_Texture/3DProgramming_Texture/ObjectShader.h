@@ -30,8 +30,9 @@ protected:
 	CTexturedRectMesh*	m_pTexturedRectMesh = nullptr;
 	CGameObject*				m_pBillboardTree = nullptr;
 
-#ifdef _WITH_BATCH_MATERIAL
-	CMaterial*	m_pMaterial = NULL;
-#endif
+	list<CMaterial*>			m_list_pMaterial;
+//#ifdef _WITH_BATCH_MATERIAL
+//	CMaterial*	m_pMaterial = NULL;
+//#endif
 };
 

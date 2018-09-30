@@ -43,9 +43,7 @@ float4 PSPlayer(VS_DIFFUSED_OUTPUT input) : SV_TARGET
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Texture2D gtxtTexture : register(t0);
-Texture2D gtxtTexture[2] : register(t0);
-
+Texture2D gtxtTexture : register(t0);
 SamplerState gSamplerState : register(s0);
 
 struct VS_TEXTURED_INPUT
@@ -73,9 +71,6 @@ VS_TEXTURED_OUTPUT VSTextured(VS_TEXTURED_INPUT input)
 float4 PSTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	float4 cColor = gtxtTexture.Sample(gSamplerState, input.uv);
-	//float4 cColor_1 = gtxtTexture[NonUniformResourceIndex()].Sample(gSamplerState, input.uv);
-	float4 cColor = gtxtTexture[0].Sample(gSamplerState, input.uv);
-	float4 cColor = gtxtTexture[1].Sample(gSamplerState, input.uv);
 
 	// 나무의 테두리 검은색을 없애기 위해 사용
 	if (cColor.a == 0)
@@ -85,8 +80,7 @@ float4 PSTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-Texture2D gtxtTerrainBaseTexture : register(t2);
+Texture2D gtxtTerrainBaseTexture : register(t1);
 
 struct VS_TERRAIN_INPUT
 {
