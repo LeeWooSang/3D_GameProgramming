@@ -145,10 +145,13 @@ void CShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGr
 	d3dPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 	HRESULT hResult = pd3dDevice->CreateGraphicsPipelineState(&d3dPipelineStateDesc, __uuidof(ID3D12PipelineState), (void **)&m_pd3dPipelineState);
 
-	if (pd3dVertexShaderBlob) pd3dVertexShaderBlob->Release();
-	if (pd3dPixelShaderBlob) pd3dPixelShaderBlob->Release();
+	if (pd3dVertexShaderBlob) 
+		pd3dVertexShaderBlob->Release();
+	if (pd3dPixelShaderBlob) 
+		pd3dPixelShaderBlob->Release();
 
-	if (d3dPipelineStateDesc.InputLayout.pInputElementDescs) delete[] d3dPipelineStateDesc.InputLayout.pInputElementDescs;
+	if (d3dPipelineStateDesc.InputLayout.pInputElementDescs) 
+		delete[] d3dPipelineStateDesc.InputLayout.pInputElementDescs;
 }
 
 void CShader::CreateCbvAndSrvDescriptorHeaps(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, int nShaderResourceViews)
@@ -180,6 +183,7 @@ void CShader::CreateConstantBufferViews(ID3D12Device *pd3dDevice, ID3D12Graphics
 	}
 }
 
+// ????
 D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(D3D12_RESOURCE_DESC d3dResourceDesc, UINT nTextureType)
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC d3dShaderResourceViewDesc;
@@ -224,7 +228,9 @@ D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(D3D12_RESOURCE_DESC d3
 void CShader::CreateShaderResourceViews(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, CTexture *pTexture, UINT nRootParameterStartIndex, bool bAutoIncrement)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dSrvCPUDescriptorHandle = m_d3dSrvCPUDescriptorStartHandle;
+
 	D3D12_GPU_DESCRIPTOR_HANDLE d3dSrvGPUDescriptorHandle = m_d3dSrvGPUDescriptorStartHandle;
+
 	int nTextures = pTexture->GetTextures();
 	int nTextureType = pTexture->GetTextureType();
 	for (int i = 0; i < nTextures; i++)
@@ -254,7 +260,8 @@ void CShader::UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, X
 
 void CShader::ReleaseShaderVariables()
 {
-	if (m_pd3dCbvSrvDescriptorHeap) m_pd3dCbvSrvDescriptorHeap->Release();
+	if (m_pd3dCbvSrvDescriptorHeap) 
+		m_pd3dCbvSrvDescriptorHeap->Release();
 }
 
 void CShader::ReleaseUploadBuffers()

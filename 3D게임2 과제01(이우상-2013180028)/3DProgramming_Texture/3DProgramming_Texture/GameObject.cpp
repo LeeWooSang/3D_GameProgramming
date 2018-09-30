@@ -18,22 +18,26 @@ CTexture::CTexture(int nTextures, UINT nTextureType, int nSamplers)
 	}
 
 	m_nSamplers = nSamplers;
-	if (m_nSamplers > 0) m_pd3dSamplerGpuDescriptorHandles = new D3D12_GPU_DESCRIPTOR_HANDLE[m_nSamplers];
+	if (m_nSamplers > 0) 
+		m_pd3dSamplerGpuDescriptorHandles = new D3D12_GPU_DESCRIPTOR_HANDLE[m_nSamplers];
+
+	cout << nTextures << endl;
 }
 
 CTexture::~CTexture()
 {
 	if (m_ppd3dTextures)
 	{
-		for (int i = 0; i < m_nTextures; i++) if (m_ppd3dTextures[i]) m_ppd3dTextures[i]->Release();
+		for (int i = 0; i < m_nTextures; i++) 
+			if (m_ppd3dTextures[i]) 
+				m_ppd3dTextures[i]->Release();
 	}
 
 	if (m_pRootArgumentInfos)
-	{
 		delete[] m_pRootArgumentInfos;
-	}
 
-	if (m_pd3dSamplerGpuDescriptorHandles) delete[] m_pd3dSamplerGpuDescriptorHandles;
+	if (m_pd3dSamplerGpuDescriptorHandles) 
+		delete[] m_pd3dSamplerGpuDescriptorHandles;
 }
 
 void CTexture::SetRootArgument(int nIndex, UINT nRootParameterIndex, D3D12_GPU_DESCRIPTOR_HANDLE d3dSrvGpuDescriptorHandle)
@@ -71,7 +75,10 @@ void CTexture::ReleaseUploadBuffers()
 {
 	if (m_ppd3dTextureUploadBuffers)
 	{
-		for (int i = 0; i < m_nTextures; i++) if (m_ppd3dTextureUploadBuffers[i]) m_ppd3dTextureUploadBuffers[i]->Release();
+		for (int i = 0; i < m_nTextures; i++) 
+			if (m_ppd3dTextureUploadBuffers[i])
+				m_ppd3dTextureUploadBuffers[i]->Release();
+
 		delete[] m_ppd3dTextureUploadBuffers;
 		m_ppd3dTextureUploadBuffers = NULL;
 	}
@@ -83,11 +90,18 @@ void CTexture::ReleaseShaderVariables()
 
 void CTexture::LoadTextureFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, wchar_t *pszFileName, UINT nIndex)
 {
-	m_ppd3dTextures[nIndex] = ::CreateTextureResourceFromFile(pd3dDevice, pd3dCommandList, pszFileName, &m_ppd3dTextureUploadBuffers[nIndex], D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	m_ppd3dTextures[nIndex] = ::CreateTextureResourceFromFile
+	(
+		pd3dDevice, 
+		pd3dCommandList, 
+		pszFileName, 
+		&m_ppd3dTextureUploadBuffers[nIndex], 
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+	);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 CMaterial::CMaterial()
 {
 }
@@ -100,9 +114,11 @@ CMaterial::~CMaterial()
 
 void CMaterial::SetTexture(CTexture *pTexture)
 {
-	if (m_pTexture) m_pTexture->Release();
+	if (m_pTexture) 
+		m_pTexture->Release();
 	m_pTexture = pTexture;
-	if (m_pTexture) m_pTexture->AddRef();
+	if (m_pTexture) 
+		m_pTexture->AddRef();
 }
 
 void CMaterial::SetShader(CShader *pShader)
@@ -114,7 +130,8 @@ void CMaterial::SetShader(CShader *pShader)
 
 void CMaterial::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	if (m_pTexture) m_pTexture->UpdateShaderVariables(pd3dCommandList);
+	if (m_pTexture) 
+		m_pTexture->UpdateShaderVariables(pd3dCommandList);
 }
 
 void CMaterial::ReleaseShaderVariables()
@@ -413,10 +430,10 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device *pd3dDevice, ID3D12GraphicsCom
 	pTerrainTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Detail_Texture_7.dds", 1);
 	//pTerrainTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Terrain/Base_Texture.dds", 0);
 	//pTerrainTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Terrain/Detail_Texture_7.dds", 1);
-
+	
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
 
-	CTerrainShader *pTerrainShader = new CTerrainShader();
+	CTerrainShader* pTerrainShader = new CTerrainShader();
 	pTerrainShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pTerrainShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	pTerrainShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 2);
@@ -435,5 +452,6 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device *pd3dDevice, ID3D12GraphicsCom
 
 CHeightMapTerrain::~CHeightMapTerrain(void)
 {
-	if (m_pHeightMapImage) delete m_pHeightMapImage;
+	if (m_pHeightMapImage) 
+		delete m_pHeightMapImage;
 }

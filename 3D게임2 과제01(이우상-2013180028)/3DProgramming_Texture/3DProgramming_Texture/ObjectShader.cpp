@@ -56,17 +56,24 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	//m_nObjects = 100;
 	m_nObjects = xObjects * zObjects;
 
-	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	// 텍스처 개수
+	const UINT TextureCount = 2;
+
+	//CTexture* pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	CTexture* pTexture = new CTexture(TextureCount, RESOURCE_TEXTURE2D, 0);
+
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree01S.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree02S.dds", 1);
 	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Lava(Diffuse).dds", 0);
 	//	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Lava(Emissive).dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
-	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 2);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
 	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 3, false);
+	//CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 3, true);
 
 #ifdef _WITH_BATCH_MATERIAL
 	m_pMaterial = new CMaterial();
@@ -76,7 +83,10 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	pCubeMaterial->SetTexture(pTexture);
 #endif
 	// 빌보드 나무 메쉬 생성
-	m_pTexturedRectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 12.f, 20.f, 0.f, 0.f, 0.f, 0.f);
+	float Width = 35.f;
+	float Height = 70.f;
+
+	m_pTexturedRectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, Width, Height, 0.f, 0.f, 0.f, 0.f);
 	m_pBillboardTree = new CBillboardTree[m_nObjects];
 	cout << "빌보드 나무 메쉬 생성" << endl;
 
@@ -89,9 +99,9 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 		x = urd_x(dre);
 		z = urd_z(dre);
 		((CBillboardTree*)m_pBillboardTree)[i].SetMesh(m_pTexturedRectMesh);
-		m_pBillboardTree[i].SetPosition(x, pTerrain->GetHeight(x, z) + 10.f, z);
+		m_pBillboardTree[i].SetPosition(x, pTerrain->GetHeight(x, z) + Height/2.f, z);
 		m_pBillboardTree[i].SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
-		
+
 		//cout << m_pBillboardTree[i].GetPosition().x << ", "
 		//	<< m_pBillboardTree[i].GetPosition().y << ", "
 		//	<< m_pBillboardTree[i].GetPosition().z << endl;

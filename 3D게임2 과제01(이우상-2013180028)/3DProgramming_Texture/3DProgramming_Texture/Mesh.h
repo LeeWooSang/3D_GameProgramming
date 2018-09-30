@@ -87,7 +87,7 @@ private:
 
 	int							m_nWidth;
 	int							m_nLength;
-	XMFLOAT3					m_xmf3Scale;
+	XMFLOAT3			m_xmf3Scale;
 
 public:
 	CHeightMapImage(LPCTSTR pFileName, int nWidth, int nLength, XMFLOAT3 xmf3Scale);

@@ -36,7 +36,7 @@ struct SRVROOTARGUMENTINFO
 class CTexture
 {
 public:
-	CTexture(int nTextureResources = 1, UINT nResourceType = RESOURCE_TEXTURE2D, int nSamplers = 0);
+	CTexture(int nTextureResources, UINT nResourceType = RESOURCE_TEXTURE2D, int nSamplers = 0);
 	virtual ~CTexture();
 
 private:
@@ -184,8 +184,8 @@ public:
 	virtual ~CRevolvingObject();
 
 private:
-	XMFLOAT3						m_xmf3RevolutionAxis;
-	float							m_fRevolutionSpeed;
+	XMFLOAT3	m_xmf3RevolutionAxis;
+	float				m_fRevolutionSpeed;
 
 public:
 	void SetRevolutionSpeed(float fRevolutionSpeed) { m_fRevolutionSpeed = fRevolutionSpeed; }
@@ -203,12 +203,12 @@ public:
 	virtual ~CHeightMapTerrain();
 
 private:
-	CHeightMapImage					*m_pHeightMapImage;
+	CHeightMapImage*	m_pHeightMapImage;
 
 	int								m_nWidth;
 	int								m_nLength;
 
-	XMFLOAT3						m_xmf3Scale;
+	XMFLOAT3				m_xmf3Scale;
 
 public:
 	float GetHeight(float x, float z, bool bReverseQuad = false) { return(m_pHeightMapImage->GetHeight(x, z, bReverseQuad) * m_xmf3Scale.y); } //World
