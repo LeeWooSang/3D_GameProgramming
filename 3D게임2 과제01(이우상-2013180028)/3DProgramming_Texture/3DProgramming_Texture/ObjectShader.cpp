@@ -72,15 +72,14 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
-	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, TextureCount);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
 	
 	for (int i = 0; i < TextureCount; ++i)
 		CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture[i], 3, false);
 
-	CMaterial* pMaterial[TextureCount] = { nullptr };
-	
+	CMaterial* pMaterial[TextureCount];
 	for (int i = 0; i < TextureCount; ++i)
 	{
 		pMaterial[i] = new CMaterial();
@@ -108,8 +107,8 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 		z = urd_z(dre);
 		((CBillboardTree*)m_pBillboardTree)[i].SetMesh(m_pTexturedRectMesh);
 		// 텍스처 지정
-		m_pBillboardTree[i].SetMaterial(pMaterial[uid_texture(dre)]);
-
+		//m_pBillboardTree[i].SetMaterial(pMaterial[uid_texture(dre)]);
+		m_pBillboardTree[i].SetMaterial(pMaterial[i % TextureCount]);
 		m_pBillboardTree[i].SetPosition(x, pTerrain->GetHeight(x, z) + Height/2.f, z);
 		m_pBillboardTree[i].SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 
@@ -127,6 +126,16 @@ void CObjectsShader::ReleaseObjects()
 	if (m_pTexturedRectMesh)
 		delete m_pTexturedRectMesh;
 
+	//if (m_list_pMaterial.size() != 0)
+	//{
+	//	for (auto iter = m_list_pMaterial.begin(); iter != m_list_pMaterial.end(); )
+	//	{
+	//		(*iter)->Release();
+	//		delete (*iter);
+	//		iter = m_list_pMaterial.erase(iter);
+	//	}
+	//	m_list_pMaterial.clear();
+	//}
 }
 
 void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera* pCamera)
@@ -147,34 +156,17 @@ void CObjectsShader::ReleaseUploadBuffers()
 		for (int i = 0; i < m_nObjects; ++i)
 			m_pBillboardTree[i].ReleaseUploadBuffers();
 	}
-
-	if (m_list_pMaterial.size() != 0)
-	{
-		for (auto iter = m_list_pMaterial.begin(); iter != m_list_pMaterial.end(); )
-		{
-			(*iter)->Release();
-			delete (*iter);
-			iter = m_list_pMaterial.erase(iter);
-		}
-		m_list_pMaterial.clear();
-	}
 }
 
 void CObjectsShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	CTexturedShader::Render(pd3dCommandList, pCamera);
 
-	if (m_list_pMaterial.size() != 0)
-	{
-		for (auto iter = m_list_pMaterial.begin(); iter != m_list_pMaterial.end(); )
-		{
-			(*iter)->UpdateShaderVariables(pd3dCommandList);
-		}
-	}
 
 	for (int i = 0; i < m_nObjects; ++i)
 	{
 		if (m_pBillboardTree != nullptr)
-			m_pBillboardTree[i].Render(pd3dCommandList, pCamera);
+			((CBillboardTree*)m_pBillboardTree)[i].Render(pd3dCommandList, pCamera);
 	}
+
 }

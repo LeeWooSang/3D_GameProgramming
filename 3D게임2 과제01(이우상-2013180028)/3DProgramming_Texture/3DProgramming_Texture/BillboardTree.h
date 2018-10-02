@@ -10,10 +10,11 @@ public:
 	virtual ~CBillboardTree();
 
 	void SetMesh(CMesh *pMesh);
-
 	void SetLookAt(XMFLOAT3&);
 
 	virtual void Render(ID3D12GraphicsCommandList*, CCamera* pCamera = NULL);
 	void Animate(float, CCamera*);
+
+	virtual void ReleaseUploadBuffers();
 };
 

@@ -207,9 +207,11 @@ void CGameObject::SetShader(CShader *pShader)
 
 void CGameObject::SetMaterial(CMaterial *pMaterial)
 {
-	if (m_pMaterial) m_pMaterial->Release();
+	if (m_pMaterial) 
+		m_pMaterial->Release();
 	m_pMaterial = pMaterial;
-	if (m_pMaterial) m_pMaterial->AddRef();
+	if (m_pMaterial) 
+		m_pMaterial->AddRef();
 }
 
 void CGameObject::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -227,7 +229,8 @@ void CGameObject::ReleaseShaderVariables()
 		m_pd3dcbGameObject->Unmap(0, NULL);
 		m_pd3dcbGameObject->Release();
 	}
-	if (m_pMaterial) m_pMaterial->ReleaseShaderVariables();
+	if (m_pMaterial) 
+		m_pMaterial->ReleaseShaderVariables();
 }
 
 void CGameObject::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)

@@ -8,6 +8,10 @@ CBillboardTree::CBillboardTree()
 
 CBillboardTree::~CBillboardTree()
 {
+	//ReleaseShaderVariables();
+
+	if (m_pMaterial)
+		m_pMaterial->Release();
 }
 
 void CBillboardTree::SetMesh(CMesh* pMesh)
@@ -76,4 +80,11 @@ void CBillboardTree::Animate(float fTimeElapsed, CCamera* pCamera)
 	SetLookAt(xmf3CameraPosition);
 }
 
+void CBillboardTree::ReleaseUploadBuffers()
+{
+	if (m_pMesh)
+		m_pMesh->ReleaseUploadBuffers();
 
+	if (m_pMaterial)
+		m_pMaterial->ReleaseUploadBuffers();
+}
