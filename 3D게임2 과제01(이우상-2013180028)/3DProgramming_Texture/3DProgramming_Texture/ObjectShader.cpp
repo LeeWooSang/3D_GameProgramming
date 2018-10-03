@@ -53,14 +53,14 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	int xObjects = int(fTerrainWidth / fxPitch);
 	int yObjects = 2;
 	int zObjects = int(fTerrainLength / fzPitch);
-	//m_nObjects = 100;
-	m_nObjects = xObjects * zObjects;
+	m_nObjects = 3;
+	//m_nObjects = xObjects * zObjects;
 
 	// 텍스처 개수
 	const UINT TextureCount = 3;
 
 	CTexture* pTexture[TextureCount];
-		
+
 	pTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	pTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree01S.dds", 0);
 
@@ -109,7 +109,8 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 		// 텍스처 지정
 		//m_pBillboardTree[i].SetMaterial(pMaterial[uid_texture(dre)]);
 		m_pBillboardTree[i].SetMaterial(pMaterial[i % TextureCount]);
-		m_pBillboardTree[i].SetPosition(x, pTerrain->GetHeight(x, z) + Height/2.f, z);
+		//m_pBillboardTree[i].SetPosition(x, pTerrain->GetHeight(x, z) + Height/2.f, z);
+		m_pBillboardTree[i].SetPosition(1030 + i * 20, 200, 1030);
 		m_pBillboardTree[i].SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 
 		//cout << m_pBillboardTree[i].GetPosition().x << ", "
@@ -117,6 +118,57 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 		//	<< m_pBillboardTree[i].GetPosition().z << endl;
 	}
 	cout << "오브젝트(나무) 빌보드 개수 : " << m_nObjects << "개 생성완료" << endl;
+
+	//CTexture* pTexture = new CTexture(3, RESOURCE_TEXTURE2D, 0);
+
+	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree01S.dds", 0);
+	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree02S.dds", 1);
+	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/tree03S.dds", 2);
+
+	//UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	//CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, TextureCount);
+	//CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	//CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
+	//CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 3, true);
+
+	//CMaterial* pMaterial = nullptr;
+
+	//pMaterial = new CMaterial();
+	//pMaterial->SetTexture(pTexture);
+	//m_list_pMaterial.push_back(pMaterial);
+
+	//// 빌보드 나무 메쉬 생성
+	//float Width = 35.f;
+	//float Height = 70.f;
+
+	//m_pTexturedRectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, Width, Height, 0.f, 0.f, 0.f, 0.f);
+	//m_pBillboardTree = new CBillboardTree[m_nObjects];
+	//cout << "빌보드 나무 메쉬 생성" << endl;
+
+	//default_random_engine dre;
+	//uniform_real_distribution<double> urd_x(0.f, fTerrainWidth - 100);
+	//uniform_real_distribution<double> urd_z(0.f, fTerrainLength - 100);
+	//uniform_int_distribution<int> uid_texture(0, 2);
+
+	//double x = 0, z = 0;
+	//for (int i = 0; i < m_nObjects; ++i)
+	//{
+	//	x = urd_x(dre);
+	//	z = urd_z(dre);
+	//	((CBillboardTree*)m_pBillboardTree)[i].SetMesh(m_pTexturedRectMesh);
+	//	// 텍스처 지정
+	//	//m_pBillboardTree[i].SetMaterial(pMaterial[uid_texture(dre)]);
+	//	m_pBillboardTree[i].SetMaterial(pMaterial);
+	//	//m_pBillboardTree[i].SetPosition(x, pTerrain->GetHeight(x, z) + Height/2.f, z);
+	//	m_pBillboardTree[i].SetPosition(1030 + i * 20, 200, 1030);
+	//	m_pBillboardTree[i].SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+
+	//	//cout << m_pBillboardTree[i].GetPosition().x << ", "
+	//	//	<< m_pBillboardTree[i].GetPosition().y << ", "
+	//	//	<< m_pBillboardTree[i].GetPosition().z << endl;
+	//}
+	//cout << "오브젝트(나무) 빌보드 개수 : " << m_nObjects << "개 생성완료" << endl;
 }
 
 void CObjectsShader::ReleaseObjects()
