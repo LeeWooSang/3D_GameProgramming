@@ -1,8 +1,3 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by LabProject08-7.rc
-//
-
 #define IDS_APP_TITLE			103
 
 #define IDR_MAINFRAME			128

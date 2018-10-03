@@ -1,8 +1,5 @@
-//-----------------------------------------------------------------------------
-// File: CGameObject.cpp
-//-----------------------------------------------------------------------------
-
 #include "stdafx.h"
+#include "Vertex.h"
 #include "Mesh.h"
 
 CMesh::CMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -97,7 +94,7 @@ CCubeMeshDiffused::~CCubeMeshDiffused()
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-//
+
 CCubeMeshTextured::CCubeMeshTextured(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, float fWidth, float fHeight, float fDepth) : CMesh(pd3dDevice, pd3dCommandList)
 {
 	m_nVertices = 36;

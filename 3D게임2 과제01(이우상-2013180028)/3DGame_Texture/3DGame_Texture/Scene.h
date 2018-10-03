@@ -1,11 +1,9 @@
-//-----------------------------------------------------------------------------
-// File: Scene.h
-//-----------------------------------------------------------------------------
-
 #pragma once
 
 #include "Shader.h"
 
+class CHeightMapTerrain;
+class CSkyBox;
 class CScene
 {
 public:

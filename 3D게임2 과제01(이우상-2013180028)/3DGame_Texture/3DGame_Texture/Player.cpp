@@ -1,13 +1,7 @@
-//-----------------------------------------------------------------------------
-// File: CPlayer.cpp
-//-----------------------------------------------------------------------------
-
 #include "stdafx.h"
 #include "Player.h"
-#include "Shader.h"
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CPlayer
+#include "PlayerShader.h"
+#include "HeightMapTerrain.h"
 
 CPlayer::CPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext, int nMeshes) : CGameObject(nMeshes)
 {

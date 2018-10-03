@@ -1,9 +1,8 @@
-//-----------------------------------------------------------------------------
-// File: CScene.cpp
-//-----------------------------------------------------------------------------
-
 #include "stdafx.h"
 #include "Scene.h"
+#include "HeightMapTerrain.h"
+#include "SkyBox.h"
+#include "ObjectsShader.h"
 
 CScene::CScene()
 {

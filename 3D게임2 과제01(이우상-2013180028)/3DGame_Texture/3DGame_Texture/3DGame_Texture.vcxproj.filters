@@ -24,9 +24,6 @@
     <Filter Include="소스 파일\Shader">
       <UniqueIdentifier>{fd987424-705a-476a-a1ec-b262e3c4930c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Mesh">
-      <UniqueIdentifier>{b5d3d025-043c-422c-92ae-f1dfd26a54c0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Camera">
       <UniqueIdentifier>{574009b9-1933-47da-aa63-524e38a22ba0}</UniqueIdentifier>
     </Filter>
@@ -39,26 +36,59 @@
     <Filter Include="소스 파일\GameObject\Player">
       <UniqueIdentifier>{d0cf61b4-773c-4a17-92b7-cbb356e53b70}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Default">
+    <Filter Include="소스 파일\GameObject\Billboard">
+      <UniqueIdentifier>{bd643cd2-b91b-4266-864e-6481a9b7ed71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Default">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="소스 파일\GameObject\Billboard">
-      <UniqueIdentifier>{bd643cd2-b91b-4266-864e-6481a9b7ed71}</UniqueIdentifier>
+    <Filter Include="소스 파일\GameObject\SkyBox">
+      <UniqueIdentifier>{74eaa142-ce6e-4216-b8a3-a8a872882565}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Texture &amp; Material">
+      <UniqueIdentifier>{ffa5fa11-4404-42f8-adc8-ec57bb71b39a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Texture &amp; Material\Texture">
+      <UniqueIdentifier>{780ee862-27cd-4743-87d9-998cdf47066f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Texture &amp; Material\Material">
+      <UniqueIdentifier>{b35cc5a4-829b-4fd9-9b17-fae531c0ccdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\HeightMapTerrain">
+      <UniqueIdentifier>{0cd936d3-73cd-4a7f-8086-451ada872d7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Vertex &amp; Mesh">
+      <UniqueIdentifier>{b5d3d025-043c-422c-92ae-f1dfd26a54c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Vertex &amp; Mesh\Mesh">
+      <UniqueIdentifier>{7468b5fc-5ed1-40b8-be5e-b3420516c12a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Vertex &amp; Mesh\Vertex">
+      <UniqueIdentifier>{59d03203-49ef-41d0-a605-755ecdeaa15d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\PlayerShader">
+      <UniqueIdentifier>{10274b6f-bb59-4dce-9dec-24025b890c73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader">
+      <UniqueIdentifier>{e18a1293-9d20-42db-a6c9-20c7fe43f278}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader\TerrainShader">
+      <UniqueIdentifier>{69c3aa86-6da7-4642-bf47-bf9b1a3f3350}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader\SkyBoxShader">
+      <UniqueIdentifier>{8ed4b376-f94f-4499-a874-0d081fb5a3ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader\ObjectsShader">
+      <UniqueIdentifier>{a0c6e774-9d26-47fb-aac7-5526b9d40fcc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
-      <Filter>Default</Filter>
+      <Filter>소스 파일\Default</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Default</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dx12.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>소스 파일\GameTimer</Filter>
+      <Filter>소스 파일\Default</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>소스 파일\Camera</Filter>
@@ -75,12 +105,6 @@
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>소스 파일\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>소스 파일\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>소스 파일\stdafx</Filter>
     </ClInclude>
@@ -88,18 +112,57 @@
       <Filter>소스 파일\GameObject\Player</Filter>
     </ClInclude>
     <ClInclude Include="3DGame_Texture.h">
-      <Filter>Default</Filter>
+      <Filter>소스 파일\Default</Filter>
     </ClInclude>
-    <ClInclude Include="BillboardTree.h">
+    <ClInclude Include="GameTimer.h">
+      <Filter>소스 파일\GameTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>소스 파일\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>소스 파일\DDSTextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="BillboardObject.h">
       <Filter>소스 파일\GameObject\Billboard</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>소스 파일\GameObject\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>소스 파일\Texture &amp; Material\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>소스 파일\Texture &amp; Material\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMapTerrain.h">
+      <Filter>소스 파일\GameObject\HeightMapTerrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>소스 파일\Vertex &amp; Mesh\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>소스 파일\Vertex &amp; Mesh\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxShader.h">
+      <Filter>소스 파일\Shader\TexturedShader\SkyBoxShader</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>소스 파일\Shader\TexturedShader\TerrainShader</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectsShader.h">
+      <Filter>소스 파일\Shader\TexturedShader\ObjectsShader</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedShader.h">
+      <Filter>소스 파일\Shader\TexturedShader</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerShader.h">
+      <Filter>소스 파일\Shader\PlayerShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Texture.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>소스 파일\GameTimer</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>소스 파일\Camera</Filter>
@@ -116,20 +179,53 @@
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>소스 파일\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>소스 파일\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일\stdafx</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일\GameObject\Player</Filter>
     </ClCompile>
-    <ClCompile Include="BillboardTree.cpp">
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>소스 파일\GameTimer</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>소스 파일\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardObject.cpp">
       <Filter>소스 파일\GameObject\Billboard</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>소스 파일\GameObject\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>소스 파일\Texture &amp; Material\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일\Texture &amp; Material\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMapTerrain.cpp">
+      <Filter>소스 파일\GameObject\HeightMapTerrain</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일\Vertex &amp; Mesh\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>소스 파일\Vertex &amp; Mesh\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxShader.cpp">
+      <Filter>소스 파일\Shader\TexturedShader\SkyBoxShader</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainShader.cpp">
+      <Filter>소스 파일\Shader\TexturedShader\TerrainShader</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectsShader.cpp">
+      <Filter>소스 파일\Shader\TexturedShader\ObjectsShader</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerShader.cpp">
+      <Filter>소스 파일\Shader\PlayerShader</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedShader.cpp">
+      <Filter>소스 파일\Shader\TexturedShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 #define FRAME_BUFFER_WIDTH		640
 #define FRAME_BUFFER_HEIGHT		480
 
-#include "Timer.h"
+#include "GameTimer.h"
 #include "Player.h"
 #include "Scene.h"
 

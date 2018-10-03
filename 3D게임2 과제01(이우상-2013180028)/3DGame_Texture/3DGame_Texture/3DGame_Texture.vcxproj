@@ -148,39 +148,59 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="3DGame_Texture.h" />
-    <ClInclude Include="BillboardTree.h" />
+    <ClInclude Include="BillboardObject.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ObjectsShader.h" />
+    <ClInclude Include="PlayerShader.h" />
+    <ClInclude Include="SkyBoxShader.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="GameFramework.h" />
+    <ClInclude Include="HeightMapTerrain.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Object.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Timer.h" />
+    <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="TerrainShader.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TexturedShader.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Texture.cpp" />
-    <ClCompile Include="BillboardTree.cpp" />
+    <ClCompile Include="BillboardObject.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ObjectsShader.cpp" />
+    <ClCompile Include="PlayerShader.cpp" />
+    <ClCompile Include="SkyBoxShader.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="GameFramework.cpp" />
+    <ClCompile Include="HeightMapTerrain.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="TerrainShader.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TexturedShader.cpp" />
+    <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="3DGame_Texture.rc" />
