@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="소스 파일\GameFramework">
       <UniqueIdentifier>{d2355f84-755f-4980-aff4-efb6b69d1a70}</UniqueIdentifier>
     </Filter>
@@ -20,9 +16,6 @@
     </Filter>
     <Filter Include="소스 파일\GameTimer">
       <UniqueIdentifier>{d75e538f-3a85-4580-a2bd-35d14235073c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Shader">
-      <UniqueIdentifier>{fd987424-705a-476a-a1ec-b262e3c4930c}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Camera">
       <UniqueIdentifier>{574009b9-1933-47da-aa63-524e38a22ba0}</UniqueIdentifier>
@@ -38,10 +31,6 @@
     </Filter>
     <Filter Include="소스 파일\GameObject\Billboard">
       <UniqueIdentifier>{bd643cd2-b91b-4266-864e-6481a9b7ed71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Default">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
     <Filter Include="소스 파일\GameObject\SkyBox">
       <UniqueIdentifier>{74eaa142-ce6e-4216-b8a3-a8a872882565}</UniqueIdentifier>
@@ -67,28 +56,39 @@
     <Filter Include="소스 파일\Vertex &amp; Mesh\Vertex">
       <UniqueIdentifier>{59d03203-49ef-41d0-a605-755ecdeaa15d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\PlayerShader">
+    <Filter Include="소스 파일\Shader &amp; HLSL">
+      <UniqueIdentifier>{fd987424-705a-476a-a1ec-b262e3c4930c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader &amp; HLSL\PlayerShader">
       <UniqueIdentifier>{10274b6f-bb59-4dce-9dec-24025b890c73}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\TexturedShader">
+    <Filter Include="소스 파일\Shader &amp; HLSL\TexturedShader">
       <UniqueIdentifier>{e18a1293-9d20-42db-a6c9-20c7fe43f278}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\TexturedShader\TerrainShader">
+    <Filter Include="소스 파일\Shader &amp; HLSL\TexturedShader\TerrainShader">
       <UniqueIdentifier>{69c3aa86-6da7-4642-bf47-bf9b1a3f3350}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\TexturedShader\SkyBoxShader">
+    <Filter Include="소스 파일\Shader &amp; HLSL\TexturedShader\SkyBoxShader">
       <UniqueIdentifier>{8ed4b376-f94f-4499-a874-0d081fb5a3ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\TexturedShader\ObjectsShader">
+    <Filter Include="소스 파일\Shader &amp; HLSL\TexturedShader\ObjectsShader">
       <UniqueIdentifier>{a0c6e774-9d26-47fb-aac7-5526b9d40fcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Default">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Default\리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
-      <Filter>소스 파일\Default</Filter>
+      <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>소스 파일\Default</Filter>
+      <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>소스 파일\Camera</Filter>
@@ -100,7 +100,7 @@
       <Filter>소스 파일\GameFramework</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>소스 파일\Shader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\Scene</Filter>
@@ -112,7 +112,7 @@
       <Filter>소스 파일\GameObject\Player</Filter>
     </ClInclude>
     <ClInclude Include="3DGame_Texture.h">
-      <Filter>소스 파일\Default</Filter>
+      <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="GameTimer.h">
       <Filter>소스 파일\GameTimer</Filter>
@@ -145,19 +145,19 @@
       <Filter>소스 파일\Vertex &amp; Mesh\Vertex</Filter>
     </ClInclude>
     <ClInclude Include="SkyBoxShader.h">
-      <Filter>소스 파일\Shader\TexturedShader\SkyBoxShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\TexturedShader\SkyBoxShader</Filter>
     </ClInclude>
     <ClInclude Include="TerrainShader.h">
-      <Filter>소스 파일\Shader\TexturedShader\TerrainShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\TexturedShader\TerrainShader</Filter>
     </ClInclude>
     <ClInclude Include="ObjectsShader.h">
-      <Filter>소스 파일\Shader\TexturedShader\ObjectsShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\TexturedShader\ObjectsShader</Filter>
     </ClInclude>
     <ClInclude Include="TexturedShader.h">
-      <Filter>소스 파일\Shader\TexturedShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\TexturedShader</Filter>
     </ClInclude>
     <ClInclude Include="PlayerShader.h">
-      <Filter>소스 파일\Shader\PlayerShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\PlayerShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -174,7 +174,7 @@
       <Filter>소스 파일\GameFramework</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>소스 파일\Shader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일\Scene</Filter>
@@ -213,37 +213,37 @@
       <Filter>소스 파일\Vertex &amp; Mesh\Vertex</Filter>
     </ClCompile>
     <ClCompile Include="SkyBoxShader.cpp">
-      <Filter>소스 파일\Shader\TexturedShader\SkyBoxShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\TexturedShader\SkyBoxShader</Filter>
     </ClCompile>
     <ClCompile Include="TerrainShader.cpp">
-      <Filter>소스 파일\Shader\TexturedShader\TerrainShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\TexturedShader\TerrainShader</Filter>
     </ClCompile>
     <ClCompile Include="ObjectsShader.cpp">
-      <Filter>소스 파일\Shader\TexturedShader\ObjectsShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\TexturedShader\ObjectsShader</Filter>
     </ClCompile>
     <ClCompile Include="PlayerShader.cpp">
-      <Filter>소스 파일\Shader\PlayerShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\PlayerShader</Filter>
     </ClCompile>
     <ClCompile Include="TexturedShader.cpp">
-      <Filter>소스 파일\Shader\TexturedShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\TexturedShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="3DGame_Texture.rc">
-      <Filter>리소스 파일</Filter>
+      <Filter>Default\리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
-      <Filter>리소스 파일</Filter>
+      <Filter>Default\리소스 파일</Filter>
     </Image>
     <Image Include="3DGame_Texture.ico">
-      <Filter>리소스 파일</Filter>
+      <Filter>Default\리소스 파일</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders.hlsl">
-      <Filter>소스 파일\Shader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
