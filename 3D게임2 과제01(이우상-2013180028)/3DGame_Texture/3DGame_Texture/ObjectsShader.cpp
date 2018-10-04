@@ -131,6 +131,7 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 	//m_nObjects = (xObjects * zObjects);
 	m_nObjects = 3000;
 
+
 	const int Grass_Texture_Count = 2;
 	const int Flower_Texture_Count = 2;
 	const int Tree_Texture_Count = 3;
