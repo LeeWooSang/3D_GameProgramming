@@ -96,7 +96,7 @@ class CHeightMapGridMesh : public CMesh
 protected:
 	int							m_nWidth;
 	int							m_nLength;
-	XMFLOAT3					m_xmf3Scale;
+	XMFLOAT3			m_xmf3Scale;
 
 public:
 	CHeightMapGridMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int xStart, int zStart, int nWidth, int nLength, XMFLOAT3 xmf3Scale = XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4 xmf4Color = XMFLOAT4(1.0f, 1.0f, 0.0f, 0.0f), void *pContext = NULL);

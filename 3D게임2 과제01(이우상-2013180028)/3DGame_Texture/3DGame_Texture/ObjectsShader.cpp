@@ -91,7 +91,7 @@ void CObjectsShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera 
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 CBillboardObjectsShader::CBillboardObjectsShader()
 {
 }
@@ -129,12 +129,12 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 	int xObjects = 35;
 	int zObjects = 50;
 	//m_nObjects = (xObjects * zObjects);
-	m_nObjects = 3000;
+	m_nObjects = 1000;
 
 
 	const int Grass_Texture_Count = 2;
 	const int Flower_Texture_Count = 2;
-	const int Tree_Texture_Count = 3;
+	const int Tree_Texture_Count = 5;
 	int Total_Texutre_count = Grass_Texture_Count + Flower_Texture_Count + Tree_Texture_Count;
 
 	CTexture *ppGrassTextures[Grass_Texture_Count];
@@ -156,25 +156,27 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 	ppTreeTextures[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Tree02.dds", 0);
 	ppTreeTextures[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	ppTreeTextures[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Tree03.dds", 0);
-
+	ppTreeTextures[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	ppTreeTextures[3]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Tree04.dds", 0);
+	ppTreeTextures[4] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	ppTreeTextures[4]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Tree05.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, Total_Texutre_count);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
-	// 풀 리소스 뷰 2개
-	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppGrassTextures[0], 3, true);
-	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppGrassTextures[1], 3, true);
+	
+	// 풀, 꽃 리소스 뷰 2개
+	for (int i = 0; i < 2; ++i)
+	{
+		CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppGrassTextures[i], 3, true);
+		CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppFlowerTextures[i], 3, true);
+	}
 
-	// 꽃 리소스 뷰 2개
-	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppFlowerTextures[0], 3, true);
-	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppFlowerTextures[1], 3, true);
-
-	// 나무 리소스 뷰 3개
-	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppTreeTextures[0], 3, true);
-	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppTreeTextures[1], 3, true);
-	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppTreeTextures[2], 3, true);
+	// 나무 리소스 뷰 4개
+	for(int i = 0; i < Tree_Texture_Count; ++i)
+		CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppTreeTextures[i], 3, true);
 
 	CMaterial* ppGrassMaterials[Grass_Texture_Count]{ nullptr };
 	CMaterial* ppFlowerMaterials[Flower_Texture_Count]{ nullptr };
@@ -187,13 +189,15 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 
 		ppFlowerMaterials[i] = new CMaterial();
 		ppFlowerMaterials[i]->SetTexture(ppFlowerTextures[i]);
+	}
 
+	for (int i = 0; i < Tree_Texture_Count; ++i)
+	{
 		ppTreeMaterials[i] = new CMaterial();
 		ppTreeMaterials[i]->SetTexture(ppTreeTextures[i]);
 	}
-	ppTreeMaterials[2] = new CMaterial();
-	ppTreeMaterials[2]->SetTexture(ppTreeTextures[2]);
 
+	
 	float GrassHeight = 20.f, FlowerHeight = 30.f, TreeHeight = 100.f;
 	CTexturedRectMesh* pGrassMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 10.0f, GrassHeight, 0.0f, 0.0f, 0.0f, 0.0f);
 	CTexturedRectMesh* pFlowerMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 20.0f, FlowerHeight, 0.0f, 0.0f, 0.0f, 0.0f);
@@ -218,6 +222,7 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 	// 텍스처 종류
 	uniform_int_distribution<int> uid_Type(0, 2);
 	uniform_int_distribution<int> uid_Material(0, 1);
+	uniform_int_distribution<int> uid_TreeMaterial(0, Tree_Texture_Count - 1);
 	double x = 0, z = 0;
 	for (int i = 0; i < m_nObjects; ++i)
 	{
@@ -243,7 +248,7 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 		{
 			pBillboardObject->SetMesh(0, pTreeMesh);
 			// 나무는 3개
-			pBillboardObject->SetMaterial(ppTreeMaterials[uid_Type(dre)]);
+			pBillboardObject->SetMaterial(ppTreeMaterials[uid_TreeMaterial(dre)]);
 			pBillboardObject->SetPosition(x, pTerrain->GetHeight(x, z) + TreeHeight / 2.7f, z);
 		}
 

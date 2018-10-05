@@ -215,7 +215,7 @@ void CGameObject::SetLookAt(XMFLOAT3& xmf3Target, XMFLOAT3& xmf3Up)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 CRotatingObject::CRotatingObject(int nMeshes)
 {
 	m_xmf3RotationAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
