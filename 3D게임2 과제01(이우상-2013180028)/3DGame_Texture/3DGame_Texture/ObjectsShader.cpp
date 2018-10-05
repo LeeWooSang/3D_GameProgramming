@@ -2,6 +2,7 @@
 #include "ObjectsShader.h"
 #include "HeightMapTerrain.h"
 #include "BillboardObject.h"
+#include "Sand.h"
 #include "Material.h"
 #include "DDSTextureLoader12.h"
 
@@ -131,11 +132,11 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 	//m_nObjects = (xObjects * zObjects);
 	m_nObjects = 1000;
 
-
 	const int Grass_Texture_Count = 2;
 	const int Flower_Texture_Count = 2;
 	const int Tree_Texture_Count = 5;
-	int Total_Texutre_count = Grass_Texture_Count + Flower_Texture_Count + Tree_Texture_Count;
+	const int Sand_Texture_Count = 1;
+	int Total_Texutre_count = Grass_Texture_Count + Flower_Texture_Count + Tree_Texture_Count + Sand_Texture_Count;
 
 	CTexture *ppGrassTextures[Grass_Texture_Count];
 	ppGrassTextures[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
@@ -161,6 +162,9 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 	ppTreeTextures[4] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	ppTreeTextures[4]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Tree05.dds", 0);
 
+	CTexture* pSandTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	pSandTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Sand01.dds", 0);
+
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, Total_Texutre_count);
@@ -177,10 +181,14 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 	// 나무 리소스 뷰 4개
 	for(int i = 0; i < Tree_Texture_Count; ++i)
 		CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppTreeTextures[i], 3, true);
+	// 모래 리소스 뷰
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pSandTexture, 3, true);
 
 	CMaterial* ppGrassMaterials[Grass_Texture_Count]{ nullptr };
 	CMaterial* ppFlowerMaterials[Flower_Texture_Count]{ nullptr };
 	CMaterial* ppTreeMaterials[Tree_Texture_Count]{ nullptr };
+	CMaterial* pSandMaterial = new CMaterial;
+	pSandMaterial->SetTexture(pSandTexture);
 
 	for (int i = 0; i < 2; ++i)
 	{
@@ -196,12 +204,14 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 		ppTreeMaterials[i] = new CMaterial();
 		ppTreeMaterials[i]->SetTexture(ppTreeTextures[i]);
 	}
-
 	
 	float GrassHeight = 20.f, FlowerHeight = 30.f, TreeHeight = 100.f;
 	CTexturedRectMesh* pGrassMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 10.0f, GrassHeight, 0.0f, 0.0f, 0.0f, 0.0f);
 	CTexturedRectMesh* pFlowerMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 20.0f, FlowerHeight, 0.0f, 0.0f, 0.0f, 0.0f);
 	CTexturedRectMesh* pTreeMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 50.0f, TreeHeight, 0.0f, 0.0f, 0.0f, 0.0f);
+
+	// 모래 메쉬
+	CTexturedRectMesh* pSandMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList,	200.0f, 0.0f, 400.0f, 0.0f, 0.0f, 0.0f);
 
 	m_ppObjects = new CGameObject*[m_nObjects];
 
@@ -224,12 +234,12 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 	uniform_int_distribution<int> uid_Material(0, 1);
 	uniform_int_distribution<int> uid_TreeMaterial(0, Tree_Texture_Count - 1);
 	double x = 0, z = 0;
-	for (int i = 0; i < m_nObjects; ++i)
+	for (int i = 0; i < m_nObjects - 1; ++i)
 	{
 		x = urd_x(dre);
 		z = urd_z(dre);
 
-		pBillboardObject = new CBillboardObject();
+		pBillboardObject = new CBillboardObject;
 
 		// 텍스처, 재질 랜덤 지정
 		if (uid_Type(dre) == GRASS)
@@ -255,6 +265,15 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Graph
 		pBillboardObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 		m_ppObjects[i] = pBillboardObject;
 	}
+
+	x = 900, z = 1700;
+	CSand* pSand = new CSand;
+	pSand->SetMesh(0, pSandMesh);
+	pSand->SetMaterial(pSandMaterial);
+	pSand->SetPosition(x, pTerrain->GetHeight(x, z), z);
+	pSand->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * (m_nObjects - 1)));
+	m_ppObjects[m_nObjects - 1] = pSand;
+
 	cout << "오브젝트 빌보드 개수 : " << m_nObjects << "개 생성완료" << endl;
 }
 
@@ -271,7 +290,7 @@ void CBillboardObjectsShader::ReleaseObjects()
 void CBillboardObjectsShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	XMFLOAT3 xmf3CameraPosition = pCamera->GetPosition();
-	for (int j = 0; j < m_nObjects; j++)
+	for (int j = 0; j < m_nObjects - 1; j++)
 	{
 		if (m_ppObjects[j])
 			m_ppObjects[j]->SetLookAt(xmf3CameraPosition, XMFLOAT3(0.0f, 1.0f, 0.0f));
