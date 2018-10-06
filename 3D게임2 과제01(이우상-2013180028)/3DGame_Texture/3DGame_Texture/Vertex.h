@@ -50,12 +50,13 @@ public:
 class CDiffused2TexturedVertex : public CDiffusedVertex
 {
 public:
+	CDiffused2TexturedVertex();
+	CDiffused2TexturedVertex(float x, float y, float z, XMFLOAT4 xmf4Diffuse, XMFLOAT2 xmf2TexCoord0, XMFLOAT2 xmf2TexCoord1, XMFLOAT2 xmf2TexCoord2);
+	CDiffused2TexturedVertex(XMFLOAT3 xmf3Position, XMFLOAT4 xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), XMFLOAT2 xmf2TexCoord0 = XMFLOAT2(0.0f, 0.0f), XMFLOAT2 xmf2TexCoord1 = XMFLOAT2(0.0f, 0.0f), XMFLOAT2 xmf2TexCoord2 = XMFLOAT2(0.0f, 0.0f));
+	~CDiffused2TexturedVertex();
+
 	XMFLOAT2						m_xmf2TexCoord0;
 	XMFLOAT2						m_xmf2TexCoord1;
-
-public:
-	CDiffused2TexturedVertex();
-	CDiffused2TexturedVertex(float x, float y, float z, XMFLOAT4 xmf4Diffuse, XMFLOAT2 xmf2TexCoord0, XMFLOAT2 xmf2TexCoord1);
-	CDiffused2TexturedVertex(XMFLOAT3 xmf3Position, XMFLOAT4 xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), XMFLOAT2 xmf2TexCoord0 = XMFLOAT2(0.0f, 0.0f), XMFLOAT2 xmf2TexCoord1 = XMFLOAT2(0.0f, 0.0f));
-	~CDiffused2TexturedVertex();
+	// Èæ uv ÁÂÇ¥
+	XMFLOAT2						m_xmf2TexCoord2;
 };

@@ -144,7 +144,7 @@ float4 PSBillboard(VS_TEXTURED_OUTPUT input) : SV_TARGET
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 float4 PSSkyBox(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	float4 cColor = gtxtTexture.Sample(gClampSamplerState, input.uv);
@@ -153,9 +153,10 @@ float4 PSSkyBox(VS_TEXTURED_OUTPUT input) : SV_TARGET
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-Texture2D gtxtTerrainBaseTexture : register(t4);
-Texture2D gtxtTerrainDetailTexture : register(t5);
+
+Texture2D gtxtTerrainBaseTexture	: register(t4);
+Texture2D gtxtTerrainDetailTexture	: register(t5);
+Texture2D gtxtSandTexture				: register(t6);
 
 struct VS_TERRAIN_INPUT
 {
@@ -163,6 +164,8 @@ struct VS_TERRAIN_INPUT
 	float4 color : COLOR;
 	float2 uv0 : TEXCOORD0;
 	float2 uv1 : TEXCOORD1;
+
+	float2 uv2 : TEXCOORD2;
 };
 
 struct VS_TERRAIN_OUTPUT
@@ -171,6 +174,8 @@ struct VS_TERRAIN_OUTPUT
 	float4 color : COLOR;
 	float2 uv0 : TEXCOORD0;
 	float2 uv1 : TEXCOORD1;
+
+	float2 uv2 : TEXCOORD2;
 };
 
 VS_TERRAIN_OUTPUT VSTerrain(VS_TERRAIN_INPUT input)
@@ -185,6 +190,7 @@ VS_TERRAIN_OUTPUT VSTerrain(VS_TERRAIN_INPUT input)
 	output.color = input.color;
 	output.uv0 = input.uv0;
 	output.uv1 = input.uv1;
+	output.uv2 = input.uv2;
 
 	return(output);
 }
@@ -193,7 +199,20 @@ float4 PSTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 {
 	float4 cBaseTexColor = gtxtTerrainBaseTexture.Sample(gWrapSamplerState, input.uv0);
 	float4 cDetailTexColor = gtxtTerrainDetailTexture.Sample(gWrapSamplerState, input.uv1);
-	float4 cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
+	
+	float4 cSandTexColor = gtxtSandTexture.Sample(gWrapSamplerState, input.uv2);
+
+	float4 cColor;
+
+	//cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
+	
+	if (input.uv2.r > 0.0f)
+	{
+		//cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cSandTexColor * 0.5f));
+		cColor = cSandTexColor;
+	}
+	else
+		cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
 
 	return(cColor);
 }
