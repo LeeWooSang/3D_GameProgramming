@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "HeightMapTerrain.h"
 #include "SkyBox.h"
-#include "ObjectsShader.h"
+#include "BillboardShader.h"
 
 CScene::CScene()
 {
@@ -31,7 +31,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_nShaders = 1;
 	m_ppShaders = new CShader*[m_nShaders];
 
-	CBillboardObjectsShader *pObjectShader = new CBillboardObjectsShader();
+	CBillboardShader *pObjectShader = new CBillboardShader();
 	pObjectShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 	m_ppShaders[0] = pObjectShader;

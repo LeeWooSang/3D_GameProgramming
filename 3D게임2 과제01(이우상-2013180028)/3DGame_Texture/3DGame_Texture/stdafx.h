@@ -61,6 +61,7 @@ using Microsoft::WRL::ComPtr;
 using namespace std;
 
 enum OBJECT_TYPE {GRASS, FLOWER, TREE};
+const double Terrain_Height{ 235.f };
 //-----------------------------------------------------------------------------------
 
 extern UINT	gnCbvSrvDescriptorIncrementSize;

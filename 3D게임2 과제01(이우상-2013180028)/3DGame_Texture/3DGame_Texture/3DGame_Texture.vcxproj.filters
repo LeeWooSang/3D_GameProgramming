@@ -82,8 +82,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="소스 파일\GameObject\Sand">
-      <UniqueIdentifier>{e2ea397f-f3bb-4c05-9eda-528afcf69315}</UniqueIdentifier>
+    <Filter Include="소스 파일\Shader &amp; HLSL\TexturedShader\BillboardShader">
+      <UniqueIdentifier>{74b9f58e-963f-47d7-8819-37340e83125a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -162,8 +162,8 @@
     <ClInclude Include="PlayerShader.h">
       <Filter>소스 파일\Shader &amp; HLSL\PlayerShader</Filter>
     </ClInclude>
-    <ClInclude Include="Sand.h">
-      <Filter>소스 파일\GameObject\Sand</Filter>
+    <ClInclude Include="BillboardShader.h">
+      <Filter>소스 파일\Shader &amp; HLSL\TexturedShader\BillboardShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -233,8 +233,8 @@
     <ClCompile Include="TexturedShader.cpp">
       <Filter>소스 파일\Shader &amp; HLSL\TexturedShader</Filter>
     </ClCompile>
-    <ClCompile Include="Sand.cpp">
-      <Filter>소스 파일\GameObject\Sand</Filter>
+    <ClCompile Include="BillboardShader.cpp">
+      <Filter>소스 파일\Shader &amp; HLSL\TexturedShader\BillboardShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
