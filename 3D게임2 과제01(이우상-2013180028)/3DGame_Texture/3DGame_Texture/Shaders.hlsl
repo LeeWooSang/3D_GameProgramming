@@ -213,8 +213,8 @@ float4 PSTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 	}
 	else
 	{
-		//cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
-		cColor = cDetailTexColor;
+		cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
+		//cColor = cDetailTexColor;
 	}
 
 

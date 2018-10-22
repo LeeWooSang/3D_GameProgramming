@@ -140,7 +140,7 @@ void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	{
 		x = urd_x(dre);
 		z = urd_z(dre);
-		while (pTerrain->GetHeight(x, z) < Terrain_Height)
+		while (pTerrain->GetHeight(x, z) < Flatland_Height)
 		{
 			x = urd_x(dre);
 			z = urd_z(dre);
