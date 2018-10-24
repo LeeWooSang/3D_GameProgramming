@@ -47,8 +47,7 @@ void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	const int Grass_Texture_Count = 2;
 	const int Flower_Texture_Count = 2;
 	const int Tree_Texture_Count = 5;
-	const int Sand_Texture_Count = 0;
-	int Total_Texutre_count = Grass_Texture_Count + Flower_Texture_Count + Tree_Texture_Count + Sand_Texture_Count;
+	int Total_Texutre_count = Grass_Texture_Count + Flower_Texture_Count + Tree_Texture_Count;
 
 	CTexture *ppGrassTextures[Grass_Texture_Count];
 	ppGrassTextures[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
