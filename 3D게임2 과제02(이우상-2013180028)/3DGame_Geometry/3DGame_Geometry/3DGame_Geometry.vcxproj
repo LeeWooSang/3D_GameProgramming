@@ -101,9 +101,9 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -156,6 +156,8 @@
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="GeneralScene.h" />
+    <ClInclude Include="GeometryScene.h" />
     <ClInclude Include="HeightMapTerrain.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
@@ -183,6 +185,8 @@
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="GeneralScene.cpp" />
+    <ClCompile Include="GeometryScene.cpp" />
     <ClCompile Include="HeightMapTerrain.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />

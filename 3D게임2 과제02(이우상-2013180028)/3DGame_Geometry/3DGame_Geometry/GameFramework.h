@@ -69,18 +69,21 @@ private:
 	ID3D12GraphicsCommandList	*m_pd3dCommandList = NULL;
 
 	ID3D12Fence					*m_pd3dFence = NULL;
-	UINT64						m_nFenceValues[m_nSwapChainBuffers];
+	UINT64							m_nFenceValues[m_nSwapChainBuffers];
 	HANDLE						m_hFenceEvent;
 
 #if defined(_DEBUG)
 	ID3D12Debug					*m_pd3dDebugController;
 #endif
 
-	CGameTimer					m_GameTimer;
+	CGameTimer			m_GameTimer;
 
-	CScene						*m_pScene = NULL;
-	CPlayer						*m_pPlayer = NULL;
-	CCamera						*m_pCamera = NULL;
+	enum SCENE { GeneralScene = 0, GeometryScene };
+	CScene						*m_pScene = nullptr;
+	short							m_SceneNum;
+
+	CPlayer						*m_pPlayer = nullptr;
+	CCamera					*m_pCamera = nullptr;
 
 	POINT						m_ptOldCursorPos;
 

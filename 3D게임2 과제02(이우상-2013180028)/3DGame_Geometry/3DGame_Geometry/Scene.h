@@ -13,20 +13,20 @@ public:
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
-	void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
-	void ReleaseObjects();
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseObjects();
 
-	ID3D12RootSignature *CreateGraphicsRootSignature(ID3D12Device *pd3dDevice);
-	ID3D12RootSignature *GetGraphicsRootSignature() { return(m_pd3dGraphicsRootSignature); }
-	void SetGraphicsRootSignature(ID3D12GraphicsCommandList *pd3dCommandList) { pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature); }
+	virtual ID3D12RootSignature *CreateGraphicsRootSignature(ID3D12Device *pd3dDevice);
+	virtual ID3D12RootSignature *GetGraphicsRootSignature() { return(m_pd3dGraphicsRootSignature); }
+	virtual void SetGraphicsRootSignature(ID3D12GraphicsCommandList *pd3dCommandList) { pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature); }
 
 	bool ProcessInput(UCHAR *pKeysBuffer);
-    void AnimateObjects(float fTimeElapsed);
-    void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
+	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
 
-	void ReleaseUploadBuffers();
+	virtual void ReleaseUploadBuffers();
 
-	CHeightMapTerrain *GetTerrain() { return(m_pTerrain); }
+	virtual CHeightMapTerrain *GetTerrain() { return(m_pTerrain); }
 
 protected:
 	CShader						**m_ppShaders = NULL;

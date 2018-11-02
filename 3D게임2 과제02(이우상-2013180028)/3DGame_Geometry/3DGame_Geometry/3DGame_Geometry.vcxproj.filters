@@ -91,6 +91,12 @@
     <Filter Include="소스 파일\Shader &amp; HLSL\Shader\PlayerShader">
       <UniqueIdentifier>{28278cf8-57f0-45d2-af03-dfca80025750}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Scene\GeometryScene">
+      <UniqueIdentifier>{efa43cf3-7df7-413c-9582-c7e935116fbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Scene\GeneralScene">
+      <UniqueIdentifier>{29cdfc2d-0925-4a84-8bc0-8bf548a369b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -171,6 +177,12 @@
     <ClInclude Include="Shader.h">
       <Filter>소스 파일\Shader &amp; HLSL\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="GeneralScene.h">
+      <Filter>소스 파일\Scene\GeneralScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryScene.h">
+      <Filter>소스 파일\Scene\GeometryScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Geometry.cpp">
@@ -241,6 +253,12 @@
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>소스 파일\Shader &amp; HLSL\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralScene.cpp">
+      <Filter>소스 파일\Scene\GeneralScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryScene.cpp">
+      <Filter>소스 파일\Scene\GeometryScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

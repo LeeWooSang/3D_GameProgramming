@@ -4,6 +4,11 @@
 
 #include "stdafx.h"
 #include "GameFramework.h"
+#include "GeneralScene.h"
+#include "GeometryScene.h"
+
+default_random_engine dre;
+uniform_int_distribution<> uid(0, 1);
 
 CGameFramework::CGameFramework()
 {
@@ -365,6 +370,33 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				}
 				case VK_F10:
 					break;
+
+				case 's':
+				case 'S':
+				{
+					if (m_pScene != nullptr && m_pPlayer != nullptr)
+						CGameFramework::ReleaseObjects();
+
+					switch (m_SceneNum)
+					{
+						case CGameFramework::GeneralScene:
+						{
+							m_pScene = new CGeometryScene;
+							m_SceneNum = CGameFramework::GeometryScene;
+							break;
+						}
+						case CGameFramework::GeometryScene:
+						{
+							m_pScene = new CGeneralScene;
+							m_SceneNum = CGameFramework::GeneralScene;
+							break;
+						}
+					}	
+					CGameFramework::BuildObjects();
+					cout << "현재 Scene 번호 : " << m_SceneNum << endl;
+					break;
+				}
+
 				default:
 					break;
 			}
@@ -441,7 +473,15 @@ void CGameFramework::BuildObjects()
 {
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
-	m_pScene = new CScene();
+	if (m_pScene == nullptr)
+	{
+		m_SceneNum = uid(dre);
+		if (m_SceneNum == GeneralScene)
+			m_pScene = new CGeneralScene;
+		else
+			m_pScene = new CGeometryScene;
+	}
+		
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
 	m_pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
@@ -453,17 +493,20 @@ void CGameFramework::BuildObjects()
 
 	WaitForGpuComplete();
 
-	if (m_pScene) m_pScene->ReleaseUploadBuffers();
+	if (m_pScene != nullptr) 
+		m_pScene->ReleaseUploadBuffers();
 
 	m_GameTimer.Reset();
 }
 
 void CGameFramework::ReleaseObjects()
 {
-	if (m_pPlayer) delete m_pPlayer;
-
-	if (m_pScene) m_pScene->ReleaseObjects();
-	if (m_pScene) delete m_pScene;
+	if (m_pPlayer) 
+		delete m_pPlayer;
+	if (m_pScene) 
+		m_pScene->ReleaseObjects();
+	if (m_pScene) 
+		delete m_pScene;
 }
 
 void CGameFramework::ProcessInput()
@@ -509,7 +552,8 @@ void CGameFramework::ProcessInput()
 
 void CGameFramework::AnimateObjects()
 {
-	if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
+	if (m_pScene) 
+		m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
 }
 
 void CGameFramework::WaitForGpuComplete()
