@@ -28,18 +28,22 @@ cbuffer cbPlayerInfo : register(b0)
 
 cbuffer cbCameraInfo : register(b1)
 {
-	matrix		gmtxView : packoffset(c0);
-	matrix		gmtxProjection : packoffset(c4);
+	matrix		gmtxView						: packoffset(c0);
+	matrix		gmtxProjection				: packoffset(c4);
+	matrix		gmtxViewProjection		: packoffset(c8);
+	float3		gmtxCameraPosition	: packoffset(c11);
+
 };
 
 cbuffer cbGameObjectInfo : register(b2)
 {
 	matrix		gmtxWorld : packoffset(c0);
 };
+
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 struct VS_DIFFUSED_INPUT
 {
 	float3 position : POSITION;
@@ -72,7 +76,7 @@ float4 PSDiffused(VS_DIFFUSED_OUTPUT input) : SV_TARGET
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 VS_DIFFUSED_OUTPUT VSPlayer(VS_DIFFUSED_INPUT input)
 {
 	VS_DIFFUSED_OUTPUT output;
@@ -93,7 +97,7 @@ float4 PSPlayer(VS_DIFFUSED_OUTPUT input) : SV_TARGET
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 Texture2D gtxtTexture : register(t0);
 SamplerState gWrapSamplerState : register(s0);
 SamplerState gClampSamplerState : register(s1);
@@ -210,3 +214,75 @@ float4 PSTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 	return(cColor);
 }
 
+// 기하 셰이더(빌보드 오브젝트)
+struct VS_OUT
+{
+	float3 centerW	: POSITION;
+	float2 sizeW		: SIZE;
+};
+struct VS_IN
+{
+	float3 posW : POSITION;
+	float2 sizeW : SIZE;
+};
+struct GS_OUT
+{
+	float4 posH			: SV_POSITION;
+	float3 posW			: POSITION;
+	float3 normalW	: NORMAL;
+	float2 uv				: TEXCOORD;
+	uint primID			: SV_PrimitiveID;
+};
+
+VS_OUT VS(VS_IN input)
+{
+	VS_OUT output;
+	output.centerW = input.posW;
+	output.sizeW = input.sizeW;
+	
+	return output;
+}
+
+float4 PS(GS_OUT input) : SV_Target
+{
+	//float4 cillumination = Lighting(input.posW, input.normalW);
+	//float3 uvw = float3(input.uv, (input.primID % 4));
+	//float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uvw);
+	float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uv);
+	//float4 cColor = cillumination * cTexture;
+	float4 cColor = cTexture;
+	cColor.a = cTexture.a;
+
+	return (cColor);
+}
+
+[maxvertexcount(4)]
+void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStream<GS_OUT> outStream)
+{
+	float vUp = float3(0.0f, 1.0f, 0.0f);
+	float3 vLook = gmtxCameraPosition.xyz - input[0].centerW;
+	vLook = normalize(vLook);
+	float3 vRight = cross(vUp, vLook);
+
+	float fHalfW = input[0].sizeW.x * 0.5f;
+	float fHalfH = input[0].sizeW.y * 0.5f;
+
+	float4 pVertices[4];
+	pVertices[0] = float4(input[0].centerW + fHalfW * vRight - fHalfH * vUp, 1.0f);
+	pVertices[1] = float4(input[0].centerW + fHalfW * vRight + fHalfH * vUp, 1.0f);
+	pVertices[2] = float4(input[0].centerW - fHalfW * vRight - fHalfH * vUp, 1.0f);
+	pVertices[3] = float4(input[0].centerW - fHalfW * vRight + fHalfH * vUp, 1.0f);
+
+	float2 pUVs[4] = { float2(0.0f, 1.0f), float2(0.0f, 0.0f), float2(1.0f, 1.0f), float2(1.0f, 0.0f) };
+
+	GS_OUT output;
+	for (int i = 0; i < 4; ++i)
+	{
+		output.posW = pVertices[i].xyz;
+		output.posH = mul(pVertices[i], gmtxViewProjection);
+		output.normalW = vLook;
+		output.uv = pUVs[i];
+		output.primID = primID;
+		outStream.Append(output);
+	}
+}

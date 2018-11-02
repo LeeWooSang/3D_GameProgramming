@@ -10,7 +10,8 @@ struct VS_CB_CAMERA_INFO
 {
 	XMFLOAT4X4						m_xmf4x4View;
 	XMFLOAT4X4						m_xmf4x4Projection;
-	XMFLOAT3						m_xmf3Position;
+	XMFLOAT4X4						m_xmf4x4ViewProjection;
+	XMFLOAT3							m_xmf3Position;
 };
 
 class CPlayer;
@@ -31,15 +32,16 @@ protected:
 
 	XMFLOAT3						m_xmf3LookAtWorld;
 	XMFLOAT3						m_xmf3Offset;
-	float           				m_fTimeLag;
+	float           						m_fTimeLag;
 
 	XMFLOAT4X4						m_xmf4x4View;
 	XMFLOAT4X4						m_xmf4x4Projection;
+	XMFLOAT4X4						m_xmf4x4ViewProjection;
 
-	D3D12_VIEWPORT					m_d3dViewport;
-	D3D12_RECT						m_d3dScissorRect;
+	D3D12_VIEWPORT				m_d3dViewport;
+	D3D12_RECT							m_d3dScissorRect;
 
-	CPlayer							*m_pPlayer;
+	CPlayer									*m_pPlayer;
 
 public:
 	CCamera();
@@ -57,6 +59,7 @@ public:
 	void RegenerateViewMatrix();
 
 	void GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fAspectRatio, float fFOVAngle);
+	void GenerateViewProjectionMatrix();
 
 	void SetViewport(int xTopLeft, int yTopLeft, int nWidth, int nHeight, float fMinZ = 0.0f, float fMaxZ = 1.0f);
 	void SetScissorRect(LONG xLeft, LONG yTop, LONG xRight, LONG yBottom);

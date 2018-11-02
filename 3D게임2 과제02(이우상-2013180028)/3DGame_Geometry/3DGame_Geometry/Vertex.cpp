@@ -122,3 +122,15 @@ CDiffused2TexturedVertex::CDiffused2TexturedVertex(XMFLOAT3 xmf3Position, XMFLOA
 CDiffused2TexturedVertex::~CDiffused2TexturedVertex() 
 {
 }
+
+//=========================================================================
+
+CBillboardVertex::CBillboardVertex(XMFLOAT3 xmf3Position, XMFLOAT2 xmf2Size)
+{
+	m_xmf3Position = xmf3Position;
+	m_xmf2Size = xmf2Size;
+}
+
+CBillboardVertex::~CBillboardVertex()
+{
+}

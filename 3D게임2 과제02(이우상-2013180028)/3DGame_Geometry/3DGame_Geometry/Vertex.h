@@ -60,3 +60,12 @@ public:
 	// Èæ uv ÁÂÇ¥
 	XMFLOAT2						m_xmf2TexCoord2;
 };
+
+class CBillboardVertex : public CVertex
+{
+public:
+	CBillboardVertex(XMFLOAT3 xmf3Position, XMFLOAT2 xmf2Size);
+	~CBillboardVertex();
+
+	XMFLOAT2 m_xmf2Size;
+};

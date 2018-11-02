@@ -14,6 +14,10 @@ D3D12_INPUT_LAYOUT_DESC CTerrainShader::CreateInputLayout()
 	//UINT nInputElementDescs = 4;
 	// 셰이더 코드로 넘겨줄 흙 uv 좌표 개수가 1개가 추가 되었으므로, InputLayout 개수도 한개 증가한다.
 	UINT nInputElementDescs = 5;
+	
+	// 기존 5개 + 기하셰이더 2개 추가
+	//UINT nInputElementDescs = 7;
+
 	D3D12_INPUT_ELEMENT_DESC *pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
 
 	// 터레인 지형의 위치 정보
