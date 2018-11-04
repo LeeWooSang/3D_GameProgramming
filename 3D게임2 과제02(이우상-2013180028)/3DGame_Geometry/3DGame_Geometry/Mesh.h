@@ -22,7 +22,7 @@ protected:
 	ID3D12Resource					*m_pd3dIndexBuffer = NULL;
 	ID3D12Resource					*m_pd3dIndexUploadBuffer = NULL;
 
-	D3D12_VERTEX_BUFFER_VIEW		m_d3dVertexBufferView;
+	D3D12_VERTEX_BUFFER_VIEW			m_d3dVertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW			m_d3dIndexBufferView;
 
 	D3D12_PRIMITIVE_TOPOLOGY		m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;

@@ -64,6 +64,7 @@ public:
 class CBillboardVertex : public CVertex
 {
 public:
+	CBillboardVertex();
 	CBillboardVertex(XMFLOAT3 xmf3Position, XMFLOAT2 xmf2Size);
 	~CBillboardVertex();
 

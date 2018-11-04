@@ -31,8 +31,7 @@ cbuffer cbCameraInfo : register(b1)
 	matrix		gmtxView						: packoffset(c0);
 	matrix		gmtxProjection				: packoffset(c4);
 	matrix		gmtxViewProjection		: packoffset(c8);
-	float3		gmtxCameraPosition	: packoffset(c11);
-
+	float3		gmtxCameraPosition	: packoffset(c12);
 };
 
 cbuffer cbGameObjectInfo : register(b2)
@@ -215,15 +214,15 @@ float4 PSTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 }
 
 // 기하 셰이더(빌보드 오브젝트)
-struct VS_OUT
-{
-	float3 centerW	: POSITION;
-	float2 sizeW		: SIZE;
-};
 struct VS_IN
 {
 	float3 posW : POSITION;
 	float2 sizeW : SIZE;
+};
+struct VS_OUT
+{
+	float3 centerW	: POSITION;
+	float2 sizeW		: SIZE;
 };
 struct GS_OUT
 {
@@ -243,23 +242,10 @@ VS_OUT VS(VS_IN input)
 	return output;
 }
 
-float4 PS(GS_OUT input) : SV_Target
-{
-	//float4 cillumination = Lighting(input.posW, input.normalW);
-	//float3 uvw = float3(input.uv, (input.primID % 4));
-	//float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uvw);
-	float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uv);
-	//float4 cColor = cillumination * cTexture;
-	float4 cColor = cTexture;
-	cColor.a = cTexture.a;
-
-	return (cColor);
-}
-
 [maxvertexcount(4)]
 void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStream<GS_OUT> outStream)
 {
-	float vUp = float3(0.0f, 1.0f, 0.0f);
+	float3 vUp = float3(0.0f, 1.0f, 0.0f);
 	float3 vLook = gmtxCameraPosition.xyz - input[0].centerW;
 	vLook = normalize(vLook);
 	float3 vRight = cross(vUp, vLook);
@@ -267,6 +253,7 @@ void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStrea
 	float fHalfW = input[0].sizeW.x * 0.5f;
 	float fHalfH = input[0].sizeW.y * 0.5f;
 
+	// 사각형 정점들을 월드변환행렬로 변환하고, 그것들을 하나의 삼각형으로 출력
 	float4 pVertices[4];
 	pVertices[0] = float4(input[0].centerW + fHalfW * vRight - fHalfH * vUp, 1.0f);
 	pVertices[1] = float4(input[0].centerW + fHalfW * vRight + fHalfH * vUp, 1.0f);
@@ -283,6 +270,21 @@ void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStrea
 		output.normalW = vLook;
 		output.uv = pUVs[i];
 		output.primID = primID;
+
 		outStream.Append(output);
 	}
+}
+
+
+float4 PS(GS_OUT input) : SV_Target
+{
+	//float4 cillumination = Lighting(input.posW, input.normalW);
+	//float3 uvw = float3(input.uv, (input.primID % 4));
+	//float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uvw);
+	float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uv);
+	//float4 cColor = cillumination * cTexture;
+	float4 cColor = cTexture;
+	cColor.a = cTexture.a;
+
+	return (cColor);
 }

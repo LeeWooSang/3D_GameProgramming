@@ -4,6 +4,7 @@
 #include "BillboardObject.h"
 #include "Material.h"
 #include "DDSTextureLoader12.h"
+#include "Vertex.h"
 
 CBillboardShader::CBillboardShader()
 {
@@ -42,7 +43,8 @@ void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	int xObjects = 35;
 	int zObjects = 50;
 	//m_nObjects = (xObjects * zObjects);
-	m_nObjects = 12000;
+	//m_nObjects = 12000;
+	m_nObjects = 100;
 
 	const int Grass_Texture_Count = 2;
 	const int Flower_Texture_Count = 2;
@@ -116,13 +118,13 @@ void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 
 	m_ppObjects = new CGameObject*[m_nObjects];
 
-	CBillboardObject *pBillboardObject = NULL;
+	CBillboardObject* pBillboardObject = nullptr;
 
 	float fxPitch = 0.25f;
 	float fzPitch = 0.25f;
 
-	CMaterial *pMaterial = NULL;
-	CMesh *pMesh = NULL;
+	CMaterial* pMaterial = NULL;
+	CMesh* pMesh = NULL;
 
 	float xPosition = 950.0f;
 	default_random_engine dre;
@@ -172,6 +174,42 @@ void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	}
 
 	cout << "오브젝트 빌보드 개수 : " << m_nObjects << "개 생성완료" << endl;
+
+	int TerrainPos_x = pTerrain->GetHeightMapWidth();
+	int TerrainPos_z = pTerrain->GetHeightMapLength();
+
+	uniform_real_distribution<double> urd_TerrainPos_x(0, TerrainPos_x);
+	uniform_real_distribution<double> urd_TerrainPos_z(0, TerrainPos_z);
+
+	int nStride = sizeof(CBillboardVertex);
+	int nVertices = m_nObjects;
+	XMFLOAT3 xmf3Position;
+	CBillboardVertex* pBillboardVertex = new CBillboardVertex[m_nObjects];
+
+	for (int i = 0; i < m_nObjects; ++i)
+	{
+		float Terrain_x = xmf3Position.x = urd_TerrainPos_x(dre);
+		float Terrain_z = xmf3Position.z = urd_TerrainPos_z(dre);
+		xmf3Position.y = pTerrain->GetHeight(Terrain_x, Terrain_z) + pTerrain->GetHeight(Terrain_x, Terrain_z) * 0.5;
+		pBillboardVertex[i] = CBillboardVertex(xmf3Position, XMFLOAT2(20.f, 50.f));
+	}
+	// 빌보드 정점 리소스 생성
+	ID3D12Resource* pd3dVertexUploadBuffer = nullptr;
+	ID3D12Resource* pd3dVertexBuffer = ::CreateBufferResource
+	(
+		pd3dDevice, 
+		pd3dCommandList,
+		pBillboardVertex, 
+		sizeof(UINT) * nVertices, 
+		D3D12_HEAP_TYPE_DEFAULT, 
+		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+		&pd3dVertexUploadBuffer
+	);
+
+	D3D12_VERTEX_BUFFER_VIEW d3dVertexBufferView;
+	d3dVertexBufferView.BufferLocation = pd3dVertexBuffer->GetGPUVirtualAddress();
+	d3dVertexBufferView.StrideInBytes = nStride;
+	d3dVertexBufferView.SizeInBytes = nStride * nVertices;
 }
 
 void CBillboardShader::ReleaseUploadBuffers()
