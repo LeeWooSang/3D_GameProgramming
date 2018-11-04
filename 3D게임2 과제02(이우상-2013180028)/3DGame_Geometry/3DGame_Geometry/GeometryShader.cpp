@@ -1,20 +1,59 @@
 #include "stdafx.h"
-#include "BillboardShader.h"
+#include "GeometryShader.h"
 #include "HeightMapTerrain.h"
 #include "BillboardObject.h"
 #include "Material.h"
 #include "DDSTextureLoader12.h"
 #include "Vertex.h"
 
-CBillboardShader::CBillboardShader()
+CGeometryShader::CGeometryShader()
 {
 }
 
-CBillboardShader::~CBillboardShader()
+CGeometryShader::~CGeometryShader()
 {
 }
 
-D3D12_RASTERIZER_DESC CBillboardShader::CreateRasterizerState()
+D3D12_INPUT_LAYOUT_DESC CGeometryShader::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC *pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+
+	// 기하 셰이더
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+
+	return(d3dInputLayoutDesc);
+}
+
+D3D12_SHADER_BYTECODE CGeometryShader::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_Geometry", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CGeometryShader::CreateGeometryShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "GS", "gs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CGeometryShader::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_Geometry", "ps_5_1", ppd3dShaderBlob));
+}
+
+void CGeometryShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGraphicsRootSignature)
+{
+	m_nPipelineStates = 1;
+	m_ppd3dPipelineStates = new ID3D12PipelineState*[m_nPipelineStates];
+
+	CShader::CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
+}
+
+D3D12_RASTERIZER_DESC CGeometryShader::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
@@ -33,7 +72,7 @@ D3D12_RASTERIZER_DESC CBillboardShader::CreateRasterizerState()
 	return(d3dRasterizerDesc);
 }
 
-void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
 
@@ -44,7 +83,7 @@ void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	int zObjects = 50;
 	//m_nObjects = (xObjects * zObjects);
 	//m_nObjects = 12000;
-	m_nObjects = 100;
+	m_nObjects = 5000;
 
 	const int Grass_Texture_Count = 2;
 	const int Flower_Texture_Count = 2;
@@ -112,12 +151,11 @@ void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	}
 
 	float GrassHeight = 20.f, FlowerHeight = 30.f, TreeHeight = 100.f;
-	CTexturedRectMesh* pGrassMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 10.0f, GrassHeight, 0.0f, 0.0f, 0.0f, 0.0f);
-	CTexturedRectMesh* pFlowerMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 20.0f, FlowerHeight, 0.0f, 0.0f, 0.0f, 0.0f);
-	CTexturedRectMesh* pTreeMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 50.0f, TreeHeight, 0.0f, 0.0f, 0.0f, 0.0f);
+	//CTexturedRectMesh* pGrassMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 10.0f, GrassHeight, 0.0f, 0.0f, 0.0f, 0.0f);
+	//CTexturedRectMesh* pFlowerMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 20.0f, FlowerHeight, 0.0f, 0.0f, 0.0f, 0.0f);
+	//CTexturedRectMesh* pTreeMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 50.0f, TreeHeight, 0.0f, 0.0f, 0.0f, 0.0f);
 
 	m_ppObjects = new CGameObject*[m_nObjects];
-
 	CBillboardObject* pBillboardObject = nullptr;
 
 	float fxPitch = 0.25f;
@@ -136,65 +174,93 @@ void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	uniform_int_distribution<int> uid_TextureType(0, 2);
 	uniform_int_distribution<int> uid_Material(0, 1);
 	uniform_int_distribution<int> uid_TreeMaterial(0, Tree_Texture_Count - 1);
-	double x = 0, z = 0;
+
+	int nStride = sizeof(CBillboardVertex);
+	m_nVertices = m_nObjects;
+	XMFLOAT3 xmf3Position;
+	CBillboardVertex* pBillboardVertex = new CBillboardVertex[m_nObjects];
+	//CGeometryVertexMesh* pBillboardVertex = new CGeometryVertexMesh(pd3dDevice, pd3dCommandList);
 	for (int i = 0; i < m_nObjects; ++i)
 	{
-		x = urd_x(dre);
-		z = urd_z(dre);
-		while (pTerrain->GetHeight(x, z) < Flatland_Height)
+		xmf3Position.x = urd_x(dre);
+		xmf3Position.z = urd_z(dre);
+		while (pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) < Flatland_Height)
 		{
-			x = urd_x(dre);
-			z = urd_z(dre);
+			xmf3Position.x = urd_x(dre);
+			xmf3Position.z = urd_z(dre);
 		}
-		pBillboardObject = new CBillboardObject;
+		xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) + pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) * 0.5;
+		pBillboardVertex[i] = CBillboardVertex(xmf3Position, XMFLOAT2(100.f, 100.f));
+	}
 
+	m_pd3dVertexBuffer = ::CreateBufferResource
+	(
+		pd3dDevice,
+		pd3dCommandList,
+		pBillboardVertex,
+		sizeof(UINT) * m_nVertices,
+		D3D12_HEAP_TYPE_DEFAULT,
+		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+		&m_pd3dVertexUploadBuffer
+	);
+
+	m_d3dVertexBufferView.BufferLocation = m_pd3dVertexBuffer->GetGPUVirtualAddress();
+	m_d3dVertexBufferView.StrideInBytes = nStride;
+	m_d3dVertexBufferView.SizeInBytes = nStride * m_nVertices;
+
+	for (int i = 0; i < m_nObjects; ++i)
+	{		
+		pBillboardObject = new CBillboardObject;
 		// 텍스처, 재질 랜덤 지정
 		if (uid_TextureType(dre) == GRASS)
 		{
-			pBillboardObject->SetMesh(0, pGrassMesh);
 			pBillboardObject->SetMaterial(ppFlowerMaterials[uid_Material(dre)]);
-			pBillboardObject->SetPosition(x, pTerrain->GetHeight(x, z) + GrassHeight / 2.f, z);
 		}
 		else if (uid_TextureType(dre) == FLOWER)
 		{
-			pBillboardObject->SetMesh(0, pFlowerMesh);
 			pBillboardObject->SetMaterial(ppGrassMaterials[uid_Material(dre)]);
-			pBillboardObject->SetPosition(x, pTerrain->GetHeight(x, z) + FlowerHeight / 2.f, z);
 		}
 		else if (uid_TextureType(dre) == TREE)
 		{
-			pBillboardObject->SetMesh(0, pTreeMesh);
 			// 나무는 3개
 			pBillboardObject->SetMaterial(ppTreeMaterials[uid_TreeMaterial(dre)]);
-			pBillboardObject->SetPosition(x, pTerrain->GetHeight(x, z) + TreeHeight / 2.7f, z);
 		}
-
+		pBillboardObject->SetPosition(pBillboardVertex[i].m_xmf3Position);
 		pBillboardObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 		m_ppObjects[i] = pBillboardObject;
 	}
-
-	cout << "오브젝트 빌보드 개수 : " << m_nObjects << "개 생성완료" << endl;
+		
+	cout << "기하셰이더 빌보드 오브젝트 개수 : " << m_nObjects << "개 생성완료" << endl;
 }
 
-void CBillboardShader::ReleaseUploadBuffers()
+void CGeometryShader::ReleaseUploadBuffers()
 {
 	CObjectsShader::ReleaseUploadBuffers();
 }
 
-void CBillboardShader::ReleaseObjects()
+void CGeometryShader::ReleaseObjects()
 {
 	CObjectsShader::ReleaseObjects();
 }
 
-void CBillboardShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+void CGeometryShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
-	XMFLOAT3 xmf3CameraPosition = pCamera->GetPosition();
-	for (int j = 0; j < m_nObjects; j++)
+	//XMFLOAT3 xmf3CameraPosition = pCamera->GetPosition();
+	//for (int j = 0; j < m_nObjects; j++)
+	//{
+	//	if (m_ppObjects[j])
+	//		m_ppObjects[j]->SetLookAt(xmf3CameraPosition, XMFLOAT3(0.0f, 1.0f, 0.0f));
+	//}
+
+	//CObjectsShader::Render(pd3dCommandList, pCamera);
+	for (int i = 0; i < m_nObjects; ++i)
 	{
-		if (m_ppObjects[j])
-			m_ppObjects[j]->SetLookAt(xmf3CameraPosition, XMFLOAT3(0.0f, 1.0f, 0.0f));
+		if (m_ppObjects[i]) 
+			m_ppObjects[i]->Render(pd3dCommandList, pCamera);
+
+		pd3dCommandList->IASetPrimitiveTopology(m_d3dPrimitiveTopology);
+		pd3dCommandList->IASetVertexBuffers(0, 1, &m_d3dVertexBufferView);
+		pd3dCommandList->DrawInstanced(m_nVertices, 1, 0, 0);
 	}
-
-
-	CObjectsShader::Render(pd3dCommandList, pCamera);
+	
 }

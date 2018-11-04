@@ -3,6 +3,7 @@
 #include "HeightMapTerrain.h"
 #include "SkyBox.h"
 #include "BillboardShader.h"
+#include "GeometryShader.h"
 
 CScene::CScene()
 {
@@ -28,13 +29,21 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
+	//m_nShaders = 1;
 	m_nShaders = 1;
 	m_ppShaders = new CShader*[m_nShaders];
 
-	CBillboardShader *pObjectShader = new CBillboardShader();
-	pObjectShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
-	pObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
-	m_ppShaders[0] = pObjectShader;
+	//m_ppShaders[0]->setSceneNum(m_SceneNum);
+	//CBillboardShader *pGeneralShader = new CBillboardShader();
+	//pGeneralShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	//pGeneralShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+	//m_ppShaders[0] = pGeneralShader;
+
+	CGeometryShader* pGeometryShader = new CGeometryShader;
+	pGeometryShader->setSceneNum(m_SceneNum);
+	pGeometryShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pGeometryShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+	m_ppShaders[0] = pGeometryShader;
 }
 
 void CScene::ReleaseObjects()
@@ -167,7 +176,7 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dSamplerDescs[1].RegisterSpace = 0;
 	pd3dSamplerDescs[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
-	D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+	D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
 	D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc;
 	::ZeroMemory(&d3dRootSignatureDesc, sizeof(D3D12_ROOT_SIGNATURE_DESC));
 	d3dRootSignatureDesc.NumParameters = _countof(pd3dRootParameters);

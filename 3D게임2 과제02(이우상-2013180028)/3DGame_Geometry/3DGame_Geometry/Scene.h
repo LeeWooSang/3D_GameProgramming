@@ -28,9 +28,12 @@ public:
 
 	virtual CHeightMapTerrain *GetTerrain() { return(m_pTerrain); }
 
+	void setSceneNum(short sceneNum) { m_SceneNum = sceneNum; }
 protected:
+	short			m_SceneNum;
+
 	CShader						**m_ppShaders = NULL;
-	int							m_nShaders = 0;
+	int									m_nShaders = 0;
 
 	CHeightMapTerrain			*m_pTerrain = NULL;
 	CSkyBox						*m_pSkyBox = NULL;

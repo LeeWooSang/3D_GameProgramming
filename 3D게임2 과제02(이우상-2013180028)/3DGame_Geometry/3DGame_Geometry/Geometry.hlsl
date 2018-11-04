@@ -233,7 +233,7 @@ struct GS_OUT
 	uint primID			: SV_PrimitiveID;
 };
 
-VS_OUT VS_Geometry(VS_IN input)
+VS_OUT VS_GEOMETRY(VS_IN input)
 {
 	VS_OUT output;
 	output.centerW = input.posW;
@@ -275,8 +275,7 @@ void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStrea
 	}
 }
 
-
-float4 PS_Geometry(GS_OUT input) : SV_Target
+float4 PS_GEOMETRY(GS_OUT input) : SV_Target
 {
 	//float4 cillumination = Lighting(input.posW, input.normalW);
 	//float3 uvw = float3(input.uv, (input.primID % 4));

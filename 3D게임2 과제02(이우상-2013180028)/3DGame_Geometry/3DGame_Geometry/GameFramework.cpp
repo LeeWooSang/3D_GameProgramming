@@ -381,17 +381,20 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					{
 						case CGameFramework::GeneralScene:
 						{
-							m_pScene = new CGeometryScene;
+							//m_pScene = new CGeometryScene;
+							m_pScene = new CScene;
 							m_SceneNum = CGameFramework::GeometryScene;
 							break;
 						}
 						case CGameFramework::GeometryScene:
 						{
-							m_pScene = new CGeneralScene;
+							//m_pScene = new CGeneralScene;
+							m_pScene = new CScene;
 							m_SceneNum = CGameFramework::GeneralScene;
 							break;
 						}
-					}	
+					}
+					m_pScene->setSceneNum(m_SceneNum);
 					CGameFramework::BuildObjects();
 					cout << "현재 Scene 번호 : " << m_SceneNum << endl;
 					break;
@@ -475,11 +478,15 @@ void CGameFramework::BuildObjects()
 
 	if (m_pScene == nullptr)
 	{
-		m_SceneNum = uid(dre);
-		if (m_SceneNum == GeneralScene)
-			m_pScene = new CGeneralScene;
-		else
-			m_pScene = new CGeometryScene;
+		//m_SceneNum = uid(dre);
+		//m_SceneNum = GeometryScene;
+
+		//if (m_SceneNum == GeneralScene)
+		//	m_pScene = new CGeneralScene;
+		//else
+		//	m_pScene = new CGeometryScene;
+		m_pScene = new CScene;
+		m_pScene->setSceneNum(m_SceneNum);
 	}
 		
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);

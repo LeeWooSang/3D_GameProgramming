@@ -107,7 +107,7 @@ void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 	pd3dCommandList->SetGraphicsRootDescriptorTable(2, m_d3dCbvGPUDescriptorHandle);
 
-	if (m_ppMeshes)
+	if (m_ppMeshes != nullptr)
 	{
 		for (int i = 0; i < m_nMeshes; i++)
 		{

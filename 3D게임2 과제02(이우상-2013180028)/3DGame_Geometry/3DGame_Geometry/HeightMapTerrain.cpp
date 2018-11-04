@@ -3,6 +3,7 @@
 #include "Material.h"
 #include "TexturedShader.h"
 #include "TerrainShader.h"
+#include "GeometryShader.h"
 
 CHeightMapTerrain::CHeightMapTerrain(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, LPCTSTR pFileName, int nWidth, int nLength, int nBlockWidth, int nBlockLength, XMFLOAT3 xmf3Scale, XMFLOAT4 xmf4Color) : CGameObject(0)
 {
@@ -48,6 +49,7 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device *pd3dDevice, ID3D12GraphicsCom
 
 	const int Terrain_Texture_Count = 3;
 	CTerrainShader *pTerrainShader = new CTerrainShader();
+	//CGeometryShader *pTerrainShader = new CGeometryShader();
 	pTerrainShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pTerrainShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	pTerrainShader->CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, Terrain_Texture_Count);

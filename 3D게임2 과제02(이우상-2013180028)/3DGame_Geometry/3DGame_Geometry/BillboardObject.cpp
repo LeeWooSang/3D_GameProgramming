@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "BillboardObject.h"
+#include "Material.h"
+#include "Shader.h"
 
 CBillboardObject::CBillboardObject()
 {

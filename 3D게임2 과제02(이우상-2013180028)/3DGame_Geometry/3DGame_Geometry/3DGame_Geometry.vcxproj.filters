@@ -73,9 +73,6 @@
     <Filter Include="소스 파일\Shader &amp; HLSL\Shader\TexturedShader">
       <UniqueIdentifier>{728d1f34-0e76-431f-a441-6e4563156c03}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader &amp; HLSL\Shader\TexturedShader\BillboardShader">
-      <UniqueIdentifier>{9a1235f1-941a-4279-b37a-b552a76fc8c7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader">
       <UniqueIdentifier>{1a7f60fb-e35f-4308-89cc-899f4e005e84}</UniqueIdentifier>
     </Filter>
@@ -97,15 +94,18 @@
     <Filter Include="소스 파일\Scene\GeneralScene">
       <UniqueIdentifier>{29cdfc2d-0925-4a84-8bc0-8bf548a369b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader\BillboardShader">
+      <UniqueIdentifier>{9a1235f1-941a-4279-b37a-b552a76fc8c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader\GeometryShader">
+      <UniqueIdentifier>{63783602-36d6-4363-9d54-9a1cc43025a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
       <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Default</Filter>
-    </ClInclude>
-    <ClInclude Include="3DGame_Geometry.h">
       <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="d3dx12.h">
@@ -169,7 +169,7 @@
       <Filter>소스 파일\GameFramework</Filter>
     </ClInclude>
     <ClInclude Include="BillboardShader.h">
-      <Filter>소스 파일\Shader &amp; HLSL\Shader\TexturedShader\BillboardShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader\BillboardShader</Filter>
     </ClInclude>
     <ClInclude Include="BillboardObject.h">
       <Filter>소스 파일\GameObject\Billboard</Filter>
@@ -177,11 +177,11 @@
     <ClInclude Include="Shader.h">
       <Filter>소스 파일\Shader &amp; HLSL\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="GeneralScene.h">
-      <Filter>소스 파일\Scene\GeneralScene</Filter>
+    <ClInclude Include="3DGame_Geometry.h">
+      <Filter>Default</Filter>
     </ClInclude>
-    <ClInclude Include="GeometryScene.h">
-      <Filter>소스 파일\Scene\GeometryScene</Filter>
+    <ClInclude Include="GeometryShader.h">
+      <Filter>소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader\GeometryShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -246,7 +246,7 @@
       <Filter>소스 파일\GameFramework</Filter>
     </ClCompile>
     <ClCompile Include="BillboardShader.cpp">
-      <Filter>소스 파일\Shader &amp; HLSL\Shader\TexturedShader\BillboardShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader\BillboardShader</Filter>
     </ClCompile>
     <ClCompile Include="BillboardObject.cpp">
       <Filter>소스 파일\GameObject\Billboard</Filter>
@@ -254,11 +254,8 @@
     <ClCompile Include="Shader.cpp">
       <Filter>소스 파일\Shader &amp; HLSL\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="GeneralScene.cpp">
-      <Filter>소스 파일\Scene\GeneralScene</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometryScene.cpp">
-      <Filter>소스 파일\Scene\GeometryScene</Filter>
+    <ClCompile Include="GeometryShader.cpp">
+      <Filter>소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader\GeometryShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

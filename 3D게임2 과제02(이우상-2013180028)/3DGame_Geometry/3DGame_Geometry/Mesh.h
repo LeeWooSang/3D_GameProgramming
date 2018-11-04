@@ -3,6 +3,7 @@
 class CMesh
 {
 public:
+	CMesh();
     CMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
     virtual ~CMesh();
 
@@ -115,4 +116,11 @@ class CTexturedRectMesh : public CMesh
 public:
 	CTexturedRectMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, float fWidth=20.0f, float fHeight=20.0f, float fDepth=20.0f, float fxPosition=0.0f, float fyPosition=0.0f, float fzPosition=0.0f);
 	virtual ~CTexturedRectMesh();
+};
+
+class CGeometryVertexMesh : public CMesh
+{
+public:
+	CGeometryVertexMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual ~CGeometryVertexMesh();
 };

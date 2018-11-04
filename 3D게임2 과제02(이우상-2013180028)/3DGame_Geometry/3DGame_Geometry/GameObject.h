@@ -25,20 +25,21 @@ public:
     virtual ~CGameObject();
 
 public:
-	XMFLOAT4X4						m_xmf4x4World;
+	XMFLOAT4X4				m_xmf4x4World;
 
 	CMesh							**m_ppMeshes;
-	CMesh*			m_pMesh;
+	CMesh*						m_pMesh;
 
-	int								m_nMeshes;
+	int									m_nMeshes;
 
 	CMaterial						*m_pMaterial = NULL;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorHandle;
 
+
 protected:
 	ID3D12Resource					*m_pd3dcbGameObject = NULL;
-	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObject = NULL;
+	CB_GAMEOBJECT_INFO		*m_pcbMappedGameObject = NULL;
 
 public:
 	void SetMesh(int nIndex, CMesh *pMesh);

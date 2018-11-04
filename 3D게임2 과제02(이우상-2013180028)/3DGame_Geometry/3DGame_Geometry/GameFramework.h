@@ -39,6 +39,8 @@ public:
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
+	enum SCENE { GeneralScene = 0, GeometryScene };
+
 private:
 	HINSTANCE					m_hInstance;
 	HWND						m_hWnd; 
@@ -78,7 +80,6 @@ private:
 
 	CGameTimer			m_GameTimer;
 
-	enum SCENE { GeneralScene = 0, GeometryScene };
 	CScene						*m_pScene = nullptr;
 	short							m_SceneNum;
 
