@@ -88,6 +88,6 @@ private:
 
 	POINT						m_ptOldCursorPos;
 
-	_TCHAR						m_pszCaption[70];
+	_TCHAR					m_pszCaption[70];
 };
 

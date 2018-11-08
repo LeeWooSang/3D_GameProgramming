@@ -7,6 +7,7 @@ public:
 	CBillboardShader();
 	virtual ~CBillboardShader();
 
+	virtual void CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGraphicsRootSignature);
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext = NULL);
 	virtual void ReleaseObjects();

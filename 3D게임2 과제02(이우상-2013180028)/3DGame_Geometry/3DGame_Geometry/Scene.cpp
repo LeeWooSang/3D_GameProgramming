@@ -5,6 +5,8 @@
 #include "BillboardShader.h"
 #include "GeometryShader.h"
 
+extern int g_FillMode;
+
 CScene::CScene()
 {
 }
@@ -40,7 +42,6 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	//m_ppShaders[0] = pGeneralShader;
 
 	CGeometryShader* pGeometryShader = new CGeometryShader;
-	pGeometryShader->setSceneNum(m_SceneNum);
 	pGeometryShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pGeometryShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 	m_ppShaders[0] = pGeometryShader;
@@ -48,7 +49,8 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 void CScene::ReleaseObjects()
 {
-	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
+	if (m_pd3dGraphicsRootSignature) 
+		m_pd3dGraphicsRootSignature->Release();
 
 	if (m_ppShaders)
 	{
@@ -67,7 +69,8 @@ void CScene::ReleaseObjects()
 
 void CScene::ReleaseUploadBuffers()
 {
-	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
+	for (int i = 0; i < m_nShaders; i++) 
+		m_ppShaders[i]->ReleaseUploadBuffers();
 
 	if (m_pTerrain) m_pTerrain->ReleaseUploadBuffers();
 	if (m_pSkyBox) m_pSkyBox->ReleaseUploadBuffers();
@@ -94,19 +97,19 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 
 	pd3dDescriptorRanges[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	pd3dDescriptorRanges[2].NumDescriptors = 1;
-	pd3dDescriptorRanges[2].BaseShaderRegister = 4; //t4: gtxtTerrainBaseTexture
+	pd3dDescriptorRanges[2].BaseShaderRegister = 1; //t1: gtxtTerrainBaseTexture
 	pd3dDescriptorRanges[2].RegisterSpace = 0;
 	pd3dDescriptorRanges[2].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	pd3dDescriptorRanges[3].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	pd3dDescriptorRanges[3].NumDescriptors = 1;
-	pd3dDescriptorRanges[3].BaseShaderRegister = 5; //t5: gtxtTerrainDetailTexture
+	pd3dDescriptorRanges[3].BaseShaderRegister = 2; //t2: gtxtTerrainDetailTexture
 	pd3dDescriptorRanges[3].RegisterSpace = 0;
 	pd3dDescriptorRanges[3].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	pd3dDescriptorRanges[4].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	pd3dDescriptorRanges[4].NumDescriptors = 1;
-	pd3dDescriptorRanges[4].BaseShaderRegister = 6; //t6: gtxtSandTexture
+	pd3dDescriptorRanges[4].BaseShaderRegister = 3; //t3: gtxtSandTexture
 	pd3dDescriptorRanges[4].RegisterSpace = 0;
 	pd3dDescriptorRanges[4].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
@@ -200,9 +203,31 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 	return(false);
 }
 
-bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+void CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	return(false);
+	//switch (nMessageID)
+	//{
+	//case WM_KEYUP:
+	//	switch (wParam)
+	//	{
+	//	case 's':
+	//	case 'S':
+	//		if (m_FillMode == SOLID)
+	//			m_FillMode = WIRE;
+	//		else
+	//			m_FillMode = SOLID;
+
+	//		cout << m_FillMode << endl;
+	//		break;
+
+	//	default:
+	//		break;
+	//	}	
+	//	break;
+
+	//default:
+	//	break;
+	//}
 }
 
 bool CScene::ProcessInput(UCHAR *pKeysBuffer)

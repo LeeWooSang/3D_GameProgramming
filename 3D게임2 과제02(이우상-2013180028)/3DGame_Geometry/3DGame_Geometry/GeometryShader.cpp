@@ -5,6 +5,10 @@
 #include "Material.h"
 #include "DDSTextureLoader12.h"
 #include "Vertex.h"
+#include "GameFramework.h"
+
+extern int g_FillMode;
+extern bool g_OnGeometry;
 
 CGeometryShader::CGeometryShader()
 {
@@ -12,8 +16,73 @@ CGeometryShader::CGeometryShader()
 
 CGeometryShader::~CGeometryShader()
 {
+	ReleaseShaderVariables();
+	ReleaseUploadBuffers();
 }
 
+void CGeometryShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGraphicsRootSignature)
+{
+	m_nPipelineStates = 1;
+	m_ppd3dPipelineStates = new ID3D12PipelineState*[m_nPipelineStates];
+
+	ID3DBlob *pd3dVertexShaderBlob = NULL, *pd3dPixelShaderBlob = NULL;
+	ID3DBlob *pd3dGeometeryShaderBlob = NULL;
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineStateDesc;
+	::ZeroMemory(&d3dPipelineStateDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
+	d3dPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
+	d3dPipelineStateDesc.VS = CreateVertexShader(&pd3dVertexShaderBlob);			//계층 구조 상에서 오버라이딩 가능 
+	d3dPipelineStateDesc.PS = CreatePixelShader(&pd3dPixelShaderBlob);				//계층 구조 상에서 오버라이딩 가능
+	d3dPipelineStateDesc.GS = CreateGeometryShader(&pd3dGeometeryShaderBlob);
+	d3dPipelineStateDesc.RasterizerState = CreateRasterizerState();
+	d3dPipelineStateDesc.BlendState = CreateBlendState();
+	d3dPipelineStateDesc.DepthStencilState = CreateDepthStencilState();
+	d3dPipelineStateDesc.InputLayout = CreateInputLayout();							//계층구조상에서 오버이딩 가능
+	d3dPipelineStateDesc.SampleMask = UINT_MAX;
+	d3dPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+	d3dPipelineStateDesc.NumRenderTargets = 1;
+	d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	d3dPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	d3dPipelineStateDesc.SampleDesc.Count = 1;
+	d3dPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+	HRESULT hResult = pd3dDevice->CreateGraphicsPipelineState(&d3dPipelineStateDesc, __uuidof(ID3D12PipelineState), (void **)&m_ppd3dPipelineStates[0]);
+
+	if (pd3dVertexShaderBlob) pd3dVertexShaderBlob->Release();
+	if (pd3dPixelShaderBlob) pd3dPixelShaderBlob->Release();
+	if (pd3dGeometeryShaderBlob) pd3dGeometeryShaderBlob->Release();
+
+	if (d3dPipelineStateDesc.InputLayout.pInputElementDescs) delete[] d3dPipelineStateDesc.InputLayout.pInputElementDescs;
+
+}
+
+void CGeometryShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+
+}
+
+void CGeometryShader::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+
+}
+
+D3D12_BLEND_DESC CGeometryShader::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = true;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	return(d3dBlendDesc);
+}
 D3D12_INPUT_LAYOUT_DESC CGeometryShader::CreateInputLayout()
 {
 	UINT nInputElementDescs = 2;
@@ -45,19 +114,16 @@ D3D12_SHADER_BYTECODE CGeometryShader::CreatePixelShader(ID3DBlob **ppd3dShaderB
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_Geometry", "ps_5_1", ppd3dShaderBlob));
 }
 
-void CGeometryShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGraphicsRootSignature)
-{
-	m_nPipelineStates = 1;
-	m_ppd3dPipelineStates = new ID3D12PipelineState*[m_nPipelineStates];
-
-	CShader::CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
-}
-
 D3D12_RASTERIZER_DESC CGeometryShader::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
-	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+
+	if (g_FillMode == SOLID)
+		d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	else if (g_FillMode == WIRE)
+		d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
+
 	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	d3dRasterizerDesc.FrontCounterClockwise = FALSE;
 	d3dRasterizerDesc.DepthBias = 0;
@@ -76,14 +142,8 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
 
-	float fTerrainWidth = pTerrain->GetWidth();
-	float fTerrainLength = pTerrain->GetLength();
-
-	int xObjects = 35;
-	int zObjects = 50;
-	//m_nObjects = (xObjects * zObjects);
-	//m_nObjects = 12000;
-	m_nObjects = 5000;
+	int TerrainWidth = pTerrain->GetWidth();
+	int TerrainLength = pTerrain->GetLength();
 
 	const int Grass_Texture_Count = 2;
 	const int Flower_Texture_Count = 2;
@@ -116,59 +176,54 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
-	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, Total_Texutre_count);
+	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 0, Total_Texutre_count);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
+	//CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
 
 	// 풀, 꽃 리소스 뷰 2개
-	for (int i = 0; i < 2; ++i)
-	{
-		CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppGrassTextures[i], 3, true);
-		CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppFlowerTextures[i], 3, true);
-	}
+	//for (int i = 0; i < 2; ++i)
+	//{
+	//	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppGrassTextures[i], 3, true);
+	//	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppFlowerTextures[i], 3, true);
+	//}
 
 	// 나무 리소스 뷰 5개
 	for (int i = 0; i < Tree_Texture_Count; ++i)
-		CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppTreeTextures[i], 3, true);
+		CreateShaderResourceViews(pd3dDevice, pd3dCommandList, ppTreeTextures[i], 3, false);
 
-	CMaterial* ppGrassMaterials[Grass_Texture_Count]{ nullptr };
-	CMaterial* ppFlowerMaterials[Flower_Texture_Count]{ nullptr };
-	CMaterial* ppTreeMaterials[Tree_Texture_Count]{ nullptr };
+	//CMaterial* ppGrassMaterials[Grass_Texture_Count]{ nullptr };
+	//CMaterial* ppFlowerMaterials[Flower_Texture_Count]{ nullptr };
+	//CMaterial* ppTreeMaterials[Tree_Texture_Count]{ nullptr };
 
-	for (int i = 0; i < 2; ++i)
-	{
-		ppGrassMaterials[i] = new CMaterial();
-		ppGrassMaterials[i]->SetTexture(ppGrassTextures[i]);
+	//for (int i = 0; i < 2; ++i)
+	//{
+	//	ppGrassMaterials[i] = new CMaterial();
+	//	ppGrassMaterials[i]->SetTexture(ppGrassTextures[i]);
 
-		ppFlowerMaterials[i] = new CMaterial();
-		ppFlowerMaterials[i]->SetTexture(ppFlowerTextures[i]);
-	}
+	//	ppFlowerMaterials[i] = new CMaterial();
+	//	ppFlowerMaterials[i]->SetTexture(ppFlowerTextures[i]);
+	//}
+
+	//for (int i = 0; i < Tree_Texture_Count; ++i)
+	//{
+	//	ppTreeMaterials[i] = new CMaterial();
+	//	ppTreeMaterials[i]->SetTexture(ppTreeTextures[i]);
+	//}
 
 	for (int i = 0; i < Tree_Texture_Count; ++i)
 	{
-		ppTreeMaterials[i] = new CMaterial();
-		ppTreeMaterials[i]->SetTexture(ppTreeTextures[i]);
+		m_pMaterial[i] = new CMaterial();
+		m_pMaterial[i]->SetTexture(ppTreeTextures[i]);
 	}
-
 	float GrassHeight = 20.f, FlowerHeight = 30.f, TreeHeight = 100.f;
 	//CTexturedRectMesh* pGrassMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 10.0f, GrassHeight, 0.0f, 0.0f, 0.0f, 0.0f);
 	//CTexturedRectMesh* pFlowerMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 20.0f, FlowerHeight, 0.0f, 0.0f, 0.0f, 0.0f);
 	//CTexturedRectMesh* pTreeMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 50.0f, TreeHeight, 0.0f, 0.0f, 0.0f, 0.0f);
 
-	m_ppObjects = new CGameObject*[m_nObjects];
-	CBillboardObject* pBillboardObject = nullptr;
-
-	float fxPitch = 0.25f;
-	float fzPitch = 0.25f;
-
-	CMaterial* pMaterial = NULL;
-	CMesh* pMesh = NULL;
-
-	float xPosition = 950.0f;
 	default_random_engine dre;
 
-	uniform_real_distribution<double> urd_x(0.f, fTerrainWidth - 100);
-	uniform_real_distribution<double> urd_z(0.f, fTerrainLength - 100);
+	//uniform_real_distribution<double> urd_x(0.f, fTerrainWidth - 100);
+	//uniform_real_distribution<double> urd_z(0.f, fTerrainLength - 100);
 
 	// 텍스처 종류
 	uniform_int_distribution<int> uid_TextureType(0, 2);
@@ -176,21 +231,29 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	uniform_int_distribution<int> uid_TreeMaterial(0, Tree_Texture_Count - 1);
 
 	int nStride = sizeof(CBillboardVertex);
-	m_nVertices = m_nObjects;
+	m_nVertices = 1000;
 	XMFLOAT3 xmf3Position;
-	CBillboardVertex* pBillboardVertex = new CBillboardVertex[m_nObjects];
-	//CGeometryVertexMesh* pBillboardVertex = new CGeometryVertexMesh(pd3dDevice, pd3dCommandList);
-	for (int i = 0; i < m_nObjects; ++i)
+	CBillboardVertex* pBillboardVertex = new CBillboardVertex[m_nVertices];
+	for (int i = 0; i < m_nVertices; ++i)
 	{
-		xmf3Position.x = urd_x(dre);
-		xmf3Position.z = urd_z(dre);
-		while (pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) < Flatland_Height)
-		{
-			xmf3Position.x = urd_x(dre);
-			xmf3Position.z = urd_z(dre);
-		}
-		xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) + pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) * 0.5;
-		pBillboardVertex[i] = CBillboardVertex(xmf3Position, XMFLOAT2(100.f, 100.f));
+		//xmf3Position.x = urd_x(dre);
+		//xmf3Position.z = urd_z(dre);
+		//while (pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) < Flatland_Height)
+		//{
+		//	xmf3Position.x = urd_x(dre);
+		//	xmf3Position.z = urd_z(dre);
+		//}
+		//xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) + pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) * 0.5;
+		//pBillboardVertex[i] = CBillboardVertex(xmf3Position, XMFLOAT2(100.f, 100.f));
+
+		xmf3Position.x = rand() % TerrainWidth;
+		xmf3Position.z = rand() % TerrainLength;
+		xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) + 10.0f;
+		//pBillboardVertex[i] = CBillboardVertex(xmf3Position, XMFLOAT2(20.f, 50.f));
+		pBillboardVertex[i].m_xmf3Position = xmf3Position;
+		pBillboardVertex[i].m_xmf2Size = XMFLOAT2(50, 70);
+	
+		//cout << xmf3Position.x << ", " << xmf3Position.z << endl;
 	}
 
 	m_pd3dVertexBuffer = ::CreateBufferResource
@@ -198,7 +261,7 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 		pd3dDevice,
 		pd3dCommandList,
 		pBillboardVertex,
-		sizeof(UINT) * m_nVertices,
+		nStride * m_nVertices,
 		D3D12_HEAP_TYPE_DEFAULT,
 		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
 		&m_pd3dVertexUploadBuffer
@@ -208,59 +271,115 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	m_d3dVertexBufferView.StrideInBytes = nStride;
 	m_d3dVertexBufferView.SizeInBytes = nStride * m_nVertices;
 
-	for (int i = 0; i < m_nObjects; ++i)
-	{		
-		pBillboardObject = new CBillboardObject;
-		// 텍스처, 재질 랜덤 지정
-		if (uid_TextureType(dre) == GRASS)
-		{
-			pBillboardObject->SetMaterial(ppFlowerMaterials[uid_Material(dre)]);
-		}
-		else if (uid_TextureType(dre) == FLOWER)
-		{
-			pBillboardObject->SetMaterial(ppGrassMaterials[uid_Material(dre)]);
-		}
-		else if (uid_TextureType(dre) == TREE)
-		{
-			// 나무는 3개
-			pBillboardObject->SetMaterial(ppTreeMaterials[uid_TreeMaterial(dre)]);
-		}
-		pBillboardObject->SetPosition(pBillboardVertex[i].m_xmf3Position);
-		pBillboardObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
-		m_ppObjects[i] = pBillboardObject;
-	}
+	//for (int i = 0; i < m_nObjects; ++i)
+	//{		
+	//	//xmf3Position.x = urd_x(dre);
+	//	//xmf3Position.z = urd_z(dre);
+	//	//while (pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) < Flatland_Height)
+	//	//{
+	//	//	xmf3Position.x = urd_x(dre);
+	//	//	xmf3Position.z = urd_z(dre);
+	//	//}
+	//	//xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) + pTerrain->GetHeight(xmf3Position.x, xmf3Position.z) * 0.5;
+	//	pBillboardObject = new CBillboardObject;
+	//	// 텍스처, 재질 랜덤 지정
+	//	if (uid_TextureType(dre) == GRASS)
+	//	{
+	//		pBillboardObject->SetMaterial(ppFlowerMaterials[uid_Material(dre)]);
+	//	}
+	//	else if (uid_TextureType(dre) == FLOWER)
+	//	{
+	//		pBillboardObject->SetMaterial(ppGrassMaterials[uid_Material(dre)]);
+	//	}
+	//	else if (uid_TextureType(dre) == TREE)
+	//	{
+	//		// 나무는 3개
+	//		pBillboardObject->SetMaterial(ppTreeMaterials[uid_TreeMaterial(dre)]);
+	//	}
+	//	//pBillboardObject->SetMesh(0, pBillboardMesh);
+	//	pBillboardObject->SetPosition(pBillboardVertex[i].m_xmf3Position);
+	//	//pBillboardObject->SetPosition(xmf3Position);
+	//	pBillboardObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+	//	m_ppObjects[i] = pBillboardObject;
+	//}
 		
-	cout << "기하셰이더 빌보드 오브젝트 개수 : " << m_nObjects << "개 생성완료" << endl;
+	cout << "기하셰이더 빌보드 오브젝트 개수 : " << m_nVertices << "개 생성완료" << endl;
+	if (pBillboardVertex)
+		delete[] pBillboardVertex;
 }
 
+void CGeometryShader::ReleaseShaderVariables()
+{
+	if (m_pd3dVertexBuffer)
+		m_pd3dVertexBuffer->Release();
+	m_pd3dVertexBuffer = nullptr;
+}
 void CGeometryShader::ReleaseUploadBuffers()
 {
-	CObjectsShader::ReleaseUploadBuffers();
+	if (m_pd3dVertexUploadBuffer)
+		m_pd3dVertexUploadBuffer->Release();
+	m_pd3dVertexUploadBuffer = nullptr;
+
 }
 
-void CGeometryShader::ReleaseObjects()
+//void CGeometryShader::ReleaseObjects()
+//{
+//	CObjectsShader::ReleaseObjects();
+//}
+
+void CGeometryShader::OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	CObjectsShader::ReleaseObjects();
-}
+	if (m_ppd3dPipelineStates) pd3dCommandList->SetPipelineState(m_ppd3dPipelineStates[0]);
 
+	if (m_pd3dCbvSrvDescriptorHeap) pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
+	UpdateShaderVariables(pd3dCommandList);
+}
 void CGeometryShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
-	//XMFLOAT3 xmf3CameraPosition = pCamera->GetPosition();
-	//for (int j = 0; j < m_nObjects; j++)
+	OnPrepareRender(pd3dCommandList);
+
+	for (int i = 0; i < 5; ++i)
+	{
+		if (m_pMaterial[i])
+		{
+			if (m_pMaterial[i]->m_pShader)
+			{
+				m_pMaterial[i]->m_pShader->Render(pd3dCommandList, pCamera);
+				m_pMaterial[i]->m_pShader->UpdateShaderVariables(pd3dCommandList);
+
+				UpdateShaderVariables(pd3dCommandList);
+			}
+			if (m_pMaterial[i]->m_pTexture)
+			{
+				m_pMaterial[i]->m_pTexture->UpdateShaderVariables(pd3dCommandList);
+			}
+		}
+	}
+	pd3dCommandList->IASetPrimitiveTopology(m_d3dPrimitiveTopology);
+	pd3dCommandList->IASetVertexBuffers(0, 1, &m_d3dVertexBufferView);
+	pd3dCommandList->DrawInstanced(m_nVertices, 1, 0, 0);	
+
+	//OnPrepareRender(pd3dCommandList);
+	//if (m_pMaterial)
 	//{
-	//	if (m_ppObjects[j])
-	//		m_ppObjects[j]->SetLookAt(xmf3CameraPosition, XMFLOAT3(0.0f, 1.0f, 0.0f));
+	//	for (int i = 0; i < 5; ++i) {
+	//		if (m_pMaterial[i].m_pShader)
+	//		{
+	//			m_pMaterial[i].m_pShader->Render(pd3dCommandList, pCamera);
+	//			m_pMaterial[i].m_pShader->UpdateShaderVariables(pd3dCommandList);
+
+	//			UpdateShaderVariables(pd3dCommandList);
+	//		}
+	//		if (m_pMaterial[i].m_pTexture)
+	//		{
+	//			m_pMaterial[i].m_pTexture->UpdateShaderVariables(pd3dCommandList);
+	//		}
+	//	}
 	//}
 
-	//CObjectsShader::Render(pd3dCommandList, pCamera);
-	for (int i = 0; i < m_nObjects; ++i)
-	{
-		if (m_ppObjects[i]) 
-			m_ppObjects[i]->Render(pd3dCommandList, pCamera);
+	//pd3dCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 
-		pd3dCommandList->IASetPrimitiveTopology(m_d3dPrimitiveTopology);
-		pd3dCommandList->IASetVertexBuffers(0, 1, &m_d3dVertexBufferView);
-		pd3dCommandList->DrawInstanced(m_nVertices, 1, 0, 0);
-	}
-	
+	//pd3dCommandList->IASetVertexBuffers(0, 1, &m_d3dVertexBufferView);
+
+	//pd3dCommandList->DrawInstanced(m_nVertices, 1, 0, 0);
 }

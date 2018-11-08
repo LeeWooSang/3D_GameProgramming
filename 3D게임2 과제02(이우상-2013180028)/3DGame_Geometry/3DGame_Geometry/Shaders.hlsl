@@ -30,8 +30,9 @@ cbuffer cbCameraInfo : register(b1)
 {
 	matrix		gmtxView						: packoffset(c0);
 	matrix		gmtxProjection				: packoffset(c4);
-	matrix		gmtxViewProjection		: packoffset(c8);
-	float3		gmtxCameraPosition	: packoffset(c12);
+	//matrix		gmtxViewProjection		: packoffset(c8);
+	//float3		gmtxCameraPosition	: packoffset(c12);
+	float3		gmtxCameraPosition	: packoffset(c8);
 };
 
 cbuffer cbGameObjectInfo : register(b2)
@@ -155,9 +156,9 @@ float4 PSSkyBox(VS_TEXTURED_OUTPUT input) : SV_TARGET
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Texture2D gtxtTerrainBaseTexture	: register(t4);
-Texture2D gtxtTerrainDetailTexture	: register(t5);
-Texture2D gtxtSandTexture				: register(t6);
+Texture2D gtxtTerrainBaseTexture	: register(t1);
+Texture2D gtxtTerrainDetailTexture	: register(t2);
+Texture2D gtxtSandTexture				: register(t3);
 
 struct VS_TERRAIN_INPUT
 {
@@ -179,7 +180,17 @@ struct VS_TERRAIN_OUTPUT
 	float2 uv2 : TEXCOORD2;
 };
 
-VS_TERRAIN_OUTPUT VSTerrain(VS_TERRAIN_INPUT input)
+struct GS_TERRAIN_OUTPUT
+{
+	float4 position	: SV_POSITION;
+	float4 color		: COLOR;
+	float2 uv0			: TEXCOORD0;
+	float2 uv1			: TEXCOORD1;
+
+	float2 uv2			: TEXCOORD2;
+};
+
+VS_TERRAIN_OUTPUT VS_Terrain(VS_TERRAIN_INPUT input)
 {
 	VS_TERRAIN_OUTPUT output;
 
@@ -196,7 +207,7 @@ VS_TERRAIN_OUTPUT VSTerrain(VS_TERRAIN_INPUT input)
 	return(output);
 }
 
-float4 PSTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
+float4 PS_Terrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 {
 	float4 cBaseTexColor = gtxtTerrainBaseTexture.Sample(gWrapSamplerState, input.uv0);
 	float4 cDetailTexColor = gtxtTerrainDetailTexture.Sample(gWrapSamplerState, input.uv1);
@@ -205,6 +216,80 @@ float4 PSTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 
 	float4 cColor;
 	
+	if (input.uv2.r > 0.0f)
+		cColor = cSandTexColor;
+	else
+		cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
+
+	return(cColor);
+}
+
+// 기하 셰이더(터레인)
+[maxvertexcount(8)]
+void GS_Terrain(triangle VS_TERRAIN_OUTPUT input[3], inout TriangleStream<GS_TERRAIN_OUTPUT> outStream)
+{
+	GS_TERRAIN_OUTPUT v[6];
+
+	v[0].position = input[0].position;
+	//v[0].normal = input[0].normal;
+	v[0].color = input[0].color;
+	v[0].uv0 = input[0].uv0;
+	v[0].uv1 = input[0].uv1;
+	v[0].uv2 = input[0].uv2;
+
+	v[1].position = input[1].position;
+	//v[1].normal = input[1].normal;
+	v[1].color = input[1].color;
+	v[1].uv0 = input[1].uv0;
+	v[1].uv1 = input[1].uv1;
+	v[1].uv2 = input[1].uv2;
+
+	v[2].position = input[2].position;
+	//v[2].normal = input[2].normal;
+	v[2].color = input[2].color;
+	v[2].uv0 = input[2].uv0;
+	v[2].uv1 = input[2].uv1;
+	v[2].uv2 = input[2].uv2;
+
+	v[3].position = (input[0].position + input[1].position) * 0.5f;
+	v[3].color = (input[0].color + input[1].color + float4(1.0f, 0.0f, 0.0f, 1.0f)) / 3.0f;
+	v[3].uv0 = (input[0].uv0 + input[1].uv0) * 0.5f;
+	v[3].uv1 = (input[0].uv1 + input[1].uv1) * 0.5f;
+	v[3].uv2 = (input[0].uv2 + input[1].uv2) * 0.5f;
+
+	v[4].position = (input[1].position + input[2].position) * 0.5f;
+	v[4].color = (input[1].color + input[2].color + float4(0.0f, 1.0f, 0.0f, 1.0f)) / 3.0f;
+	v[4].uv0 = (input[1].uv0 + input[2].uv0) * 0.5f;
+	v[4].uv1 = (input[1].uv1 + input[2].uv1) * 0.5f;
+	v[4].uv2 = (input[1].uv2 + input[2].uv2) * 0.5;
+
+	v[5].position = (input[0].position + input[2].position)*0.5f;
+	v[5].color = (input[0].color + input[2].color + float4(0.0f, 0.0f, 1.0f, 1.0f)) / 3.0f;
+	v[5].uv0 = (input[0].uv0 + input[2].uv0) *0.5f;
+	v[5].uv1 = (input[0].uv1 + input[2].uv1) * 0.5f;
+	v[5].uv2 = (input[0].uv2 + input[2].uv2) * 0.5f;
+
+	outStream.Append(v[0]);
+	outStream.Append(v[3]);
+	outStream.Append(v[5]);
+	outStream.Append(v[4]);
+	outStream.Append(v[2]);
+
+	outStream.RestartStrip();
+
+	outStream.Append(v[3]);
+	outStream.Append(v[1]);
+	outStream.Append(v[4]);
+}
+float4 PS_GSTerrain(GS_TERRAIN_OUTPUT input) : SV_Target
+{
+	float4 cBaseTexColor = gtxtTerrainBaseTexture.Sample(gWrapSamplerState, input.uv0);
+	float4 cDetailTexColor = gtxtTerrainDetailTexture.Sample(gWrapSamplerState, input.uv1);
+
+	float4 cSandTexColor = gtxtSandTexture.Sample(gWrapSamplerState, input.uv2);
+
+	float4 cColor;
+
 	if (input.uv2.r > 0.0f)
 		cColor = cSandTexColor;
 	else
@@ -266,7 +351,8 @@ void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStrea
 	for (int i = 0; i < 4; ++i)
 	{
 		output.posW = pVertices[i].xyz;
-		output.posH = mul(pVertices[i], gmtxViewProjection);
+		//output.posH = mul(pVertices[i], gmtxViewProjection);
+		output.posH = mul(mul(pVertices[i], gmtxView), gmtxProjection);
 		output.normalW = vLook;
 		output.uv = pUVs[i];
 		output.primID = primID;
@@ -274,7 +360,6 @@ void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStrea
 		outStream.Append(output);
 	}
 }
-
 
 float4 PS_Geometry(GS_OUT input) : SV_Target
 {
@@ -284,7 +369,7 @@ float4 PS_Geometry(GS_OUT input) : SV_Target
 	float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uv);
 	//float4 cColor = cillumination * cTexture;
 	float4 cColor = cTexture;
-	cColor.a = cTexture.a;
+	//cColor.a = cTexture.a;
 
 	return (cColor);
 }

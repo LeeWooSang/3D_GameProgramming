@@ -33,6 +33,7 @@ CSkyBox::CSkyBox(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dComman
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
 
 	CSkyBoxShader *pSkyBoxShader = new CSkyBoxShader();
+
 	pSkyBoxShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pSkyBoxShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	pSkyBoxShader->CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 6);

@@ -127,6 +127,8 @@ CDiffused2TexturedVertex::~CDiffused2TexturedVertex()
 
 CBillboardVertex::CBillboardVertex()
 {
+	m_xmf3Position = XMFLOAT3(0.f, 0.f, 0.f);
+	m_xmf2Size = XMFLOAT2(0.f, 0.f);
 }
 
 CBillboardVertex::CBillboardVertex(XMFLOAT3 xmf3Position, XMFLOAT2 xmf2Size)

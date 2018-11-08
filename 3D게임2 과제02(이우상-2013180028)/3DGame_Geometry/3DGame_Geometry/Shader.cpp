@@ -49,13 +49,16 @@ D3D12_SHADER_BYTECODE CShader::CompileShaderFromFile(WCHAR *pszFileName, LPCSTR 
 #if defined(_DEBUG)
 	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
-
-	::D3DCompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderProfile, nCompileFlags, 0, ppd3dShaderBlob, NULL);
-
+	ID3DBlob* errorBlob = nullptr;
+	::D3DCompileFromFile(pszFileName, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, pszShaderName, pszShaderProfile, nCompileFlags, 0, ppd3dShaderBlob, &errorBlob);
+	if (errorBlob)
+	{
+		OutputDebugStringA((char*)errorBlob->GetBufferPointer());
+		errorBlob->Release();
+	}
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	d3dShaderByteCode.BytecodeLength = (*ppd3dShaderBlob)->GetBufferSize();
 	d3dShaderByteCode.pShaderBytecode = (*ppd3dShaderBlob)->GetBufferPointer();
-
 	return(d3dShaderByteCode);
 }
 
@@ -68,12 +71,16 @@ D3D12_INPUT_LAYOUT_DESC CShader::CreateInputLayout()
 	return(d3dInputLayoutDesc);
 }
 
-D3D12_RASTERIZER_DESC CShader::CreateRasterizerState()
+D3D12_RASTERIZER_DESC CShader::CreateRasterizerState(int fillmode)
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
-	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
-	//d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+
+	if(fillmode == SOLID)
+		d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	else if(fillmode == WIRE)
+		d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
+
 	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	d3dRasterizerDesc.FrontCounterClockwise = FALSE;
 	d3dRasterizerDesc.DepthBias = 0;
@@ -142,7 +149,7 @@ void CShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGr
 	d3dPipelineStateDesc.VS = CreateVertexShader(&pd3dVertexShaderBlob);
 	d3dPipelineStateDesc.GS = CreateGeometryShader(&pd3dGeometryShaderBlob);
 	d3dPipelineStateDesc.PS = CreatePixelShader(&pd3dPixelShaderBlob);
-	d3dPipelineStateDesc.RasterizerState = CreateRasterizerState();
+	d3dPipelineStateDesc.RasterizerState = CreateRasterizerState(SOLID);
 	d3dPipelineStateDesc.BlendState = CreateBlendState();
 	d3dPipelineStateDesc.DepthStencilState = CreateDepthStencilState();
 	d3dPipelineStateDesc.InputLayout = CreateInputLayout();
@@ -159,7 +166,8 @@ void CShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGr
 		pd3dVertexShaderBlob->Release();
 	if (pd3dPixelShaderBlob) 
 		pd3dPixelShaderBlob->Release();
-
+	if (pd3dGeometryShaderBlob) 
+		pd3dGeometryShaderBlob->Release();
 	if (d3dPipelineStateDesc.InputLayout.pInputElementDescs) 
 		delete[] d3dPipelineStateDesc.InputLayout.pInputElementDescs;
 }
@@ -265,7 +273,8 @@ void CShader::UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, X
 
 void CShader::ReleaseShaderVariables()
 {
-	if (m_pd3dCbvSrvDescriptorHeap) m_pd3dCbvSrvDescriptorHeap->Release();
+	if (m_pd3dCbvSrvDescriptorHeap) 
+		m_pd3dCbvSrvDescriptorHeap->Release();
 }
 
 void CShader::ReleaseUploadBuffers()
@@ -274,8 +283,10 @@ void CShader::ReleaseUploadBuffers()
 
 void CShader::OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	if (m_ppd3dPipelineStates) pd3dCommandList->SetPipelineState(m_ppd3dPipelineStates[0]);
-	pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
+	if (m_ppd3dPipelineStates) 
+		pd3dCommandList->SetPipelineState(m_ppd3dPipelineStates[0]);
+	if(m_pd3dCbvSrvDescriptorHeap)
+		pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
 
 	UpdateShaderVariables(pd3dCommandList);
 }

@@ -72,7 +72,7 @@ void CPlayer::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
 		if (dwDirection & DIR_DOWN) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, -fDistance);
 
 		Move(xmf3Shift, bUpdateVelocity);
-		cout << "플레이어 y 좌표 : " << m_xmf3Position.y << endl;
+		//cout << "플레이어 y 좌표 : " << m_xmf3Position.y << endl;
 	}
 }
 
@@ -320,6 +320,7 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	UINT ncbElementBytes = ((sizeof(CB_PLAYER_INFO) + 255) & ~255); //256의 배수
 
 	CPlayerShader *pShader = new CPlayerShader();
+
 	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	pShader->CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 0);

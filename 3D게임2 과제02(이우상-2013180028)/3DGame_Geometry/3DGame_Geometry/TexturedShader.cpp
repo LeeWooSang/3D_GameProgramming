@@ -11,8 +11,6 @@ CTexturedShader::~CTexturedShader()
 
 D3D12_INPUT_LAYOUT_DESC CTexturedShader::CreateInputLayout()
 {
-	//UINT nInputElementDescs = 2;
-	// 기하셰이더 2개 추가
 	UINT nInputElementDescs = 2;
 	D3D12_INPUT_ELEMENT_DESC *pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
 

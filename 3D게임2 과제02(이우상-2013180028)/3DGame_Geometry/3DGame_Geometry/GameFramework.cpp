@@ -10,6 +10,9 @@
 default_random_engine dre;
 uniform_int_distribution<> uid(0, 1);
 
+int g_FillMode = SOLID;
+bool g_OnGeometry = UNUSE;
+
 CGameFramework::CGameFramework()
 {
 	m_pdxgiFactory = NULL;
@@ -331,7 +334,9 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+	if (m_pScene) 
+		m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+
 	switch (nMessageID)
 	{
 		case WM_KEYUP:
@@ -373,33 +378,54 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 
 				case 's':
 				case 'S':
-				{
-					if (m_pScene != nullptr && m_pPlayer != nullptr)
-						CGameFramework::ReleaseObjects();
+					//switch (m_SceneNum)
+					//{
+					//	case CGameFramework::GeneralScene:
+					//	{
+					//		//m_pScene = new CGeometryScene;
+					//		m_pScene = new CScene;
+					//		m_SceneNum = CGameFramework::GeometryScene;
+					//		break;
+					//	}
+					//	case CGameFramework::GeometryScene:
+					//	{
+					//		//m_pScene = new CGeneralScene;
+					//		m_pScene = new CScene;
+					//		m_SceneNum = CGameFramework::GeneralScene;
+					//		break;
+					//	}
+					//}
+					//m_pScene->setSceneNum(m_SceneNum);
 
-					switch (m_SceneNum)
+					CGameFramework::ReleaseObjects();
+					if (g_FillMode == SOLID)
 					{
-						case CGameFramework::GeneralScene:
-						{
-							//m_pScene = new CGeometryScene;
-							m_pScene = new CScene;
-							m_SceneNum = CGameFramework::GeometryScene;
-							break;
-						}
-						case CGameFramework::GeometryScene:
-						{
-							//m_pScene = new CGeneralScene;
-							m_pScene = new CScene;
-							m_SceneNum = CGameFramework::GeneralScene;
-							break;
-						}
+						g_FillMode = WIRE;
+						cout << "와이어 모드" << endl;
 					}
-					m_pScene->setSceneNum(m_SceneNum);
+					else
+					{
+						g_FillMode = SOLID;
+						cout << "솔리드 모드" << endl;
+					}
 					CGameFramework::BuildObjects();
-					cout << "현재 Scene 번호 : " << m_SceneNum << endl;
 					break;
-				}
 
+				case 'g':
+				case 'G':
+					CGameFramework::ReleaseObjects();
+					if (g_OnGeometry == USE)
+					{
+						g_OnGeometry = UNUSE;
+						cout << "기하셰이더 적용 X" << endl;
+					}
+					else
+					{
+						g_OnGeometry = USE;
+						cout << "기하셰이더 적용 O" << endl;
+					}
+					CGameFramework::BuildObjects();
+					break;
 				default:
 					break;
 			}
@@ -486,9 +512,7 @@ void CGameFramework::BuildObjects()
 		//else
 		//	m_pScene = new CGeometryScene;
 		m_pScene = new CScene;
-		m_pScene->setSceneNum(m_SceneNum);
-	}
-		
+	}	
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
 	m_pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
@@ -508,12 +532,21 @@ void CGameFramework::BuildObjects()
 
 void CGameFramework::ReleaseObjects()
 {
-	if (m_pPlayer) 
+	if (m_pPlayer)
+	{
 		delete m_pPlayer;
+		m_pPlayer = nullptr;
+	}
+
 	if (m_pScene) 
 		m_pScene->ReleaseObjects();
-	if (m_pScene) 
+
+	if (m_pScene)
+	{
 		delete m_pScene;
+		m_pScene = nullptr;
+	}
+
 }
 
 void CGameFramework::ProcessInput()

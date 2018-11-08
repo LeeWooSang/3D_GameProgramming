@@ -88,16 +88,10 @@
     <Filter Include="소스 파일\Shader &amp; HLSL\Shader\PlayerShader">
       <UniqueIdentifier>{28278cf8-57f0-45d2-af03-dfca80025750}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Scene\GeometryScene">
-      <UniqueIdentifier>{efa43cf3-7df7-413c-9582-c7e935116fbb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Scene\GeneralScene">
-      <UniqueIdentifier>{29cdfc2d-0925-4a84-8bc0-8bf548a369b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader\BillboardShader">
       <UniqueIdentifier>{9a1235f1-941a-4279-b37a-b552a76fc8c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader\GeometryShader">
+    <Filter Include="소스 파일\Shader &amp; HLSL\Shader\TexturedShader\GeometryShader">
       <UniqueIdentifier>{63783602-36d6-4363-9d54-9a1cc43025a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -181,7 +175,7 @@
       <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="GeometryShader.h">
-      <Filter>소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader\GeometryShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\Shader\TexturedShader\GeometryShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -255,7 +249,7 @@
       <Filter>소스 파일\Shader &amp; HLSL\Shader</Filter>
     </ClCompile>
     <ClCompile Include="GeometryShader.cpp">
-      <Filter>소스 파일\Shader &amp; HLSL\Shader\TexturedShader\ObjectsShader\GeometryShader</Filter>
+      <Filter>소스 파일\Shader &amp; HLSL\Shader\TexturedShader\GeometryShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

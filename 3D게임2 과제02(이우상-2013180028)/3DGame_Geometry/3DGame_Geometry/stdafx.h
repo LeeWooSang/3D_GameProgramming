@@ -62,6 +62,9 @@ using namespace std;
 
 enum OBJECT_TYPE {GRASS, FLOWER, TREE};
 const double Flatland_Height{ 235.f };
+
+enum FILL_MODE { SOLID, WIRE};
+enum ON_GEOMETRY { USE, UNUSE };
 //-----------------------------------------------------------------------------------
 
 extern UINT	gnCbvSrvDescriptorIncrementSize;

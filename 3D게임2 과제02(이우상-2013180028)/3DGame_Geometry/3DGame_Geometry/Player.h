@@ -85,7 +85,7 @@ public:
 	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed) { return(NULL); }
 	virtual void OnPrepareRender();
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera = NULL);
-
+	
 protected:
 	ID3D12Resource					*m_pd3dcbPlayer = NULL;
 	CB_PLAYER_INFO					*m_pcbMappedPlayer = NULL;

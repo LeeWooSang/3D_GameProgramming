@@ -11,7 +11,7 @@ public:
     ~CScene();
 
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
 	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
 	virtual void ReleaseObjects();
@@ -28,9 +28,10 @@ public:
 
 	virtual CHeightMapTerrain *GetTerrain() { return(m_pTerrain); }
 
-	void setSceneNum(short sceneNum) { m_SceneNum = sceneNum; }
+	int getFillMode()	const { return m_FillMode; }
+	void setFillMode(int mode) { m_FillMode = mode; }
 protected:
-	short			m_SceneNum;
+	int		m_FillMode;
 
 	CShader						**m_ppShaders = NULL;
 	int									m_nShaders = 0;

@@ -41,6 +41,8 @@ protected:
 	ID3D12Resource					*m_pd3dcbGameObject = NULL;
 	CB_GAMEOBJECT_INFO		*m_pcbMappedGameObject = NULL;
 
+	int		m_FillMode = SOLID;
+
 public:
 	void SetMesh(int nIndex, CMesh *pMesh);
 	void SetShader(CShader *pShader);
