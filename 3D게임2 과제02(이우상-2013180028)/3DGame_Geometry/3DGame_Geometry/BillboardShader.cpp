@@ -6,8 +6,6 @@
 #include "DDSTextureLoader12.h"
 #include "Vertex.h"
 
-extern int g_FillMode;
-
 CBillboardShader::CBillboardShader()
 {
 }
@@ -22,20 +20,18 @@ void CBillboardShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignatur
 	m_ppd3dPipelineStates = new ID3D12PipelineState*[m_nPipelineStates];
 
 	ID3DBlob *pd3dVertexShaderBlob = NULL, *pd3dPixelShaderBlob = NULL;
-	ID3DBlob *pd3dGeometeryShaderBlob = NULL;
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineStateDesc;
 	::ZeroMemory(&d3dPipelineStateDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	d3dPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
-	d3dPipelineStateDesc.VS = CreateVertexShader(&pd3dVertexShaderBlob);			//계층 구조 상에서 오버라이딩 가능 
-	d3dPipelineStateDesc.PS = CreatePixelShader(&pd3dPixelShaderBlob);				//계층 구조 상에서 오버라이딩 가능
-	d3dPipelineStateDesc.GS = CreateGeometryShader(&pd3dGeometeryShaderBlob);
+	d3dPipelineStateDesc.VS = CreateVertexShader(&pd3dVertexShaderBlob);			
+	d3dPipelineStateDesc.PS = CreatePixelShader(&pd3dPixelShaderBlob);				
 	d3dPipelineStateDesc.RasterizerState = CreateRasterizerState();
 	d3dPipelineStateDesc.BlendState = CreateBlendState();
 	d3dPipelineStateDesc.DepthStencilState = CreateDepthStencilState();
-	d3dPipelineStateDesc.InputLayout = CreateInputLayout();							//계층구조상에서 오버이딩 가능
+	d3dPipelineStateDesc.InputLayout = CreateInputLayout();						
 	d3dPipelineStateDesc.SampleMask = UINT_MAX;
-	d3dPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+	d3dPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	d3dPipelineStateDesc.NumRenderTargets = 1;
 	d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	d3dPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -45,7 +41,6 @@ void CBillboardShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignatur
 
 	if (pd3dVertexShaderBlob) pd3dVertexShaderBlob->Release();
 	if (pd3dPixelShaderBlob) pd3dPixelShaderBlob->Release();
-	if (pd3dGeometeryShaderBlob) pd3dGeometeryShaderBlob->Release();
 
 	if (d3dPipelineStateDesc.InputLayout.pInputElementDescs) delete[] d3dPipelineStateDesc.InputLayout.pInputElementDescs;
 
@@ -55,11 +50,8 @@ D3D12_RASTERIZER_DESC CBillboardShader::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
-	if(g_FillMode == SOLID)
-		d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-	else if(g_FillMode == WIRE)
-		d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
-
+	// 솔리드로 고정시킨다.
+	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	d3dRasterizerDesc.FrontCounterClockwise = FALSE;
 	d3dRasterizerDesc.DepthBias = 0;
@@ -74,6 +66,25 @@ D3D12_RASTERIZER_DESC CBillboardShader::CreateRasterizerState()
 	return(d3dRasterizerDesc);
 }
 
+D3D12_BLEND_DESC CBillboardShader::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = true;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	return(d3dBlendDesc);
+}
+
 void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
@@ -85,7 +96,7 @@ void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	int zObjects = 50;
 	//m_nObjects = (xObjects * zObjects);
 	//m_nObjects = 12000;
-	m_nObjects = 100;
+	m_nObjects = 10000;
 
 	const int Grass_Texture_Count = 2;
 	const int Flower_Texture_Count = 2;
@@ -227,15 +238,30 @@ void CBillboardShader::ReleaseObjects()
 	CObjectsShader::ReleaseObjects();
 }
 
+void  CBillboardShader::OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	if (m_ppd3dPipelineStates)
+		pd3dCommandList->SetPipelineState(m_ppd3dPipelineStates[0]);
+	if (m_pd3dCbvSrvDescriptorHeap)
+		pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
+
+	UpdateShaderVariables(pd3dCommandList);
+}
+
 void CBillboardShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
+	OnPrepareRender(pd3dCommandList);
+
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		if (m_ppObjects[j]) 
+			m_ppObjects[j]->Render(pd3dCommandList, pCamera);
+	}
+
 	XMFLOAT3 xmf3CameraPosition = pCamera->GetPosition();
 	for (int j = 0; j < m_nObjects; j++)
 	{
 		if (m_ppObjects[j])
 			m_ppObjects[j]->SetLookAt(xmf3CameraPosition, XMFLOAT3(0.0f, 1.0f, 0.0f));
 	}
-
-
-	CObjectsShader::Render(pd3dCommandList, pCamera);
 }

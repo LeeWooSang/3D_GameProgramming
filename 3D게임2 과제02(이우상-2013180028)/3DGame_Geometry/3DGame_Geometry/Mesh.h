@@ -118,9 +118,3 @@ public:
 	virtual ~CTexturedRectMesh();
 };
 
-class CGeometryVertexMesh : public CMesh
-{
-public:
-	CGeometryVertexMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
-	virtual ~CGeometryVertexMesh();
-};

@@ -137,6 +137,15 @@ CBillboardVertex::CBillboardVertex(XMFLOAT3 xmf3Position, XMFLOAT2 xmf2Size)
 	m_xmf2Size = xmf2Size;
 }
 
+CBillboardVertex::CBillboardVertex(float x, float y, float z, XMFLOAT2 xmf2Size)
+{
+	m_xmf3Position.x = x;
+	m_xmf3Position.y = y;
+	m_xmf3Position.z = z;
+
+	m_xmf2Size = xmf2Size;
+}
+
 CBillboardVertex::~CBillboardVertex()
 {
 }

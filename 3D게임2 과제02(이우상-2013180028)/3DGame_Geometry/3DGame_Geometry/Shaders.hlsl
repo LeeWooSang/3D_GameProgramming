@@ -139,8 +139,10 @@ float4 PSBillboard(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	float4 cColor = gtxtTexture.SampleLevel(gWrapSamplerState, input.uv, 0);
 	//	float4 cColor = gtxtTexture.Sample(gWrapSamplerState, input.uv);
+
+	// 알파 블랜딩 사용으로 discard를 쓸 필요가 없음
+	//if (cColor.a <= 0.3f) discard; 
 	//clip(cColor.a - 0.3f);
-	if (cColor.a <= 0.3f) discard; 
 
 	return(cColor);
 }
@@ -223,7 +225,6 @@ float4 PS_Terrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 
 	return(cColor);
 }
-
 // 기하 셰이더(터레인)
 [maxvertexcount(8)]
 void GS_Terrain(triangle VS_TERRAIN_OUTPUT input[3], inout TriangleStream<GS_TERRAIN_OUTPUT> outStream)
@@ -299,6 +300,8 @@ float4 PS_GSTerrain(GS_TERRAIN_OUTPUT input) : SV_Target
 }
 
 // 기하 셰이더(빌보드 오브젝트)
+Texture2DArray gtxtTextureArray : register(t4);
+
 struct VS_IN
 {
 	float3 posW : POSITION;
@@ -364,9 +367,10 @@ void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStrea
 float4 PS_Geometry(GS_OUT input) : SV_Target
 {
 	//float4 cillumination = Lighting(input.posW, input.normalW);
-	//float3 uvw = float3(input.uv, (input.primID % 4));
-	//float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uvw);
-	float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uv);
+	// 텍스처 배열에 텍스처가 3개있음
+	float3 uvw = float3(input.uv, (input.primID % 3));
+	float4 cTexture = gtxtTextureArray.Sample(gWrapSamplerState, uvw);
+	//float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uv);
 	//float4 cColor = cillumination * cTexture;
 	float4 cColor = cTexture;
 	//cColor.a = cTexture.a;

@@ -39,9 +39,9 @@ public:
 
 	int									m_nVertices;
 	int									m_nStride;
-	CMaterial*					m_pMaterial[5];
+	//CMaterial*					m_pMaterial[5];
 
-	//CMaterial*					m_pMaterial;
+	CMaterial*					m_pMaterial;
 #ifdef _WITH_BATCH_MATERIAL
 	CMaterial						*m_ppGrassMaterials[2] = { NULL, NULL };
 	CMaterial						*m_ppFlowerMaterials[2] = { NULL, NULL };

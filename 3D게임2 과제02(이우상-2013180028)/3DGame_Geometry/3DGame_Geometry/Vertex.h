@@ -61,13 +61,13 @@ public:
 	XMFLOAT2						m_xmf2TexCoord2;
 };
 
-class CBillboardVertex
+class CBillboardVertex : public CVertex
 {
 public:
 	CBillboardVertex();
 	CBillboardVertex(XMFLOAT3 xmf3Position, XMFLOAT2 xmf2Size);
+	CBillboardVertex(float x, float y, float z, XMFLOAT2 xmf2Size);
 	~CBillboardVertex();
 
-	XMFLOAT3 m_xmf3Position;
 	XMFLOAT2 m_xmf2Size;
 };

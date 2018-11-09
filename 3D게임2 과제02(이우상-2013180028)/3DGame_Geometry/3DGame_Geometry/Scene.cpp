@@ -6,6 +6,7 @@
 #include "GeometryShader.h"
 
 extern int g_FillMode;
+extern bool g_OnGeometry;
 
 CScene::CScene()
 {
@@ -41,10 +42,20 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	//pGeneralShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 	//m_ppShaders[0] = pGeneralShader;
 
-	CGeometryShader* pGeometryShader = new CGeometryShader;
-	pGeometryShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
-	pGeometryShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
-	m_ppShaders[0] = pGeometryShader;
+	if (g_OnGeometry == USE)
+	{
+		CGeometryShader* pGeometryShader = new CGeometryShader;
+		pGeometryShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+		pGeometryShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+		m_ppShaders[0] = pGeometryShader;
+	}
+	else if(g_OnGeometry == UNUSE)
+	{
+		CBillboardShader* pBillboardShader = new CBillboardShader;
+		pBillboardShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+		pBillboardShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+		m_ppShaders[0] = pBillboardShader;
+	}
 }
 
 void CScene::ReleaseObjects()
@@ -80,8 +91,8 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 {
 	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
 
-	//D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[4];
-	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[5];
+	//D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[5];
+	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[6];
 
 	pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 	pd3dDescriptorRanges[0].NumDescriptors = 1;
@@ -113,8 +124,15 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dDescriptorRanges[4].RegisterSpace = 0;
 	pd3dDescriptorRanges[4].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	//D3D12_ROOT_PARAMETER pd3dRootParameters[6];
-	D3D12_ROOT_PARAMETER pd3dRootParameters[7];
+	// 기하셰이더 빌보드를 위한 텍스처 배열
+	pd3dDescriptorRanges[5].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	pd3dDescriptorRanges[5].NumDescriptors = 1;
+	pd3dDescriptorRanges[5].BaseShaderRegister = 4; // t4: gtxtTextureArray
+	pd3dDescriptorRanges[5].RegisterSpace = 0;
+	pd3dDescriptorRanges[5].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	//D3D12_ROOT_PARAMETER pd3dRootParameters[7];
+	D3D12_ROOT_PARAMETER pd3dRootParameters[8];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 0; //Player
@@ -150,6 +168,11 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dRootParameters[6].DescriptorTable.NumDescriptorRanges = 1;
 	pd3dRootParameters[6].DescriptorTable.pDescriptorRanges = &pd3dDescriptorRanges[4];
 	pd3dRootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	pd3dRootParameters[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[7].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[7].DescriptorTable.pDescriptorRanges = &pd3dDescriptorRanges[5];
+	pd3dRootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[2];
 
