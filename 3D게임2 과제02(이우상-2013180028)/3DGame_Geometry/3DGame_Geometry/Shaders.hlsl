@@ -232,21 +232,18 @@ void GS_Terrain(triangle VS_TERRAIN_OUTPUT input[3], inout TriangleStream<GS_TER
 	GS_TERRAIN_OUTPUT v[6];
 
 	v[0].position = input[0].position;
-	//v[0].normal = input[0].normal;
 	v[0].color = input[0].color;
 	v[0].uv0 = input[0].uv0;
 	v[0].uv1 = input[0].uv1;
 	v[0].uv2 = input[0].uv2;
 
 	v[1].position = input[1].position;
-	//v[1].normal = input[1].normal;
 	v[1].color = input[1].color;
 	v[1].uv0 = input[1].uv0;
 	v[1].uv1 = input[1].uv1;
 	v[1].uv2 = input[1].uv2;
 
 	v[2].position = input[2].position;
-	//v[2].normal = input[2].normal;
 	v[2].color = input[2].color;
 	v[2].uv0 = input[2].uv0;
 	v[2].uv1 = input[2].uv1;
@@ -354,7 +351,6 @@ void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStrea
 	for (int i = 0; i < 4; ++i)
 	{
 		output.posW = pVertices[i].xyz;
-		//output.posH = mul(pVertices[i], gmtxViewProjection);
 		output.posH = mul(mul(pVertices[i], gmtxView), gmtxProjection);
 		output.normalW = vLook;
 		output.uv = pUVs[i];
@@ -366,14 +362,11 @@ void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStrea
 
 float4 PS_Geometry(GS_OUT input) : SV_Target
 {
-	//float4 cillumination = Lighting(input.posW, input.normalW);
 	// 텍스처 배열에 텍스처가 3개있음
 	float3 uvw = float3(input.uv, (input.primID % 3));
 	float4 cTexture = gtxtTextureArray.Sample(gWrapSamplerState, uvw);
-	//float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uv);
-	//float4 cColor = cillumination * cTexture;
+
 	float4 cColor = cTexture;
-	//cColor.a = cTexture.a;
 
 	return (cColor);
 }

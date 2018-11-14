@@ -188,42 +188,102 @@ void CBillboardShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	uniform_int_distribution<int> uid_TextureType(0, 2);
 	uniform_int_distribution<int> uid_Material(0, 1);
 	uniform_int_distribution<int> uid_TreeMaterial(0, Tree_Texture_Count - 1);
-	double x = 0, z = 0;
-	for (int i = 0; i < m_nObjects; ++i)
+	int x = 0, y = 0, z = 0;
+	cout << fTerrainWidth << endl;
+	//for(int k = 0; k < m_nObjects; ++k)
+	for (int i = 0; i < m_nObjects; )
 	{
-		x = urd_x(dre);
+		x = urd_x(dre) / 8;
+		z = urd_z(dre) / 8;
+
+		if (m_PositionArray[x][z] == 1)
+		{
+			x = x * 8;
+			z = z * 8;
+			y = pTerrain->GetHeight(x, z);
+
+			pBillboardObject = new CBillboardObject;
+
+			// 텍스처, 재질 랜덤 지정
+			if (uid_TextureType(dre) == GRASS)
+			{
+				pBillboardObject->SetMesh(0, pGrassMesh);
+				pBillboardObject->SetMaterial(ppFlowerMaterials[uid_Material(dre)]);
+				pBillboardObject->SetPosition(x, pTerrain->GetHeight(x, z) + GrassHeight / 2.f, z);
+			}
+			else if (uid_TextureType(dre) == FLOWER)
+			{
+				pBillboardObject->SetMesh(0, pFlowerMesh);
+				pBillboardObject->SetMaterial(ppGrassMaterials[uid_Material(dre)]);
+				pBillboardObject->SetPosition(x, pTerrain->GetHeight(x, z) + FlowerHeight / 2.f, z);
+			}
+			else if (uid_TextureType(dre) == TREE)
+			{
+				pBillboardObject->SetMesh(0, pTreeMesh);
+				// 나무는 3개
+				pBillboardObject->SetMaterial(ppTreeMaterials[uid_TreeMaterial(dre)]);
+				pBillboardObject->SetPosition(x, pTerrain->GetHeight(x, z) + TreeHeight / 2.7f, z);
+			}
+
+			pBillboardObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+			m_ppObjects[i] = pBillboardObject;
+
+			++i;
+		}
+		else
+			continue;
+	}
+	/*	x = urd_x(dre);
 		z = urd_z(dre);
 		while (pTerrain->GetHeight(x, z) < Flatland_Height)
 		{
 			x = urd_x(dre);
 			z = urd_z(dre);
-		}
-		pBillboardObject = new CBillboardObject;
+		}*/
 
-		// 텍스처, 재질 랜덤 지정
-		if (uid_TextureType(dre) == GRASS)
-		{
-			pBillboardObject->SetMesh(0, pGrassMesh);
-			pBillboardObject->SetMaterial(ppFlowerMaterials[uid_Material(dre)]);
-			pBillboardObject->SetPosition(x, pTerrain->GetHeight(x, z) + GrassHeight / 2.f, z);
-		}
-		else if (uid_TextureType(dre) == FLOWER)
-		{
-			pBillboardObject->SetMesh(0, pFlowerMesh);
-			pBillboardObject->SetMaterial(ppGrassMaterials[uid_Material(dre)]);
-			pBillboardObject->SetPosition(x, pTerrain->GetHeight(x, z) + FlowerHeight / 2.f, z);
-		}
-		else if (uid_TextureType(dre) == TREE)
-		{
-			pBillboardObject->SetMesh(0, pTreeMesh);
-			// 나무는 3개
-			pBillboardObject->SetMaterial(ppTreeMaterials[uid_TreeMaterial(dre)]);
-			pBillboardObject->SetPosition(x, pTerrain->GetHeight(x, z) + TreeHeight / 2.7f, z);
-		}
+		//for (int i = 0, k = 0; i < PIXELCOUNT; ++i)
+		//{
+		//	for (int j = 0; j < PIXELCOUNT; ++j)
+		//	{
+		//		if (m_PositionArray[i][j] == 1)
+		//		{
+		//			position.x = i * 8;
+		//			position.z = j * 8;
+		//			position.y = pTerrain->GetHeight(position.x, position.z);
 
-		pBillboardObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
-		m_ppObjects[i] = pBillboardObject;
-	}
+		//			pBillboardObject = new CBillboardObject;
+
+		//			// 텍스처, 재질 랜덤 지정
+		//			if (uid_TextureType(dre) == GRASS)
+		//			{
+		//				pBillboardObject->SetMesh(0, pGrassMesh);
+		//				pBillboardObject->SetMaterial(ppFlowerMaterials[uid_Material(dre)]);
+		//				position.y += GrassHeight / 2.f;
+		//				pBillboardObject->SetPosition(position);
+		//			}
+		//			else if (uid_TextureType(dre) == FLOWER)
+		//			{
+		//				pBillboardObject->SetMesh(0, pFlowerMesh);
+		//				pBillboardObject->SetMaterial(ppGrassMaterials[uid_Material(dre)]);
+		//				position.y += FlowerHeight / 2.f;
+		//				pBillboardObject->SetPosition(position);
+		//			}
+		//			else if (uid_TextureType(dre) == TREE)
+		//			{
+		//				pBillboardObject->SetMesh(0, pTreeMesh);
+		//				// 나무는 3개
+		//				pBillboardObject->SetMaterial(ppTreeMaterials[uid_TreeMaterial(dre)]);
+		//				position.y += TreeHeight / 2.7f;
+		//				pBillboardObject->SetPosition(position);
+		//			}
+
+		//			pBillboardObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * k));
+		//			m_ppObjects[k] = pBillboardObject;
+		//		}
+		//	}
+	//	}
+
+	//}
 
 	cout << "오브젝트 빌보드 개수 : " << m_nObjects << "개 생성완료" << endl;
 }

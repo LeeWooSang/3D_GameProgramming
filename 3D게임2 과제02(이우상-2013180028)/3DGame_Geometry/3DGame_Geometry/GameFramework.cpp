@@ -378,25 +378,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 
 				case 's':
 				case 'S':
-					//switch (m_SceneNum)
-					//{
-					//	case CGameFramework::GeneralScene:
-					//	{
-					//		//m_pScene = new CGeometryScene;
-					//		m_pScene = new CScene;
-					//		m_SceneNum = CGameFramework::GeometryScene;
-					//		break;
-					//	}
-					//	case CGameFramework::GeometryScene:
-					//	{
-					//		//m_pScene = new CGeneralScene;
-					//		m_pScene = new CScene;
-					//		m_SceneNum = CGameFramework::GeneralScene;
-					//		break;
-					//	}
-					//}
-					//m_pScene->setSceneNum(m_SceneNum);
-
 					CGameFramework::ReleaseObjects();
 					if (g_FillMode == SOLID)
 					{

@@ -58,8 +58,10 @@ using Microsoft::WRL::ComPtr;
 #include <iostream>
 #include <random>
 #include <list>
+#include <fstream>
 using namespace std;
 
+#define PIXELCOUNT 257
 enum OBJECT_TYPE {GRASS, FLOWER, TREE};
 const double Flatland_Height{ 235.f };
 

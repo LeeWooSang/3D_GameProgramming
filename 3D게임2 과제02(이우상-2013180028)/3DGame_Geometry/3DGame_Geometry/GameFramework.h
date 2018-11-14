@@ -81,7 +81,6 @@ private:
 	CGameTimer			m_GameTimer;
 
 	CScene						*m_pScene = nullptr;
-	short							m_SceneNum;
 
 	CPlayer						*m_pPlayer = nullptr;
 	CCamera					*m_pCamera = nullptr;

@@ -20,6 +20,16 @@ CScene::~CScene()
 
 void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
+	int PositionArray[PIXELCOUNT][PIXELCOUNT];
+	ifstream in("Position.txt");
+	for (int i = 0; i < PIXELCOUNT; ++i)
+	{
+		for (int j = 0; j < PIXELCOUNT; ++j)
+		{
+			in >> PositionArray[i][j];
+		}
+	}
+
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
@@ -36,16 +46,11 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_nShaders = 1;
 	m_ppShaders = new CShader*[m_nShaders];
 
-	//m_ppShaders[0]->setSceneNum(m_SceneNum);
-	//CBillboardShader *pGeneralShader = new CBillboardShader();
-	//pGeneralShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
-	//pGeneralShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
-	//m_ppShaders[0] = pGeneralShader;
-
 	if (g_OnGeometry == USE)
 	{
 		CGeometryShader* pGeometryShader = new CGeometryShader;
 		pGeometryShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+		pGeometryShader->setPositionArray(PositionArray);
 		pGeometryShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 		m_ppShaders[0] = pGeometryShader;
 	}
@@ -53,6 +58,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	{
 		CBillboardShader* pBillboardShader = new CBillboardShader;
 		pBillboardShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+		pBillboardShader->setPositionArray(PositionArray);
 		pBillboardShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 		m_ppShaders[0] = pBillboardShader;
 	}
@@ -228,29 +234,6 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 
 void CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	//switch (nMessageID)
-	//{
-	//case WM_KEYUP:
-	//	switch (wParam)
-	//	{
-	//	case 's':
-	//	case 'S':
-	//		if (m_FillMode == SOLID)
-	//			m_FillMode = WIRE;
-	//		else
-	//			m_FillMode = SOLID;
-
-	//		cout << m_FillMode << endl;
-	//		break;
-
-	//	default:
-	//		break;
-	//	}	
-	//	break;
-
-	//default:
-	//	break;
-	//}
 }
 
 bool CScene::ProcessInput(UCHAR *pKeysBuffer)

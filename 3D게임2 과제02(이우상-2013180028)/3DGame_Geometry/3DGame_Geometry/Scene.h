@@ -40,4 +40,5 @@ protected:
 	CSkyBox						*m_pSkyBox = NULL;
 
 	ID3D12RootSignature			*m_pd3dGraphicsRootSignature = NULL;
+
 };

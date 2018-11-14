@@ -273,8 +273,8 @@ void CShader::UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, X
 
 void CShader::ReleaseShaderVariables()
 {
-	if (m_pd3dCbvSrvDescriptorHeap) 
-		m_pd3dCbvSrvDescriptorHeap->Release();
+	//if (m_pd3dCbvSrvDescriptorHeap) 
+	//	m_pd3dCbvSrvDescriptorHeap->Release();
 }
 
 void CShader::ReleaseUploadBuffers()
@@ -294,4 +294,15 @@ void CShader::OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList)
 void CShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	OnPrepareRender(pd3dCommandList);
+}
+
+void CShader::setPositionArray(int(*arr)[PIXELCOUNT])
+{
+	for (int i = 0; i < PIXELCOUNT; ++i)
+	{
+		for (int j = 0; j < PIXELCOUNT; ++j)
+		{
+			m_PositionArray[i][j] = arr[i][j];
+		}
+	}
 }

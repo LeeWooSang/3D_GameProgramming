@@ -90,7 +90,6 @@ D3D12_RASTERIZER_DESC  CTerrainShader::CreateRasterizerState()
 
 D3D12_INPUT_LAYOUT_DESC CTerrainShader::CreateInputLayout()
 {
-	//UINT nInputElementDescs = 4;
 	// 셰이더 코드로 넘겨줄 흙 uv 좌표 개수가 1개가 추가 되었으므로, InputLayout 개수도 한개 증가한다.
 	UINT nInputElementDescs = 5;
 
@@ -117,16 +116,15 @@ D3D12_INPUT_LAYOUT_DESC CTerrainShader::CreateInputLayout()
 D3D12_SHADER_BYTECODE CTerrainShader::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_Terrain", "vs_5_1", ppd3dShaderBlob));
-	//return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_Geometry", "vs_5_1", ppd3dShaderBlob));
 }
 
 D3D12_SHADER_BYTECODE CTerrainShader::CreateGeometryShader(ID3DBlob **ppd3dShaderBlob)
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "GS_Terrain", "gs_5_1", ppd3dShaderBlob));
 }
+
 D3D12_SHADER_BYTECODE CTerrainShader::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
 {
-	//return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_Terrain", "ps_5_1", ppd3dShaderBlob));
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_GSTerrain", "ps_5_1", ppd3dShaderBlob));
 }
 

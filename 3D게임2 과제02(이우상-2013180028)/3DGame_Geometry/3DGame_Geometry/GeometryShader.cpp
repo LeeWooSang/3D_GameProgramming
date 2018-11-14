@@ -82,13 +82,14 @@ D3D12_BLEND_DESC CGeometryShader::CreateBlendState()
 	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	return(d3dBlendDesc);
 }
+
 D3D12_INPUT_LAYOUT_DESC CGeometryShader::CreateInputLayout()
 {
 	UINT nInputElementDescs = 2;
 	D3D12_INPUT_ELEMENT_DESC *pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
 
 	// ±‚«œ ºŒ¿Ã¥ı
-	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 	pd3dInputElementDescs[1] = { "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 
 	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
@@ -159,19 +160,45 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	XMFLOAT3 xmf3Position = XMFLOAT3(0.f, 0.f, 0.f);
 	CBillboardVertex* pBillboardVertex = new CBillboardVertex[m_nVertices];
 
-	for (int i = 0; i < m_nVertices; ++i)
+	default_random_engine dre;
+	uniform_real_distribution<double> urd_x(0.f, TerrainWidth - 100);
+	uniform_real_distribution<double> urd_z(0.f, TerrainLength - 100);
+	int x = 0, y = 0, z = 0;
+
+	//for (int i = 0; i < m_nVertices; ++i)
+	//{
+	//	xmf3Position.x = rand() % TerrainWidth;
+	//	xmf3Position.z = rand() % TerrainLength;
+	//	xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z, false) + 10.0f;
+
+
+	//	pBillboardVertex[i].m_xmf3Position = xmf3Position;
+	//	pBillboardVertex[i].m_xmf2Size = XMFLOAT2(50, 70);
+
+	//	//cout << pBillboardVertex[i].m_xmf3Position.x << ", " << pBillboardVertex[i].m_xmf3Position.y << ", "
+	//	//	<< pBillboardVertex[i].m_xmf3Position.z << endl;
+	//}
+	for (int i = 0; i < m_nVertices;)
 	{
-		xmf3Position.x = rand() % TerrainWidth;
-		xmf3Position.z = rand() % TerrainLength;
-		xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z, false) + 10.0f;
+		x = urd_x(dre) / 8;
+		z = urd_z(dre) / 8;
+		if (m_PositionArray[x][z] == 1)
+		{
+			x = x * 8.;
+			z = z * 8.;
+			y = pTerrain->GetHeight(x, z);
 
-		pBillboardVertex[i].m_xmf3Position = xmf3Position;
-		pBillboardVertex[i].m_xmf2Size = XMFLOAT2(50, 70);
-
-		//cout << pBillboardVertex[i].m_xmf3Position.x << ", " << pBillboardVertex[i].m_xmf3Position.y << ", "
-		//	<< pBillboardVertex[i].m_xmf3Position.z << endl;
+			xmf3Position.x = x;
+			xmf3Position.z = z;
+			xmf3Position.y = pTerrain->GetHeight(x, z) + 10.0f;
+			pBillboardVertex[i].m_xmf3Position = xmf3Position;
+			pBillboardVertex[i].m_xmf2Size = XMFLOAT2(50, 70);
+			++i;
+		}
+		else
+			continue;
 	}
-
+ 
 	m_pd3dVertexBuffer = ::CreateBufferResource
 	(
 		pd3dDevice,
@@ -221,27 +248,6 @@ void CGeometryShader::OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList
 void CGeometryShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	OnPrepareRender(pd3dCommandList);
-
-	//for (int i = 0; i < 5; ++i)
-	//{
-	//	if (m_pMaterial[i])
-	//	{
-	//		if (m_pMaterial[i]->m_pShader)
-	//		{
-	//			m_pMaterial[i]->m_pShader->Render(pd3dCommandList, pCamera);
-	//			m_pMaterial[i]->m_pShader->UpdateShaderVariables(pd3dCommandList);
-
-	//			UpdateShaderVariables(pd3dCommandList);
-	//		}
-	//		if (m_pMaterial[i]->m_pTexture)
-	//		{
-	//			m_pMaterial[i]->m_pTexture->UpdateShaderVariables(pd3dCommandList);
-	//		}
-	//	}
-	//}
-	//pd3dCommandList->IASetPrimitiveTopology(m_d3dPrimitiveTopology);
-	//pd3dCommandList->IASetVertexBuffers(0, 1, &m_d3dVertexBufferView);
-	//pd3dCommandList->DrawInstanced(m_nVertices, 1, 0, 0);	
 
 	if (m_pMaterial)
 	{

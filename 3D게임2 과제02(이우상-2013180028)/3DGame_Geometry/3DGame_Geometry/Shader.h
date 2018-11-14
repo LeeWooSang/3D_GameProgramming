@@ -59,6 +59,8 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUSrvDescriptorStartHandle() { return(m_d3dSrvCPUDescriptorStartHandle); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUSrvDescriptorStartHandle() { return(m_d3dSrvGPUDescriptorStartHandle); }
 
+	void setPositionArray(int(*arr)[PIXELCOUNT]);
+
 protected:
 	ID3D12PipelineState				**m_ppd3dPipelineStates = NULL;
 	int												m_nPipelineStates = 0;
@@ -69,5 +71,7 @@ protected:
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorStartHandle;
 	D3D12_CPU_DESCRIPTOR_HANDLE		m_d3dSrvCPUDescriptorStartHandle;
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dSrvGPUDescriptorStartHandle;
+
+	int m_PositionArray[PIXELCOUNT][PIXELCOUNT];
 };
 
