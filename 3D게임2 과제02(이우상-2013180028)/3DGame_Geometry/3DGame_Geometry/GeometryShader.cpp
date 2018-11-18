@@ -82,14 +82,13 @@ D3D12_BLEND_DESC CGeometryShader::CreateBlendState()
 	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	return(d3dBlendDesc);
 }
-
 D3D12_INPUT_LAYOUT_DESC CGeometryShader::CreateInputLayout()
 {
 	UINT nInputElementDescs = 2;
 	D3D12_INPUT_ELEMENT_DESC *pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
 
 	// ±‚«œ ºŒ¿Ã¥ı
-	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 	pd3dInputElementDescs[1] = { "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 
 	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
@@ -160,45 +159,19 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	XMFLOAT3 xmf3Position = XMFLOAT3(0.f, 0.f, 0.f);
 	CBillboardVertex* pBillboardVertex = new CBillboardVertex[m_nVertices];
 
-	default_random_engine dre;
-	uniform_real_distribution<double> urd_x(0.f, TerrainWidth - 100);
-	uniform_real_distribution<double> urd_z(0.f, TerrainLength - 100);
-	int x = 0, y = 0, z = 0;
-
-	//for (int i = 0; i < m_nVertices; ++i)
-	//{
-	//	xmf3Position.x = rand() % TerrainWidth;
-	//	xmf3Position.z = rand() % TerrainLength;
-	//	xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z, false) + 10.0f;
-
-
-	//	pBillboardVertex[i].m_xmf3Position = xmf3Position;
-	//	pBillboardVertex[i].m_xmf2Size = XMFLOAT2(50, 70);
-
-	//	//cout << pBillboardVertex[i].m_xmf3Position.x << ", " << pBillboardVertex[i].m_xmf3Position.y << ", "
-	//	//	<< pBillboardVertex[i].m_xmf3Position.z << endl;
-	//}
-	for (int i = 0; i < m_nVertices;)
+	for (int i = 0; i < m_nVertices; ++i)
 	{
-		x = urd_x(dre) / 8;
-		z = urd_z(dre) / 8;
-		if (m_PositionArray[x][z] == 1)
-		{
-			x = x * 8.;
-			z = z * 8.;
-			y = pTerrain->GetHeight(x, z);
+		xmf3Position.x = rand() % TerrainWidth;
+		xmf3Position.z = rand() % TerrainLength;
+		xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z, false) + 10.0f;
 
-			xmf3Position.x = x;
-			xmf3Position.z = z;
-			xmf3Position.y = pTerrain->GetHeight(x, z) + 10.0f;
-			pBillboardVertex[i].m_xmf3Position = xmf3Position;
-			pBillboardVertex[i].m_xmf2Size = XMFLOAT2(50, 70);
-			++i;
-		}
-		else
-			continue;
+		pBillboardVertex[i].m_xmf3Position = xmf3Position;
+		pBillboardVertex[i].m_xmf2Size = XMFLOAT2(50, 70);
+
+		//cout << pBillboardVertex[i].m_xmf3Position.x << ", " << pBillboardVertex[i].m_xmf3Position.y << ", "
+		//	<< pBillboardVertex[i].m_xmf3Position.z << endl;
 	}
- 
+
 	m_pd3dVertexBuffer = ::CreateBufferResource
 	(
 		pd3dDevice,
