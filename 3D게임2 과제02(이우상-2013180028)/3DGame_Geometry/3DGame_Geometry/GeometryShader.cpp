@@ -82,7 +82,6 @@ D3D12_BLEND_DESC CGeometryShader::CreateBlendState()
 	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	return(d3dBlendDesc);
 }
-
 D3D12_INPUT_LAYOUT_DESC CGeometryShader::CreateInputLayout()
 {
 	UINT nInputElementDescs = 2;
@@ -185,7 +184,7 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 		else
 			continue;
 	}
- 
+
 	m_pd3dVertexBuffer = ::CreateBufferResource
 	(
 		pd3dDevice,
