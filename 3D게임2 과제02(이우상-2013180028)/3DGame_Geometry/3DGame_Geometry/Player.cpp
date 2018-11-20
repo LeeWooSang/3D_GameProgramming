@@ -331,9 +331,11 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	SetShader(pShader);
 
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
-	double y = pTerrain->GetHeight(130.f, 400.f);
-	SetPosition(XMFLOAT3(130.0f, y, 400.0f));
-//	SetPosition(XMFLOAT3(pTerrain->GetWidth()*0.5f, 1000.0f, pTerrain->GetLength()*0.5f));
+	XMFLOAT3 position;
+	position.x = 1250.;
+	position.z = 1250.;
+	position.y = pTerrain->GetHeight(position.x, position.z);
+	SetPosition(position);
 	SetPlayerUpdatedContext(pTerrain);
 	SetCameraUpdatedContext(pTerrain);
 }

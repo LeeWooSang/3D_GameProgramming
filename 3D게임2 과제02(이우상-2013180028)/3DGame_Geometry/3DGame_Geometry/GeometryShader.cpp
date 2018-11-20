@@ -153,10 +153,10 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	m_pMaterial = new CMaterial();
 	m_pMaterial->SetTexture(pTree_Texture2DArray);
 	
-	//float GrassHeight = 20.f, FlowerHeight = 30.f, TreeHeight = 100.f;
+	float TreeHeight = 100.f;
 	
 	int nStride = sizeof(CBillboardVertex);
-	m_nVertices = 1000;
+	m_nVertices = 30000;
 	XMFLOAT3 xmf3Position = XMFLOAT3(0.f, 0.f, 0.f);
 	CBillboardVertex* pBillboardVertex = new CBillboardVertex[m_nVertices];
 
@@ -165,19 +165,6 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	uniform_real_distribution<double> urd_z(0.f, TerrainLength - 100);
 	int x = 0, y = 0, z = 0;
 
-	//for (int i = 0; i < m_nVertices; ++i)
-	//{
-	//	xmf3Position.x = rand() % TerrainWidth;
-	//	xmf3Position.z = rand() % TerrainLength;
-	//	xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z, false) + 10.0f;
-
-
-	//	pBillboardVertex[i].m_xmf3Position = xmf3Position;
-	//	pBillboardVertex[i].m_xmf2Size = XMFLOAT2(50, 70);
-
-	//	//cout << pBillboardVertex[i].m_xmf3Position.x << ", " << pBillboardVertex[i].m_xmf3Position.y << ", "
-	//	//	<< pBillboardVertex[i].m_xmf3Position.z << endl;
-	//}
 	for (int i = 0; i < m_nVertices;)
 	{
 		x = urd_x(dre) / 8;
@@ -190,7 +177,7 @@ void CGeometryShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 
 			xmf3Position.x = x;
 			xmf3Position.z = z;
-			xmf3Position.y = pTerrain->GetHeight(x, z) + 10.0f;
+			xmf3Position.y = pTerrain->GetHeight(x, z) + TreeHeight * 0.3f;
 			pBillboardVertex[i].m_xmf3Position = xmf3Position;
 			pBillboardVertex[i].m_xmf2Size = XMFLOAT2(50, 70);
 			++i;
