@@ -5,35 +5,125 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\Camera">
+      <UniqueIdentifier>{48f5e2b6-9696-40d1-87b5-d00b18931cc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameFramework">
+      <UniqueIdentifier>{96af4eb0-5aad-4566-96a3-731237bb2c26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject">
+      <UniqueIdentifier>{c1a36345-fc1a-4687-9e0b-c6c456131bb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\Player">
+      <UniqueIdentifier>{d7d9e4a1-d53a-4b17-b4b8-e45f3caec0cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Scene">
+      <UniqueIdentifier>{cbff3753-9ef3-40ed-98cb-b9aef6211596}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader">
+      <UniqueIdentifier>{7c2c7584-d7b6-471f-8212-2b2f32963bff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameTimer">
+      <UniqueIdentifier>{7891e60c-3c24-4ce7-bd81-9019f5ba6ab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh">
+      <UniqueIdentifier>{dd10c62c-9550-4802-b816-5fe4493e8d5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\DDSTextureLoader12">
+      <UniqueIdentifier>{3dbc5d97-cedc-4998-9fc6-b188abcb75bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\HLSL">
+      <UniqueIdentifier>{90ac9123-3112-4e52-8f66-a43df27b6346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Stdafx">
+      <UniqueIdentifier>{4166f964-ad37-4f39-ab3e-799fcec9a2a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Default_Header">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Default_Header</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Default_Header</Filter>
     </ClInclude>
     <ClInclude Include="3DGame_Model.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Default_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>소스 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework.h">
+      <Filter>소스 파일\GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>소스 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader12.h">
+      <Filter>소스 파일\DDSTextureLoader12</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>소스 파일\DDSTextureLoader12</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>소스 파일\Stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>소스 파일\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>소스 파일\GameTimer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="3DGame_Model.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework.cpp">
+      <Filter>소스 파일\GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader12.cpp">
+      <Filter>소스 파일\DDSTextureLoader12</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일\Stdafx</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>소스 파일\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>소스 파일\GameTimer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -48,5 +138,13 @@
     <Image Include="3DGame_Model.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders.hlsl">
+      <Filter>소스 파일\Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Light.hlsl">
+      <Filter>소스 파일\Shader\HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
