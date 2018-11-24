@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Shader.h"
 #include "FramePlayer.h"
+#include "Shader.h"
+#include "BulletShader.h"
 
 #define MAX_LIGHTS			16 
 #define POINT_LIGHT			1
@@ -58,23 +59,29 @@ public:
 	void ReleaseShaderVariables();
 	void ReleaseUploadBuffers();
 
-	CHeightMapTerrain *GetTerrain() { return(m_pTerrain); }
+	CHeightMapTerrain* GetTerrain() { return(m_pTerrain); }
+	CFramePlayer* GetFramePlayer() const { return m_pFramePlayer; }
+	void SetFramePlayer(CFramePlayer* p) { m_pFramePlayer = p; }
 
-	CFramePlayer*						m_pFramePlayer{ nullptr };
 protected:
-	ID3D12RootSignature			*m_pd3dGraphicsRootSignature = NULL;
-	CShader						**m_ppShaders = NULL;
-	int							m_nShaders = 0;
+	ID3D12RootSignature*		m_pd3dGraphicsRootSignature = NULL;
+	CShader**						m_ppShaders = NULL;
+	int										m_nShaders = 0;
 
-	CHeightMapTerrain*		m_pTerrain = NULL;
-	CSkyBox*						m_pSkyBox = NULL;
+	CHeightMapTerrain*			m_pTerrain = NULL;
+	CSkyBox*							m_pSkyBox = NULL;
 
-	CFrameObject				**m_ppFrameObjects = NULL;
-	int									m_nFrameObjects = 0;
+	CFrameObject**				m_ppFrameObjects = NULL;
+	int										m_nFrameObjects = 0;
 
-	LIGHT								*m_pLights = NULL;
+	LIGHT*								m_pLights = NULL;
 	int										m_nLights = 0;
-	XMFLOAT4							m_xmf4GlobalAmbient;
-	ID3D12Resource						*m_pd3dcbLights = NULL;
-	LIGHTS								*m_pcbMappedLights = NULL;
+	XMFLOAT4						m_xmf4GlobalAmbient;
+	ID3D12Resource*				m_pd3dcbLights = NULL;
+	LIGHTS*							m_pcbMappedLights = NULL;
+
+	CFramePlayer*					m_pFramePlayer{ nullptr };
+
+	CBulletShader*					m_pBulletShader{ nullptr };
+	list<CGameObject*>		m_BulletList;
 };

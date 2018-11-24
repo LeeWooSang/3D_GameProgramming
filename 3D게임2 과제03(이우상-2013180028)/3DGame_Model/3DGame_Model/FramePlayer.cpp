@@ -23,6 +23,7 @@ CFramePlayer::CFramePlayer()
 
 	m_pPlayerUpdatedContext = NULL;
 	m_pCameraUpdatedContext = NULL;
+	m_Type = FRAME_PLAYER;
 }
 
 CFramePlayer::~CFramePlayer()

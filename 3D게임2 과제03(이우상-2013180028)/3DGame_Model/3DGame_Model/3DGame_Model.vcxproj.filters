@@ -64,6 +64,12 @@
     <Filter Include="소스 파일\Object\FrameObject\FramePlayer">
       <UniqueIdentifier>{224ab57e-4667-4332-9d58-d881aa7563b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Object\GameObject\Bullet">
+      <UniqueIdentifier>{c90b6a8a-c408-402c-b8b7-c9f2c943f631}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\BulletShader">
+      <UniqueIdentifier>{20226473-871f-4966-905e-940a44c3ef75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -117,6 +123,12 @@
     <ClInclude Include="FramePlayer.h">
       <Filter>소스 파일\Object\FrameObject\FramePlayer</Filter>
     </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>소스 파일\Object\GameObject\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletShader.h">
+      <Filter>소스 파일\Shader\BulletShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Model.cpp">
@@ -163,6 +175,12 @@
     </ClCompile>
     <ClCompile Include="FramePlayer.cpp">
       <Filter>소스 파일\Object\FrameObject\FramePlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>소스 파일\Object\GameObject\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletShader.cpp">
+      <Filter>소스 파일\Shader\BulletShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -443,11 +443,10 @@ void CGameFramework::BuildObjects()
 
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
-
-	//m_pFramePlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
-	CFrameAirplanePlayer *pFrameAirplanePlayer = new CFrameAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
+	CFrameAirplanePlayer* pFrameAirplanePlayer = new CFrameAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
 	pFrameAirplanePlayer->SetPosition(XMFLOAT3(500.0f, 300.0f, 500.0f));
-	m_pScene->m_pFramePlayer = m_pFramePlayer = pFrameAirplanePlayer;
+	m_pFramePlayer = pFrameAirplanePlayer;
+	m_pScene->SetFramePlayer(m_pFramePlayer);
 
 	m_pCamera = m_pFramePlayer->GetCamera();
 

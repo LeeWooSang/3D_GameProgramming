@@ -148,6 +148,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="3DGame_Model.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="BulletShader.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
@@ -167,6 +169,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Model.cpp" />
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="BulletShader.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="FrameMesh.cpp" />

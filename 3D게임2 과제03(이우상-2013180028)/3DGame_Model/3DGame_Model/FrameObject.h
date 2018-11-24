@@ -172,6 +172,7 @@ public:
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
 	void MoveForward(float fDistance = 1.0f);
+	void Move(XMFLOAT3& vDirection, float fSpeed);
 
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
 	void Rotate(XMFLOAT3 *pxmf3Axis, float fAngle);
@@ -193,6 +194,27 @@ public:
 	static CFrameObject *LoadGeometryFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, char *pstrFileName);
 
 	static void PrintFrameInfo(CFrameObject *pGameObject, CFrameObject *pParent);
+
+	void SetTarget(CFrameObject* pTarget) { m_pTarget = pTarget; }
+	// 게임 객체의 타입을 반환한다.
+	int GetType()					const { return m_Type; }
+	void SetType(int value)		{ m_Type = value; }
+
+	void SetMovingSpeed(float value) { m_fMovingSpeed = value; }
+protected:
+	CFrameObject*					m_pTarget{ nullptr };
+	int										m_Type;
+	float									m_FollowTime = 0.0f;
+	float									m_ElapsedTime = 0.0f;
+
+	XMFLOAT3						m_xmf3MovingDirection;
+	float									m_fMovingSpeed;
+	float									m_fMovingRange;
+
+	XMFLOAT3						m_xmf3Right;
+	XMFLOAT3						m_xmf3Up;
+	XMFLOAT3						m_xmf3Look;
+
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

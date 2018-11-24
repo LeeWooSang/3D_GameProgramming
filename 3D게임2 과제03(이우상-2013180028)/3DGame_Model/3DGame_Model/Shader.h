@@ -132,10 +132,10 @@ public:
 
 protected:
 	CGameObject						**m_ppObjects = 0;
-	int								m_nObjects = 0;
+	int											m_nObjects = 0;
 
 	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
-	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+	CB_GAMEOBJECT_INFO		*m_pcbMappedGameObjects = NULL;
 };
 
 class CBillboardObjectsShader : public CObjectsShader

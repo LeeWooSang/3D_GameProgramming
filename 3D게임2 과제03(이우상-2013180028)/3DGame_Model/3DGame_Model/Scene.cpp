@@ -61,9 +61,13 @@ void CScene::BuildDefaultLightsAndMaterials()
 
 void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
+	default_random_engine dre;
+	uniform_real_distribution<double> urd_Speed(15, 20);
+
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
+	//XMFLOAT3 xmf3Scale(8.0f, 4.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.5f, 0.0f, 0.0f);
 
 #ifdef _WITH_TERRAIN_PARTITION
@@ -92,14 +96,27 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	CSuperCobraObject *pSuperCobraObject = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pSuperCobraObject->SetPosition(400.0f, 300.0f, 400.0f);
 	pSuperCobraObject->Rotate(0.0f, -90.0f, 0.0f);
+	pSuperCobraObject->SetType(FRAME_ENEMY);
+	pSuperCobraObject->SetMovingSpeed(urd_Speed(dre));
 	m_ppFrameObjects[0] = pSuperCobraObject;
 
 	CGunshipObject *pGunshipObject = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pGunshipObject->SetPosition(450.0f, 300.0f, 450.0f);
 	pGunshipObject->Rotate(0.0f, 90.0f, 0.0f);
+	pGunshipObject->SetType(FRAME_ENEMY);
+	pGunshipObject->SetMovingSpeed(urd_Speed(dre));
 	m_ppFrameObjects[1] = pGunshipObject;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	if (!m_pBulletShader)
+	{
+		m_pBulletShader = new CBulletShader;
+		((CTexturedShader*)m_pBulletShader)->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+		m_pBulletShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
+
+		//m_pBulletShader->SetFramePlayer(m_pFramePlayer);
+	}
 }
 
 void CScene::ReleaseObjects()
@@ -117,8 +134,16 @@ void CScene::ReleaseObjects()
 		delete[] m_ppShaders;
 	}
 
-	if (m_pTerrain) delete m_pTerrain;
-	if (m_pSkyBox) delete m_pSkyBox;
+	if (m_pTerrain)
+	{
+		m_pTerrain->DeleteMesh();
+		delete m_pTerrain;
+	}
+	if (m_pSkyBox)
+	{
+		m_pSkyBox->DeleteMesh();
+		delete m_pSkyBox;
+	}
 
 	if (m_ppFrameObjects)
 	{
@@ -131,6 +156,13 @@ void CScene::ReleaseObjects()
 
 	if (m_pLights) 
 		delete[] m_pLights;
+
+	if (m_pBulletShader)
+	{
+		m_pBulletShader->ReleaseShaderVariables();
+		m_pBulletShader->ReleaseObjects();
+		delete m_pBulletShader;
+	}
 }
 
 void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -169,18 +201,19 @@ void CScene::ReleaseUploadBuffers()
 
 	for (int i = 0; i < m_nFrameObjects; i++) 
 		m_ppFrameObjects[i]->ReleaseUploadBuffers();
+
+	if (m_pBulletShader)
+		m_pBulletShader->ReleaseUploadBuffers();
 }
 
 ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
 {
 	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
-
-	//D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[5];
-	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[12];
+	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[13];
 
 	pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 	pd3dDescriptorRanges[0].NumDescriptors = 1;
-	pd3dDescriptorRanges[0].BaseShaderRegister = 2; //BasicObject
+	pd3dDescriptorRanges[0].BaseShaderRegister = 2; // b2 : cbGameObjectInfo
 	pd3dDescriptorRanges[0].RegisterSpace = 0;
 	pd3dDescriptorRanges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
@@ -252,8 +285,13 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dDescriptorRanges[11].RegisterSpace = 0;
 	pd3dDescriptorRanges[11].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	//D3D12_ROOT_PARAMETER pd3dRootParameters[7];
-	D3D12_ROOT_PARAMETER pd3dRootParameters[16];
+	pd3dDescriptorRanges[12].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	pd3dDescriptorRanges[12].NumDescriptors = 1;
+	pd3dDescriptorRanges[12].BaseShaderRegister = 14; //t14: BulletTexture
+	pd3dDescriptorRanges[12].RegisterSpace = 0;
+	pd3dDescriptorRanges[12].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_ROOT_PARAMETER pd3dRootParameters[17];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 0; //Player
@@ -338,6 +376,12 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dRootParameters[15].Constants.RegisterSpace = 0;
 	pd3dRootParameters[15].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
+	// ÃÑ¾Ë
+	pd3dRootParameters[16].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[16].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[16].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[12]);
+	pd3dRootParameters[16].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
 	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[2];
 
 	pd3dSamplerDescs[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -403,6 +447,13 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case 'D': m_ppFrameObjects[0]->MoveStrafe(+1.0f); break;
 		case 'Q': m_ppFrameObjects[0]->MoveUp(+1.0f); break;
 		case 'R': m_ppFrameObjects[0]->MoveUp(-1.0f); break;
+
+		// ÃÑ¾Ë ¹ß»ç Å°
+		case VK_CONTROL:
+			if (m_pBulletShader && m_pFramePlayer)
+				m_pBulletShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+			break;
+
 		default:
 			break;
 		}
@@ -425,12 +476,21 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 	}
 
-	for (int i = 0; i < m_nFrameObjects; i++) 
+	for (int i = 0; i < m_nFrameObjects; i++)
+	{
+		if(m_pFramePlayer)
+			m_ppFrameObjects[i]->SetTarget(m_pFramePlayer);
 		m_ppFrameObjects[i]->Animate(fTimeElapsed, NULL);
+	}
 
 	for (int i = 0; i < m_nFrameObjects; i++) 
 		m_ppFrameObjects[i]->UpdateTransform(NULL);
 
+	if (m_pFramePlayer)
+	{
+		m_pBulletShader->SetFramePlayer(m_pFramePlayer);
+		m_pBulletShader->AnimateObjects(fTimeElapsed);
+	}
 	if (m_pLights)
 	{
 		m_pLights[1].m_xmf3Position = m_pFramePlayer->GetPosition();
@@ -461,5 +521,8 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 
 	for (int i = 0; i < m_nFrameObjects; i++) 
 		m_ppFrameObjects[i]->Render(pd3dCommandList, pCamera);
+
+	if(m_pBulletShader && m_pFramePlayer)
+		m_pBulletShader->Render(pd3dCommandList, pCamera);
 }
 

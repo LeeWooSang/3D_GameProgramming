@@ -306,6 +306,56 @@ void CFrameObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 {
 	if (m_pSibling) m_pSibling->Animate(fTimeElapsed, pxmf4x4Parent);
 	if (m_pChild) m_pChild->Animate(fTimeElapsed, &m_xmf4x4World);
+
+	if (m_Type == FRAME_ENEMY)
+	{
+		// 몬스터나 보스 몬스터의 월드 좌표를 임시변수에 넣어준다
+		XMFLOAT3 xmf3Position(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
+		// 플레이어의 위치도 넣어준다.
+		XMFLOAT3 xmf3TargetPosition = m_pTarget->GetPosition();
+
+		// 타겟인 플레이어의 위치 벡터와, 보스 몬스터의 위치벡터를 빼주고, 정규화를 해준다.
+		XMFLOAT3 xmf3ToTarget = Vector3::Normalize(Vector3::Subtract(xmf3TargetPosition, xmf3Position));
+		// 위에서 구해준 벡터와, 보스 몬스터의 룩벡터를 내적을 하여, 회전할 각도를 구해준다.
+		float fDotProduct = Vector3::DotProduct(Vector3::Normalize(m_xmf3Look), xmf3ToTarget);
+		float fAngle = ::IsEqual(fDotProduct, 1.0f) ? 0.0f : ((fDotProduct > 0.0f) ? XMConvertToDegrees(acos(fDotProduct)) : 90.0f);
+		// 회전을 할 축을 구해야하므로 외적을 사용한다.
+		// 아까 내적 때 사용했던 플레이어 위치벡터 - 보스 몬스터 위치벡터 와 보스 몬스터의 룩벡터를 외적한다.
+		XMFLOAT3 xmf3CrossProduct = Vector3::CrossProduct(Vector3::Normalize(m_xmf3Look), xmf3ToTarget);
+		if (xmf3CrossProduct.x > 0.f)
+			xmf3CrossProduct.x = 1.0f;
+		else
+			xmf3CrossProduct.x = -1.0;
+		if (xmf3CrossProduct.y > 0.f)
+			xmf3CrossProduct.y = 1.0f;
+		else
+			xmf3CrossProduct.y = -1.0;
+		if (xmf3CrossProduct.z > 0.f)
+			xmf3CrossProduct.z = 1.0f;
+		else
+			xmf3CrossProduct.z = -1.0;
+
+		// 외적, 내적한 결과 값을 바탕으로 회전을 시켜준다.
+		//Rotate(fAngle * fTimeElapsed * ((xmf3CrossProduct.x > 0.0f) ? 1.0f : -1.0f),
+		//	fAngle * fTimeElapsed * ((xmf3CrossProduct.y > 0.0f) ? 1.0f : -1.0f),
+		//	fAngle * fTimeElapsed * ((xmf3CrossProduct.z > 0.0f) ? 1.0f : -1.0f));
+		Rotate(0, fAngle * fTimeElapsed * ((xmf3CrossProduct.y > 0.0f) ? 1.0f : -1.0f), 0);
+
+		// 마지막에 보스 몬스터의 바뀐 Right, Up, Look벡터를 월드변환 행렬에서 가져와 업데이트 시킨다.
+		m_xmf3Right.x = m_xmf4x4World._11;	m_xmf3Right.y = m_xmf4x4World._12;	m_xmf3Right.z = m_xmf4x4World._13;
+		m_xmf3Up.x = m_xmf4x4World._21;		m_xmf3Up.y = m_xmf4x4World._22;		m_xmf3Up.z = m_xmf4x4World._23;
+		m_xmf3Look.x = m_xmf4x4World._31;	m_xmf3Look.y = m_xmf4x4World._32;	m_xmf3Look.z = m_xmf4x4World._33;
+
+		// 플레이어와 몬스터의 거리가 5이상일 때,
+		if (Vector3::Distance(xmf3TargetPosition, xmf3Position) > DISTANCE_TO_TARGET_OBJECT)
+		{
+			XMFLOAT3 xmf3Look = GetLook();
+			// 플레이어의 위치와 몬스터의 위치를 빼주고, 이동속도만큼 곱해준다.
+			XMFLOAT3 Temp = Vector3::ScalarProduct(Vector3::SubtractNormalize(xmf3TargetPosition, xmf3Position, true), m_fMovingSpeed * fTimeElapsed);
+			// 그 값을 몬스터의 위치와 더해주어 따라오게 만든다.
+			SetPosition(Vector3::Add(xmf3Position, Temp));
+		}	
+	}
 }
 
 CFrameObject *CFrameObject::FindFrame(char *pstrFrameName)
@@ -451,6 +501,11 @@ void CFrameObject::MoveForward(float fDistance)
 	XMFLOAT3 xmf3Look = GetLook();
 	xmf3Position = Vector3::Add(xmf3Position, xmf3Look, fDistance);
 	CFrameObject::SetPosition(xmf3Position);
+}
+
+void CFrameObject::Move(XMFLOAT3& vDirection, float fSpeed)
+{
+	SetPosition(m_xmf4x4World._41 + vDirection.x * fSpeed, m_xmf4x4World._42 + vDirection.y * fSpeed, m_xmf4x4World._43 + vDirection.z * fSpeed);
 }
 
 void CFrameObject::Rotate(float fPitch, float fYaw, float fRoll)
@@ -768,7 +823,6 @@ void CGunshipObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 CMi24Object::CMi24Object(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature)
 {
 	CFrameObject *pMi24 = CFrameObject::LoadGeometryFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Mi24.bin");

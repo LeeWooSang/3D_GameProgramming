@@ -126,7 +126,7 @@ void CMaterial::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList
 
 void CMaterial::ReleaseShaderVariables()
 {
-	if (m_pShader) m_pShader->ReleaseShaderVariables();
+	//if (m_pShader) m_pShader->ReleaseShaderVariables();
 	if (m_pTexture) m_pTexture->ReleaseShaderVariables();
 }
 
@@ -146,14 +146,18 @@ CGameObject::CGameObject(int nMeshes)
 	if (m_nMeshes > 0)
 	{
 		m_ppMeshes = new CMesh*[m_nMeshes];
-		for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
+		for (int i = 0; i < m_nMeshes; i++)
+			m_ppMeshes[i] = NULL;
 	}
 }
 
 CGameObject::~CGameObject()
 {
 	ReleaseShaderVariables();
+}
 
+void CGameObject::DeleteMesh()
+{
 	if (m_ppMeshes)
 	{
 		for (int i = 0; i < m_nMeshes; i++)
@@ -163,6 +167,10 @@ CGameObject::~CGameObject()
 		}
 		delete[] m_ppMeshes;
 	}
+
+	if (m_pMesh)
+		m_pMesh->Release();
+
 	if (m_pMaterial) m_pMaterial->Release();
 }
 
@@ -174,6 +182,15 @@ void CGameObject::SetMesh(int nIndex, CMesh *pMesh)
 		m_ppMeshes[nIndex] = pMesh;
 		if (pMesh) pMesh->AddRef();
 	}
+}
+
+void CGameObject::SetMesh(CMesh* pMesh)
+{
+	if (m_pMesh)
+		m_pMesh->Release();
+	m_pMesh = pMesh;
+	if (m_pMesh)
+		m_pMesh->AddRef();
 }
 
 void CGameObject::SetShader(CShader *pShader)
@@ -290,9 +307,33 @@ XMFLOAT3 CGameObject::GetUp()
 	return(Vector3::Normalize(XMFLOAT3(m_xmf4x4World._21, m_xmf4x4World._22, m_xmf4x4World._23)));
 }
 
+void CGameObject::SetLook(XMFLOAT3 value)
+{
+	m_xmf3Look = value;
+	m_xmf4x4World._31 = m_xmf3Look.x;
+	m_xmf4x4World._32 = m_xmf3Look.y;
+	m_xmf4x4World._33 = m_xmf3Look.z;
+}
+
+void CGameObject::SetUp(XMFLOAT3 value)
+{
+	m_xmf3Up = value;
+	m_xmf4x4World._21 = m_xmf3Up.x;
+	m_xmf4x4World._22 = m_xmf3Up.y;
+	m_xmf4x4World._23 = m_xmf3Up.z;
+}
+
 XMFLOAT3 CGameObject::GetRight()
 {
 	return(Vector3::Normalize(XMFLOAT3(m_xmf4x4World._11, m_xmf4x4World._12, m_xmf4x4World._13)));
+}
+
+void CGameObject::SetRight(XMFLOAT3 value)
+{
+	m_xmf3Right = value;
+	m_xmf4x4World._11 = m_xmf3Right.x;
+	m_xmf4x4World._12 = m_xmf3Right.y;
+	m_xmf4x4World._13 = m_xmf3Right.z;
 }
 
 void CGameObject::MoveStrafe(float fDistance)
@@ -330,6 +371,7 @@ void CGameObject::Rotate(XMFLOAT3 *pxmf3Axis, float fAngle)
 	XMMATRIX mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(pxmf3Axis), XMConvertToRadians(fAngle));
 	m_xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_xmf4x4World);
 }
+
 
 void CGameObject::SetLookAt(XMFLOAT3& xmf3Target, XMFLOAT3& xmf3Up)
 {

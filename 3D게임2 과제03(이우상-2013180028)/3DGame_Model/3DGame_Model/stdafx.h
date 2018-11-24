@@ -33,31 +33,6 @@
 #include <memory.h>
 #include <wrl.h>
 
-#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
-
-#include <iostream>
-#include <vector>
-using namespace std;
-
-#define DIR_FORWARD					0x01
-#define DIR_BACKWARD				0x02
-#define DIR_LEFT					0x04
-#define DIR_RIGHT					0x08
-#define DIR_UP						0x10
-#define DIR_DOWN					0x20
-
-#define RESOURCE_TEXTURE2D			0x01
-#define RESOURCE_TEXTURE2D_ARRAY	0x02	//[]
-#define RESOURCE_TEXTURE2DARRAY		0x03
-#define RESOURCE_TEXTURE_CUBE		0x04
-#define RESOURCE_BUFFER				0x05
-
-struct SRVROOTARGUMENTINFO
-{
-	UINT														m_nRootParameterIndex = 0;
-	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dSrvGpuDescriptorHandle;
-};
-
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
@@ -77,6 +52,35 @@ using Microsoft::WRL::ComPtr;
 /*#pragma comment(lib, "DirectXTex.lib") */
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+
+#include <iostream>
+#include <vector>
+#include <list>
+#include <random>
+using namespace std;
+
+enum OBJECT_TYPE {FRAME_PLAYER, FRAME_ENEMY, BULLET};
+const double DISTANCE_TO_TARGET_OBJECT = 5.0f;
+
+#define DIR_FORWARD			0x01
+#define DIR_BACKWARD			0x02
+#define DIR_LEFT						0x04
+#define DIR_RIGHT					0x08
+#define DIR_UP						0x10
+#define DIR_DOWN					0x20
+
+#define RESOURCE_TEXTURE2D				0x01
+#define RESOURCE_TEXTURE2D_ARRAY	0x02	//[]
+#define RESOURCE_TEXTURE2DARRAY	0x03
+#define RESOURCE_TEXTURE_CUBE			0x04
+#define RESOURCE_BUFFER						0x05
+
+struct SRVROOTARGUMENTINFO
+{
+	UINT														m_nRootParameterIndex = 0;
+	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dSrvGpuDescriptorHandle;
+};
 
 extern UINT	gnCbvSrvDescriptorIncrementSize;
 
@@ -140,6 +144,16 @@ namespace Vector3
 		return(xmf3Result);
 	}
 
+	inline XMFLOAT3 SubtractNormalize(XMFLOAT3& xmf3Vector1, XMFLOAT3& xmf3Vector2, bool bNormalize = false)
+	{
+		XMFLOAT3 xmf3Result;
+		if (bNormalize)
+			XMStoreFloat3(&xmf3Result, XMVector3Normalize(XMLoadFloat3(&xmf3Vector1) - XMLoadFloat3(&xmf3Vector2)));
+		else
+			XMStoreFloat3(&xmf3Result, XMLoadFloat3(&xmf3Vector1) - XMLoadFloat3(&xmf3Vector2));
+		return(xmf3Result);
+	}
+
 	inline float DotProduct(XMFLOAT3& xmf3Vector1, XMFLOAT3& xmf3Vector2)
 	{
 		XMFLOAT3 xmf3Result;
@@ -199,6 +213,13 @@ namespace Vector3
 	inline XMFLOAT3 TransformCoord(XMFLOAT3& xmf3Vector, XMFLOAT4X4& xmmtx4x4Matrix)
 	{
 		return(TransformCoord(xmf3Vector, XMLoadFloat4x4(&xmmtx4x4Matrix)));
+	}
+
+	inline float Distance(XMFLOAT3& xmf3Vector1, XMFLOAT3& xmf3Vector2)
+	{
+		XMFLOAT3 xmf3Result;
+		XMStoreFloat3(&xmf3Result, XMVector3Length(XMLoadFloat3(&xmf3Vector1) - XMLoadFloat3(&xmf3Vector2)));
+		return(xmf3Result.x);
 	}
 }
 
@@ -281,6 +302,13 @@ namespace Matrix4x4
 	{
 		XMFLOAT4X4 xmmtx4x4Result;
 		XMStoreFloat4x4(&xmmtx4x4Result, XMMatrixLookAtLH(XMLoadFloat3(&xmf3EyePosition), XMLoadFloat3(&xmf3LookAtPosition), XMLoadFloat3(&xmf3UpDirection)));
+		return(xmmtx4x4Result);
+	}
+
+	inline XMFLOAT4X4 RotationAxis(XMFLOAT3& xmf3Axis, float fAngle)
+	{
+		XMFLOAT4X4 xmmtx4x4Result;
+		XMStoreFloat4x4(&xmmtx4x4Result, XMMatrixRotationAxis(XMLoadFloat3(&xmf3Axis), XMConvertToRadians(fAngle)));
 		return(xmmtx4x4Result);
 	}
 }

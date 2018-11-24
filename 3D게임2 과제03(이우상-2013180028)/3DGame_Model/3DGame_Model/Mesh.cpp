@@ -98,7 +98,8 @@ CCubeMeshDiffused::~CCubeMeshDiffused()
 
 //////////////////////////////////////////////////////////////////////////////////
 //
-CCubeMeshTextured::CCubeMeshTextured(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, float fWidth, float fHeight, float fDepth) : CMesh(pd3dDevice, pd3dCommandList)
+CCubeMeshTextured::CCubeMeshTextured(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, float fWidth, float fHeight, float fDepth) 
+	: CMesh(pd3dDevice, pd3dCommandList)
 {
 	m_nVertices = 36;
 	m_nStride = sizeof(CTexturedVertex);

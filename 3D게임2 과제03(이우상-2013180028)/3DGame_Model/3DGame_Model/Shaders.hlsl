@@ -464,4 +464,11 @@ float4 PSStandard(VS_STANDARD_OUTPUT input) : SV_TARGET
 	}
 }
 
+Texture2D BulletTexture : register(t14);
 
+float4 PSBullet(VS_TEXTURED_OUTPUT input) : SV_TARGET
+{
+	float4 cColor = BulletTexture.Sample(gWrapSamplerState, input.uv);
+
+	return(cColor);
+}

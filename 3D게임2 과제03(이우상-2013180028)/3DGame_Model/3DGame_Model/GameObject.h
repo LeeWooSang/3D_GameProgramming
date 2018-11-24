@@ -78,7 +78,7 @@ public:
 	XMFLOAT4						m_xmf4Albedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	MATERIAL						*m_pReflection = NULL;
-	CTexture						*m_pTexture = NULL;
+	CTexture							*m_pTexture = NULL;
 	CShader							*m_pShader = NULL;
 
 	void SetAlbedo(XMFLOAT4 xmf4Albedo) { m_xmf4Albedo = xmf4Albedo; }
@@ -99,23 +99,45 @@ class CGameObject
 public:
 	CGameObject(int nMeshes=1);
     virtual ~CGameObject();
+	void DeleteMesh();
 
 public:
-	XMFLOAT4X4						m_xmf4x4World;
+	XMFLOAT4X4				m_xmf4x4World;
 
-	CMesh							**m_ppMeshes;
-	int								m_nMeshes;
+	CMesh**						m_ppMeshes;
+	int									m_nMeshes;
+	CMesh*						m_pMesh{ nullptr };
 
 	CMaterial						*m_pMaterial = NULL;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorHandle;
 
+	BoundingOrientedBox m_xmOOBB;
+	BoundingOrientedBox m_xmOOBBTransformed;
+	void SetOOBB(XMFLOAT3& xmCenter, XMFLOAT3& xmExtents, XMFLOAT4& xmOrientation)
+	{
+		m_xmOOBBTransformed = m_xmOOBB = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation);
+	}
+
 protected:
-	ID3D12Resource					*m_pd3dcbGameObject = NULL;
-	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObject = NULL;
+	ID3D12Resource*							m_pd3dcbGameObject = NULL;
+	CB_GAMEOBJECT_INFO*				m_pcbMappedGameObject = NULL;
+
+	XMFLOAT3	m_xmf3MovingDirection;
+	XMFLOAT3	m_xmf3RotationAxis;
+
+	float				m_fMovingSpeed;
+	float				m_fMovingRange;
+	float				m_fRotationSpeed;
+
+	XMFLOAT3	m_xmf3Right;
+	XMFLOAT3	m_xmf3Up;
+	XMFLOAT3	m_xmf3Look;
 
 public:
 	void SetMesh(int nIndex, CMesh *pMesh);
+	void SetMesh(CMesh* pMesh);
+
 	void SetShader(CShader *pShader);
 	void SetMaterial(CMaterial *pMaterial);
 
@@ -136,15 +158,22 @@ public:
 
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetLook();
+	void SetLook(XMFLOAT3 value);
 	XMFLOAT3 GetUp();
+	void SetUp(XMFLOAT3 value);
 	XMFLOAT3 GetRight();
+	void SetRight(XMFLOAT3 value);
 
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
 
+	XMFLOAT3 GetMovingDirection()					const { return m_xmf3MovingDirection; }
+	void SetMovingDirection(XMFLOAT3 value) { m_xmf3MovingDirection = value; }
+
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
 	void MoveForward(float fDistance = 1.0f);
+	virtual void Move(XMFLOAT3& vDirection, float fSpeed) { };
 
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
 	void Rotate(XMFLOAT3 *pxmf3Axis, float fAngle);
