@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{77E90BA2-5306-4A9B-92B8-235F87209D38}</ProjectGuid>
+    <ProjectGuid>{21EBF064-9B53-44DD-962D-CC838B503825}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>My3DGameModel</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
@@ -151,9 +151,9 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
+    <ClInclude Include="FrameObject.h" />
+    <ClInclude Include="FramePlayer.h" />
     <ClInclude Include="GameFramework.h" />
-    <ClInclude Include="HeightMapGridMesh.h" />
-    <ClInclude Include="HeightMapTerrain.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Player.h" />
@@ -163,17 +163,16 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="GameTimer.h" />
-    <ClInclude Include="TerrainShader.h" />
-    <ClInclude Include="Vertex.h" />
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Model.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
+    <ClCompile Include="FrameMesh.cpp" />
+    <ClCompile Include="FrameObject.cpp" />
+    <ClCompile Include="FramePlayer.cpp" />
     <ClCompile Include="GameFramework.cpp" />
-    <ClCompile Include="HeightMapGridMesh.cpp" />
-    <ClCompile Include="HeightMapTerrain.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -186,8 +185,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GameTimer.cpp" />
-    <ClCompile Include="TerrainShader.cpp" />
-    <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
   </ItemGroup>
   <ItemGroup>

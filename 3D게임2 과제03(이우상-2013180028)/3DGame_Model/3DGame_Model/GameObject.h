@@ -7,28 +7,21 @@
 #include "Mesh.h"
 #include "Camera.h"
 
-#define DIR_FORWARD					0x01
-#define DIR_BACKWARD				0x02
-#define DIR_LEFT					0x04
-#define DIR_RIGHT					0x08
-#define DIR_UP						0x10
-#define DIR_DOWN					0x20
-
 class CShader;
-class CStandardShader;
+
+struct CB_GAMEOBJECT_INFO
+{
+	XMFLOAT4X4						m_xmf4x4World;
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-#define RESOURCE_TEXTURE2D			0x01
-#define RESOURCE_TEXTURE2D_ARRAY	0x02	//[]
-#define RESOURCE_TEXTURE2DARRAY		0x03
-#define RESOURCE_TEXTURE_CUBE		0x04
-#define RESOURCE_BUFFER				0x05
-
-struct SRVROOTARGUMENTINFO
+struct MATERIAL
 {
-	int								m_nRootParameterIndex = 0;
-	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dSrvGpuDescriptorHandle;
+	XMFLOAT4						m_xmf4Ambient;
+	XMFLOAT4						m_xmf4Diffuse;
+	XMFLOAT4						m_xmf4Specular; //(r,g,b,a=power)
+	XMFLOAT4						m_xmf4Emissive;
 };
 
 class CTexture
@@ -41,16 +34,13 @@ private:
 	int								m_nReferences = 0;
 
 	UINT							m_nTextureType = RESOURCE_TEXTURE2D;
-
 	int								m_nTextures = 0;
 	ID3D12Resource					**m_ppd3dTextures = NULL;
 	ID3D12Resource					**m_ppd3dTextureUploadBuffers;
+	SRVROOTARGUMENTINFO				*m_pRootArgumentInfos = NULL;
 
 	int								m_nSamplers = 0;
 	D3D12_GPU_DESCRIPTOR_HANDLE		*m_pd3dSamplerGpuDescriptorHandles = NULL;
-
-public:
-	SRVROOTARGUMENTINFO				*m_pRootArgumentInfos = NULL;
 
 public:
 	void AddRef() { m_nReferences++; }
@@ -63,7 +53,7 @@ public:
 	void UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, int nIndex);
 	void ReleaseShaderVariables();
 
-	void LoadTextureFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, wchar_t *pszFileName, UINT nIndex, bool bIsDDSFile=true);
+	void LoadTextureFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, wchar_t *pszFileName, UINT nIndex);
 
 	int GetTextures() { return(m_nTextures); }
 	ID3D12Resource *GetTexture(int nIndex) { return(m_ppd3dTextures[nIndex]); }
@@ -72,23 +62,10 @@ public:
 	void ReleaseUploadBuffers();
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-#define MATERIAL_ALBEDO_MAP			0x01
-#define MATERIAL_SPECULAR_MAP		0x02
-#define MATERIAL_NORMAL_MAP			0x04
-#define MATERIAL_METALLIC_MAP		0x08
-#define MATERIAL_EMISSION_MAP		0x10
-#define MATERIAL_DETAIL_ALBEDO_MAP	0x20
-#define MATERIAL_DETAIL_NORMAL_MAP	0x40
-
-class CGameObject;
-
 class CMaterial
 {
 public:
 	CMaterial();
-	CMaterial(int nTextures);
 	virtual ~CMaterial();
 
 private:
@@ -98,46 +75,21 @@ public:
 	void AddRef() { m_nReferences++; }
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
-public:
+	XMFLOAT4						m_xmf4Albedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	MATERIAL						*m_pReflection = NULL;
+	CTexture						*m_pTexture = NULL;
 	CShader							*m_pShader = NULL;
 
-	XMFLOAT4						m_xmf4AlbedoColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	XMFLOAT4						m_xmf4EmissiveColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	XMFLOAT4						m_xmf4SpecularColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	XMFLOAT4						m_xmf4AmbientColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
+	void SetAlbedo(XMFLOAT4 xmf4Albedo) { m_xmf4Albedo = xmf4Albedo; }
+	void SetReflection(MATERIAL *m_pReflection);
+	void SetTexture(CTexture *pTexture);
 	void SetShader(CShader *pShader);
-	void SetMaterialType(UINT nType) { m_nType |= nType; }
-	void SetTexture(CTexture *pTexture, UINT nTexture = 0);
 
-	void SetTextured(CTexture *pTexture);
+	void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	void ReleaseShaderVariables();
 
-	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList);
-
-	virtual void ReleaseUploadBuffers();
-
-public:
-	UINT							m_nType = 0x00;
-
-	float							m_fGlossiness = 0.0f;
-	float							m_fSmoothness = 0.0f;
-	float							m_fSpecularHighlight = 0.0f;
-	float							m_fMetallic = 0.0f;
-	float							m_fGlossyReflection = 0.0f;
-
-public:
-	int 							m_nTextures = 0;
-	_TCHAR					(*m_ppstrTextureNames)[64] = NULL;
-	CTexture					**m_ppTextures = NULL; //0:Albedo, 1:Specular, 2:Metallic, 3:Normal, 4:Emission, 5:DetailAlbedo, 6:DetailNormal
-	CTexture						*m_pTexture = NULL;
-
-	void LoadTextureFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, UINT nType, UINT nRootParameter, _TCHAR *pwstrTextureName, CTexture **ppTexture, CGameObject *pParent, FILE *pInFile);
-
-public:
-	static CShader					*m_pStandardShader;
-	static void CMaterial::PrepareShaders(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, int nConstantBufferViews, int nShaderResourceViews);
-
-	void SetStandardShader();
+	void ReleaseUploadBuffers();
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,47 +97,41 @@ public:
 class CGameObject
 {
 public:
-	CGameObject();
-	CGameObject(int nMaterials);
+	CGameObject(int nMeshes=1);
     virtual ~CGameObject();
 
 public:
-	char							m_pstrFrameName[64];
-
-	CMesh							*m_pMesh = NULL;
-
-	int								m_nMaterials = 0;
-	CMaterial						**m_ppMaterials = NULL;
-
-	XMFLOAT4X4						m_xmf4x4Transform;
 	XMFLOAT4X4						m_xmf4x4World;
 
-	CGameObject 					*m_pParent = NULL;
-	CGameObject 					*m_pChild = NULL;
-	CGameObject 					*m_pSibling = NULL;
+	CMesh							**m_ppMeshes;
+	int								m_nMeshes;
 
-	void SetMesh(CMesh *pMesh);
+	CMaterial						*m_pMaterial = NULL;
+
+	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorHandle;
+
+protected:
+	ID3D12Resource					*m_pd3dcbGameObject = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObject = NULL;
+
+public:
+	void SetMesh(int nIndex, CMesh *pMesh);
 	void SetShader(CShader *pShader);
-	void SetShader(int nMaterial, CShader *pShader);
-	void SetMaterial(int nMaterial, CMaterial *pMaterial);
+	void SetMaterial(CMaterial *pMaterial);
 
-	void SetChild(CGameObject *pChild);
+	void SetCbvGPUDescriptorHandle(D3D12_GPU_DESCRIPTOR_HANDLE d3dCbvGPUDescriptorHandle) { m_d3dCbvGPUDescriptorHandle = d3dCbvGPUDescriptorHandle; }
+	void SetCbvGPUDescriptorHandlePtr(UINT64 nCbvGPUDescriptorHandlePtr) { m_d3dCbvGPUDescriptorHandle.ptr = nCbvGPUDescriptorHandlePtr; }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetCbvGPUDescriptorHandle() { return(m_d3dCbvGPUDescriptorHandle); }
 
-	virtual void BuildMaterials(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList) { }
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
 
-	virtual void OnInitialize() { }
-	virtual void Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent=NULL);
-
+	virtual void Animate(float fTimeElapsed);
 	virtual void OnPrepareRender() { }
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
 
-	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
-	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
-	virtual void ReleaseShaderVariables();
-
-	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, XMFLOAT4X4 *pxmf4x4World);
-	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, CMaterial *pMaterial);
-
+	virtual void BuildMaterials(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList) { }
 	virtual void ReleaseUploadBuffers();
 
 	XMFLOAT3 GetPosition();
@@ -195,7 +141,6 @@ public:
 
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
-	void SetScale(float x, float y, float z);
 
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
@@ -203,72 +148,75 @@ public:
 
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
 	void Rotate(XMFLOAT3 *pxmf3Axis, float fAngle);
-	void Rotate(XMFLOAT4 *pxmf4Quaternion);
 
-	CGameObject *GetParent() { return(m_pParent); }
-	void UpdateTransform(XMFLOAT4X4 *pxmf4x4Parent=NULL);
-	CGameObject *FindFrame(char *pstrFrameName);
+	void SetLookAt(XMFLOAT3& xmf3Target, XMFLOAT3& xmf3Up=XMFLOAT3(0.0f, 1.0f, 0.0f));
+};
 
-	CTexture *FindReplicatedTexture(_TCHAR *pstrTextureName);
-	CTexture *FindRootAndReplicatedTexture(_TCHAR *pstrTextureName, CGameObject *pParent);
+class CRotatingObject : public CGameObject
+{
+public:
+	CRotatingObject(int nMeshes=1);
+    virtual ~CRotatingObject();
 
-	UINT GetMeshType() { return((m_pMesh) ? m_pMesh->GetType() : 0x00); }
+private:
+	XMFLOAT3					m_xmf3RotationAxis;
+	float						m_fRotationSpeed;
 
 public:
-	void LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, CGameObject *pParent, FILE *pInFile);
+	void SetRotationSpeed(float fRotationSpeed) { m_fRotationSpeed = fRotationSpeed; }
+	void SetRotationAxis(XMFLOAT3 xmf3RotationAxis) { m_xmf3RotationAxis = xmf3RotationAxis; }
 
-	static CGameObject *LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, CGameObject *pParent, FILE *pInFile);
-	static CGameObject *LoadGeometryFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, char *pstrFileName);
+	virtual void Animate(float fTimeElapsed);
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera = NULL);
+};
 
-	static void PrintFrameInfo(CGameObject *pGameObject, CGameObject *pParent);
+class CRevolvingObject : public CGameObject
+{
+public:
+	CRevolvingObject(int nMeshes=1);
+	virtual ~CRevolvingObject();
+
+private:
+	XMFLOAT3					m_xmf3RevolutionAxis;
+	float						m_fRevolutionSpeed;
+
+public:
+	void SetRevolutionSpeed(float fRevolutionSpeed) { m_fRevolutionSpeed = fRevolutionSpeed; }
+	void SetRevolutionAxis(XMFLOAT3 xmf3RevolutionAxis) { m_xmf3RevolutionAxis = xmf3RevolutionAxis; }
+
+	virtual void Animate(float fTimeElapsed);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-class CSuperCobraObject : public CGameObject
+class CHeightMapTerrain : public CGameObject
 {
 public:
-	CSuperCobraObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature);
-	virtual ~CSuperCobraObject();
+	CHeightMapTerrain(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, LPCTSTR pFileName, int nWidth, int nLength, int nBlockWidth, int nBlockLength, XMFLOAT3 xmf3Scale, XMFLOAT4 xmf4Color);
+	virtual ~CHeightMapTerrain();
 
 private:
-	CGameObject					*m_pMainRotorFrame = NULL;
-	CGameObject					*m_pTailRotorFrame = NULL;
+	CHeightMapImage				*m_pHeightMapImage;
+
+	int							m_nWidth;
+	int							m_nLength;
+
+	XMFLOAT3					m_xmf3Scale;
 
 public:
-	virtual void Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent = NULL);
-};
+	float GetHeight(float x, float z, bool bReverseQuad = false) { return(m_pHeightMapImage->GetHeight(x, z, bReverseQuad) * m_xmf3Scale.y); } //World
+	XMFLOAT3 GetNormal(float x, float z) { return(m_pHeightMapImage->GetHeightMapNormal(int(x / m_xmf3Scale.x), int(z / m_xmf3Scale.z))); }
 
-class CGunshipObject : public CGameObject
-{
-public:
-	CGunshipObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature);
-	virtual ~CGunshipObject();
+	int GetRawImageWidth() { return(m_pHeightMapImage->GetRawImageWidth()); }
+	int GetRawImageLength() { return(m_pHeightMapImage->GetRawImageLength()); }
 
-private:
-	CGameObject					*m_pMainRotorFrame = NULL;
-	CGameObject					*m_pTailRotorFrame = NULL;
-
-public:
-	virtual void Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent = NULL);
-};
-
-class CMi24Object : public CGameObject
-{
-public:
-	CMi24Object(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature);
-	virtual ~CMi24Object();
-
-private:
-	CGameObject					*m_pMainRotorFrame = NULL;
-	CGameObject					*m_pTailRotorFrame = NULL;
-
-public:
-	virtual void Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent = NULL);
+	XMFLOAT3 GetScale() { return(m_xmf3Scale); }
+	float GetWidth() { return(m_nWidth * m_xmf3Scale.x); }
+	float GetLength() { return(m_nLength * m_xmf3Scale.z); }
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+//
 class CSkyBox : public CGameObject
 {
 public:
@@ -277,3 +225,18 @@ public:
 
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera = NULL);
 };
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CGrassObject : public CGameObject
+{
+public:
+	CGrassObject();
+	virtual ~CGrassObject();
+
+	virtual void Animate(float fTimeElapsed);
+
+	float m_fRotationAngle = 0.0f;
+	float m_fRotationDelta = 1.0f;
+};
+

@@ -1,7 +1,10 @@
 #pragma once
 
+#define FRAME_BUFFER_WIDTH		640
+#define FRAME_BUFFER_HEIGHT		480
+
 #include "GameTimer.h"
-#include "Player.h"
+#include "FramePlayer.h"
 #include "Scene.h"
 
 class CGameFramework
@@ -15,14 +18,12 @@ public:
 
 	void CreateSwapChain();
 	void CreateDirect3DDevice();
-	void CreateCommandQueueAndList();
-
 	void CreateRtvAndDsvDescriptorHeaps();
-
 	void CreateRenderTargetViews();
 	void CreateDepthStencilView();
+	void CreateCommandQueueAndList();
 
-	void ChangeSwapChainState();
+	void OnResizeBackBuffers();
 
     void BuildObjects();
     void ReleaseObjects();
@@ -78,11 +79,11 @@ private:
 	CGameTimer					m_GameTimer;
 
 	CScene						*m_pScene = NULL;
-	CPlayer						*m_pPlayer = NULL;
+	CFramePlayer				*m_pFramePlayer = NULL;
 	CCamera						*m_pCamera = NULL;
 
 	POINT						m_ptOldCursorPos;
 
-	_TCHAR						m_pszFrameRate[70];
+	_TCHAR						m_pszCaption[70];
 };
 

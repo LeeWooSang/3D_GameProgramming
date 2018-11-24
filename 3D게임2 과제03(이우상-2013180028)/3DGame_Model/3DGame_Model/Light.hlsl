@@ -1,9 +1,9 @@
 //--------------------------------------------------------------------------------------
-#define MAX_LIGHTS			16 
-#define MAX_MATERIALS		512 
+#define MAX_LIGHTS				16 
+#define MAX_MATERIALS			512 
 
-#define POINT_LIGHT			1
-#define SPOT_LIGHT			2
+#define POINT_LIGHT				1
+#define SPOT_LIGHT				2
 #define DIRECTIONAL_LIGHT	3
 
 #define _WITH_LOCAL_VIEWER_HIGHLIGHTING
@@ -31,7 +31,7 @@ cbuffer cbLights : register(b4)
 {
 	LIGHT					gLights[MAX_LIGHTS];
 	float4					gcGlobalAmbientLight;
-	int						gnLights;
+	int							gnLights;
 };
 
 float4 DirectionalLight(int nIndex, float3 vNormal, float3 vToCamera)
@@ -134,7 +134,7 @@ float4 SpotLight(int nIndex, float3 vPosition, float3 vNormal, float3 vToCamera)
 
 float4 Lighting(float3 vPosition, float3 vNormal)
 {
-	float3 vCameraPosition = float3(gvCameraPosition.x, gvCameraPosition.y, gvCameraPosition.z);
+	float3 vCameraPosition = float3(CameraPosition.x, CameraPosition.y, CameraPosition.z);
 	float3 vToCamera = normalize(vCameraPosition - vPosition);
 
 	float4 cColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
