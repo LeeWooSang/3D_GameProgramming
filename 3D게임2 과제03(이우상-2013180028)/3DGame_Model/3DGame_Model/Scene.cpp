@@ -112,10 +112,14 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	if (!m_pBulletShader)
 	{
 		m_pBulletShader = new CBulletShader;
-		((CTexturedShader*)m_pBulletShader)->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+		m_pBulletShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 		m_pBulletShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
-
-		//m_pBulletShader->SetFramePlayer(m_pFramePlayer);
+	}
+	if (!m_pFireParticleShader)
+	{
+		m_pFireParticleShader = new CParticleShader;
+		m_pFireParticleShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+		m_pFireParticleShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
 	}
 }
 
@@ -163,6 +167,13 @@ void CScene::ReleaseObjects()
 		m_pBulletShader->ReleaseObjects();
 		delete m_pBulletShader;
 	}
+
+	if (m_pFireParticleShader)
+	{
+		m_pFireParticleShader->ReleaseShaderVariables();
+		m_pFireParticleShader->ReleaseObjects();
+		delete m_pFireParticleShader;
+	}
 }
 
 void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -204,12 +215,15 @@ void CScene::ReleaseUploadBuffers()
 
 	if (m_pBulletShader)
 		m_pBulletShader->ReleaseUploadBuffers();
+
+	if (m_pFireParticleShader)
+		m_pFireParticleShader->ReleaseUploadBuffers();
 }
 
 ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
 {
 	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
-	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[13];
+	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[15];
 
 	pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 	pd3dDescriptorRanges[0].NumDescriptors = 1;
@@ -291,7 +305,19 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dDescriptorRanges[12].RegisterSpace = 0;
 	pd3dDescriptorRanges[12].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER pd3dRootParameters[17];
+	pd3dDescriptorRanges[13].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	pd3dDescriptorRanges[13].NumDescriptors = 1;
+	pd3dDescriptorRanges[13].BaseShaderRegister = 15; //t15: FireParticleTexture
+	pd3dDescriptorRanges[13].RegisterSpace = 0;
+	pd3dDescriptorRanges[13].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	pd3dDescriptorRanges[14].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+	pd3dDescriptorRanges[14].NumDescriptors = 1;
+	pd3dDescriptorRanges[14].BaseShaderRegister = 5; // b5 : cbTextureAnimation
+	pd3dDescriptorRanges[14].RegisterSpace = 0;
+	pd3dDescriptorRanges[14].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_ROOT_PARAMETER pd3dRootParameters[19];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 0; //Player
@@ -303,6 +329,7 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dRootParameters[1].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
+	// GameObject 월드 행렬
 	pd3dRootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	pd3dRootParameters[2].DescriptorTable.NumDescriptorRanges = 1;
 	pd3dRootParameters[2].DescriptorTable.pDescriptorRanges = &pd3dDescriptorRanges[0];
@@ -382,6 +409,18 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dRootParameters[16].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[12]);
 	pd3dRootParameters[16].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
+	// 불꽃 파티클
+	pd3dRootParameters[17].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[17].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[17].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[13]);
+	pd3dRootParameters[17].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	// 텍스처 애니메이션 시간
+	pd3dRootParameters[18].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[18].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[18].DescriptorTable.pDescriptorRanges = &pd3dDescriptorRanges[14];
+	pd3dRootParameters[18].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
 	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[2];
 
 	pd3dSamplerDescs[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -450,8 +489,13 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 
 		// 총알 발사 키
 		case VK_CONTROL:
-			if (m_pBulletShader && m_pFramePlayer)
+			if (m_pBulletShader && m_pFramePlayer && m_pFireParticleShader)
+			{
 				m_pBulletShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+				m_pFireParticleShader->SetBullet(m_pBulletShader->GetBullet());
+				m_pFireParticleShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+			}
+
 			break;
 
 		default:
@@ -476,25 +520,27 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 	}
 
-	for (int i = 0; i < m_nFrameObjects; i++)
-	{
-		if(m_pFramePlayer)
-			m_ppFrameObjects[i]->SetTarget(m_pFramePlayer);
-		m_ppFrameObjects[i]->Animate(fTimeElapsed, NULL);
-	}
-
-	for (int i = 0; i < m_nFrameObjects; i++) 
-		m_ppFrameObjects[i]->UpdateTransform(NULL);
-
 	if (m_pFramePlayer)
 	{
+		for (int i = 0; i < m_nFrameObjects; i++)
+		{
+			m_ppFrameObjects[i]->SetTarget(m_pFramePlayer);
+			m_ppFrameObjects[i]->Animate(fTimeElapsed, NULL);
+		}
+
+		for (int i = 0; i < m_nFrameObjects; i++)
+			m_ppFrameObjects[i]->UpdateTransform(NULL);
+
 		m_pBulletShader->SetFramePlayer(m_pFramePlayer);
+		m_pFireParticleShader->SetFramePlayer(m_pFramePlayer);
 		m_pBulletShader->AnimateObjects(fTimeElapsed);
-	}
-	if (m_pLights)
-	{
-		m_pLights[1].m_xmf3Position = m_pFramePlayer->GetPosition();
-		m_pLights[1].m_xmf3Direction = m_pFramePlayer->GetLookVector();
+		m_pFireParticleShader->AnimateObjects(fTimeElapsed);
+
+		if (m_pLights)
+		{
+			m_pLights[1].m_xmf3Position = m_pFramePlayer->GetPosition();
+			m_pLights[1].m_xmf3Direction = m_pFramePlayer->GetLookVector();
+		}
 	}
 }
 
@@ -519,10 +565,17 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(7, d3dcbLightsGpuVirtualAddress); //Lights
 
-	for (int i = 0; i < m_nFrameObjects; i++) 
-		m_ppFrameObjects[i]->Render(pd3dCommandList, pCamera);
+	if (m_pFramePlayer)
+	{
+		for (int i = 0; i < m_nFrameObjects; i++)
+			m_ppFrameObjects[i]->Render(pd3dCommandList, pCamera);
 
-	if(m_pBulletShader && m_pFramePlayer)
-		m_pBulletShader->Render(pd3dCommandList, pCamera);
+		if (m_pBulletShader)
+			m_pBulletShader->Render(pd3dCommandList, pCamera);
+
+		if (m_pFireParticleShader)
+			m_pFireParticleShader->Render(pd3dCommandList, pCamera);
+	}
+
 }
 

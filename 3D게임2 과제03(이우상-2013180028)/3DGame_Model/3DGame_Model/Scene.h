@@ -3,6 +3,7 @@
 #include "FramePlayer.h"
 #include "Shader.h"
 #include "BulletShader.h"
+#include "ParticleShader.h"
 
 #define MAX_LIGHTS			16 
 #define POINT_LIGHT			1
@@ -83,5 +84,6 @@ protected:
 	CFramePlayer*					m_pFramePlayer{ nullptr };
 
 	CBulletShader*					m_pBulletShader{ nullptr };
-	list<CGameObject*>		m_BulletList;
+	//list<CGameObject*>		m_BulletList;	
+	CParticleShader*				m_pFireParticleShader{ nullptr };
 };

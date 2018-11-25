@@ -38,6 +38,7 @@ cbuffer cbGameObjectInfo : register(b2)
 {
 	matrix		gmtxWorld : packoffset(c0);
 };
+
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -465,10 +466,28 @@ float4 PSStandard(VS_STANDARD_OUTPUT input) : SV_TARGET
 }
 
 Texture2D BulletTexture : register(t14);
-
 float4 PSBullet(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	float4 cColor = BulletTexture.Sample(gWrapSamplerState, input.uv);
+
+	return(cColor);
+}
+
+cbuffer cbTextureAnimation : register(b5)
+{
+	float elapsedTime	: packoffset(c0);
+};
+
+Texture2D FireParticleTexture : register(t15);
+float4 PSFireParticle(VS_TEXTURED_OUTPUT input) : SV_TARGET
+{
+	// uv ÁÂÇ¥ ÀÌµ¿
+	float2 texUV = input.uv;
+	texUV.x = texUV.x * 0.2f + 0.2f * elapsedTime;
+	texUV.y = texUV.y * 0.2f + 0.2f * 2;
+
+	//float4 cColor = FireParticleTexture.Sample(gWrapSamplerState, input.uv);
+	float4 cColor = FireParticleTexture.Sample(gWrapSamplerState, texUV);
 
 	return(cColor);
 }

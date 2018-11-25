@@ -57,6 +57,12 @@ D3D12_SHADER_BYTECODE CBulletShader::CreatePixelShader(ID3DBlob **ppd3dShaderBlo
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSBullet", "ps_5_1", ppd3dShaderBlob));
 }
 
+void CBulletShader::ReleaseUploadBuffers()
+{
+	for (auto iter = m_BulletList.begin(); iter != m_BulletList.end(); ++iter)
+		(*iter)->ReleaseUploadBuffers();
+}
+
 void CBulletShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
 	// 총알로 사용할 큐브 메쉬 생성
@@ -88,21 +94,21 @@ bool CBulletShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPAR
 		{
 			if (m_pFramePlayer)
 			{
-				CGameObject* pBullet = new CBullet;
-				pBullet->SetMesh(m_pBulletTexturedMesh);
-				pBullet->SetMaterial(m_pBulletMaterial);
+				m_pBullet = new CBullet;
+				m_pBullet->SetMesh(m_pBulletTexturedMesh);
+				m_pBullet->SetMaterial(m_pBulletMaterial);
 
-				pBullet->SetLook(m_pFramePlayer->GetLookVector());
+				m_pBullet->SetLook(m_pFramePlayer->GetLookVector());
 				// 또한 플레이어의 Up벡터, Right벡터도 똑같이 설정해주어야 플레이어가 회전했을 때,
 				// 총알 모양도 회전이 된 모양으로 바뀐다.
-				pBullet->SetUp(m_pFramePlayer->GetUpVector());
-				pBullet->SetRight(m_pFramePlayer->GetRightVector());
+				m_pBullet->SetUp(m_pFramePlayer->GetUpVector());
+				m_pBullet->SetRight(m_pFramePlayer->GetRightVector());
 				// 총알의 생성위치는 플레이어의 위치로 설정
-				pBullet->SetPosition(m_pFramePlayer->GetPosition());
+				m_pBullet->SetPosition(m_pFramePlayer->GetPosition());
 				// 총알이 나아가는 방향은 총알이 바라보는 방향으로 준다.
-				pBullet->SetMovingDirection(pBullet->GetLook());
+				m_pBullet->SetMovingDirection(m_pBullet->GetLook());
+				m_BulletList.push_back(m_pBullet);
 				cout << "총알 생성 됨" << endl;
-				m_BulletList.push_back(pBullet);
 			}
 			break;
 		}
@@ -161,20 +167,6 @@ void CBulletShader::AnimateObjects(float fTimeElapsed)
 		//	<< ", " << (*iter)->GetPosition().y
 		//	<< ", " << (*iter)->GetPosition().z << endl;
 	}
-}
-
-void CBulletShader::ReleaseUploadBuffers()
-{
-	if (m_ppObjects)
-	{
-		//for (int j = 0; j < m_nObjects; j++) 
-		//	if (m_ppObjects[j]) m_ppObjects[j]->ReleaseUploadBuffers();
-
-		for (auto iter = m_BulletList.begin(); iter != m_BulletList.end(); ++iter)
-			(*iter)->ReleaseUploadBuffers();
-	}
-
-
 }
 
 void CBulletShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
