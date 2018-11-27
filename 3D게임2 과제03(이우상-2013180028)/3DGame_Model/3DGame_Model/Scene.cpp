@@ -114,6 +114,15 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 		m_pBulletShader = new CBulletShader;
 		m_pBulletShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 		m_pBulletShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
+
+		if (!m_pExplosionParticleShader)
+		{
+			m_pExplosionParticleShader = new CExplosionParticleShader;
+			m_pExplosionParticleShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+			m_pExplosionParticleShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
+		}
+
+		m_pBulletShader->SetExplosionParticleShader(m_pExplosionParticleShader);
 	}
 	if (!m_pFireParticleShader)
 	{
@@ -174,6 +183,13 @@ void CScene::ReleaseObjects()
 		m_pFireParticleShader->ReleaseObjects();
 		delete m_pFireParticleShader;
 	}
+
+	if (m_pExplosionParticleShader)
+	{
+		m_pExplosionParticleShader->ReleaseShaderVariables();
+		m_pExplosionParticleShader->ReleaseObjects();
+		delete m_pExplosionParticleShader;
+	}
 }
 
 void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -218,6 +234,9 @@ void CScene::ReleaseUploadBuffers()
 
 	if (m_pFireParticleShader)
 		m_pFireParticleShader->ReleaseUploadBuffers();
+
+	if (m_pExplosionParticleShader)
+		m_pExplosionParticleShader->ReleaseUploadBuffers();
 }
 
 ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
@@ -532,8 +551,10 @@ void CScene::AnimateObjects(float fTimeElapsed)
 			m_ppFrameObjects[i]->UpdateTransform(NULL);
 
 		m_pBulletShader->SetFramePlayer(m_pFramePlayer);
+		m_pExplosionParticleShader->SetFramePlayer(m_pFramePlayer);
 		m_pFireParticleShader->SetFramePlayer(m_pFramePlayer);
 		m_pBulletShader->AnimateObjects(fTimeElapsed);
+		m_pExplosionParticleShader->AnimateObjects(fTimeElapsed);
 		m_pFireParticleShader->AnimateObjects(fTimeElapsed);
 
 		if (m_pLights)
@@ -572,6 +593,9 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 
 		if (m_pBulletShader)
 			m_pBulletShader->Render(pd3dCommandList, pCamera);
+
+		if (m_pExplosionParticleShader)
+			m_pExplosionParticleShader->Render(pd3dCommandList, pCamera);
 
 		if (m_pFireParticleShader)
 			m_pFireParticleShader->Render(pd3dCommandList, pCamera);

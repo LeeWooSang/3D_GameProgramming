@@ -475,19 +475,41 @@ float4 PSBullet(VS_TEXTURED_OUTPUT input) : SV_TARGET
 
 cbuffer cbTextureAnimation : register(b5)
 {
-	float elapsedTime	: packoffset(c0);
+	matrix	TextureAnimationWorld	: packoffset(c0);
+	int			elapsedTime						: packoffset(c4);
+	int			frameSheet						: packoffset(c5);
 };
 
 Texture2D FireParticleTexture : register(t15);
+
+VS_TEXTURED_OUTPUT VSFireParticle(VS_TEXTURED_INPUT input)
+{
+	VS_TEXTURED_OUTPUT output;
+
+	output.position = mul(mul(mul(float4(input.position, 1.0f), TextureAnimationWorld), gmtxView), gmtxProjection);
+	output.uv = input.uv;
+
+	return(output);
+}
 float4 PSFireParticle(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	// uv ÁÂÇ¥ ÀÌµ¿
 	float2 texUV = input.uv;
-	texUV.x = texUV.x * 0.2f + 0.2f * elapsedTime;
-	texUV.y = texUV.y * 0.2f + 0.2f * 2;
+	//if (elapsedTime >= 0.1f)
+	//{
+	//	if (frameSheet < 6)
+	//	{
+	//texUV.x = texUV.x * 1 / 6 + elapsedTime;
+	//	}
+	//}
+	texUV.x = texUV.x / 6.0f + elapsedTime * (1.0f / 6.0f);
+	//texUV.x = texUV.x * 1 / 6 + frameSheet * (int)elapsedTime;
 
-	//float4 cColor = FireParticleTexture.Sample(gWrapSamplerState, input.uv);
+	//texUV.y = texUV.y * 0.25;
+
 	float4 cColor = FireParticleTexture.Sample(gWrapSamplerState, texUV);
+
+//	float4 cColor = FireParticleTexture.Sample(gWrapSamplerState, input.uv);
 
 	return(cColor);
 }

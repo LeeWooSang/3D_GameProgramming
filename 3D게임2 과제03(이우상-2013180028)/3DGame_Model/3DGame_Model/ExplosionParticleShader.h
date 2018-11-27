@@ -2,12 +2,14 @@
 #include "Shader.h"
 #include "Particle.h"
 #include "FramePlayer.h"
+#include "Bullet.h"
 
-class CParticleShader : public CTexturedShader
+class CExplosionParticleShader : public CTexturedShader
 {
 public:
-	CParticleShader();
-	virtual ~CParticleShader();
+public:
+	CExplosionParticleShader();
+	virtual ~CExplosionParticleShader();
 
 	virtual void CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature);
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
@@ -20,7 +22,7 @@ public:
 	virtual void ReleaseShaderVariables();
 	virtual void ReleaseUploadBuffers();
 
-	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void Initialize(XMFLOAT3 position);
 	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext = NULL);
 	virtual void ReleaseObjects();
 	virtual void AnimateObjects(float fTimeElapsed);
@@ -30,6 +32,7 @@ public:
 	void SetFramePlayer(CFramePlayer* p) { m_pFramePlayer = p; }
 
 	void SetBullet(CGameObject* pBullet) { m_pBullet = pBullet; }
+
 private:
 	int											m_nObjects = 0;
 
@@ -39,10 +42,10 @@ private:
 	ID3D12Resource*					m_pTextureAnimation = NULL;
 	CB_TEXTURE_ANIMATION*	m_pMappedTextureAnimation = NULL;
 
-	CTexturedRectMesh*		m_pFireParticleMesh{ nullptr };
-	CTexture*							m_pFireParticleTexture{ nullptr };
-	CMaterial*						m_pFireParticleMaterial{ nullptr };
-	list<CGameObject*>		m_FireParticleList;
+	CTexturedRectMesh*		m_pExplosionParticleMesh{ nullptr };
+	CTexture*							m_pExplosionParticleTexture{ nullptr };
+	CMaterial*						m_pExplosionParticleMaterial{ nullptr };
+	list<CGameObject*>		m_ExplosionParticleList;
 
 	CGameObject*					m_pBullet{ nullptr };
 	CFramePlayer*					m_pFramePlayer{ nullptr };

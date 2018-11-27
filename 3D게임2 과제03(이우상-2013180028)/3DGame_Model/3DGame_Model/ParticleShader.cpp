@@ -57,6 +57,11 @@ D3D12_BLEND_DESC CParticleShader::CreateBlendState()
 	return(d3dBlendDesc);
 }
 
+D3D12_SHADER_BYTECODE CParticleShader::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSFireParticle", "vs_5_1", ppd3dShaderBlob));
+}
+
 D3D12_SHADER_BYTECODE CParticleShader::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSFireParticle", "ps_5_1", ppd3dShaderBlob));
@@ -64,31 +69,33 @@ D3D12_SHADER_BYTECODE CParticleShader::CreatePixelShader(ID3DBlob **ppd3dShaderB
 
 void CParticleShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
-	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
-	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+	//UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	//m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+	//m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
 
 	// 텍스처 애니메이션
-	//ncbElementBytes = ((sizeof(CB_TEXTURE_ANIMATION) + 255) & ~255); //256의 배수
-	//m_pTextureAnimation = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
-	//m_pTextureAnimation->Map(0, NULL, (void**)&m_pMappedTextureAnimation);
+	UINT ncbElementBytes = ((sizeof(CB_TEXTURE_ANIMATION) + 255) & ~255); //256의 배수
+	m_pTextureAnimation = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+	m_pTextureAnimation->Map(0, NULL, (void**)&m_pMappedTextureAnimation);
 }
 
 void CParticleShader::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
-
+	//UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+	UINT ncbElementBytes = ((sizeof(CB_TEXTURE_ANIMATION) + 255) & ~255); //256의 배수
 	int i = 0;
 	for (auto iter = m_FireParticleList.begin(); iter != m_FireParticleList.end(); ++iter)
 	{
 		// ★★★★★
-		(*iter)->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
-		CB_GAMEOBJECT_INFO *pbMappedcbGameObject = (CB_GAMEOBJECT_INFO *)((UINT8 *)m_pcbMappedGameObjects + (i * ncbElementBytes));
-		XMStoreFloat4x4(&pbMappedcbGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&(*iter)->m_xmf4x4World)));
-
 		//(*iter)->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
-		//CB_TEXTURE_ANIMATION* pMappedTextureAnimation = (CB_TEXTURE_ANIMATION *)((UINT8 *)m_pMappedTextureAnimation + (i * ncbElementBytes));
-		//XMStoreFloat4x4(&pMappedTextureAnimation->m_elapsedTime, XMMatrixTranspose(XMLoadFloat4x4(&(*iter)->m_xmf4x4World)));
+		//CB_GAMEOBJECT_INFO *pbMappedcbGameObject = (CB_GAMEOBJECT_INFO *)((UINT8 *)m_pcbMappedGameObjects + (i * ncbElementBytes));
+		//XMStoreFloat4x4(&pbMappedcbGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&(*iter)->m_xmf4x4World)));
+		//
+		(*iter)->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+		CB_TEXTURE_ANIMATION* pMappedTextureAnimation = (CB_TEXTURE_ANIMATION *)((UINT8 *)m_pMappedTextureAnimation + (i * ncbElementBytes));
+		XMStoreFloat4x4(&pMappedTextureAnimation->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&(*iter)->m_xmf4x4World)));
+		pMappedTextureAnimation->m_elapsedTime = ((CParticle*)(*iter))->elapsedTime;
+		pMappedTextureAnimation->m_frameSheet = ((CParticle*)(*iter))->AnimationFrame;
 		++i;
 	}
 
@@ -101,6 +108,12 @@ void CParticleShader::ReleaseShaderVariables()
 	{
 		m_pd3dcbGameObjects->Unmap(0, NULL);
 		m_pd3dcbGameObjects->Release();
+	}
+
+	if (m_pTextureAnimation)
+	{
+		m_pTextureAnimation->Unmap(0, NULL);
+		m_pTextureAnimation->Release();
 	}
 
 	CTexturedShader::ReleaseShaderVariables();
@@ -157,7 +170,9 @@ void CParticleShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	// 불꽃 파티클 메쉬 생성
 	// 총알의 모델좌표계에서 -5만큼 뒤에 위치하게 생성
 	// 총알의 두깨가 5이므로, 불꽃은 맨 뒤에 있어야한다.
-	m_pFireParticleMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 2.5f, 2.5f, 0.0f, 0.0f, 0.0f, -5.0f);
+	//m_pFireParticleMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 2.5f, 2.5f, 0.0f, 0.0f, 0.0f, -5.0f);
+	m_pFireParticleMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 3.f, 3.f, 0.0f, 0.0f, 0.0f, -5.0f);
+
 	// 불꽃 파티클 텍스처 생성
 	m_pFireParticleTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pFireParticleTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/FireParticle.dds", 0);
@@ -169,7 +184,8 @@ void CParticleShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	m_nObjects = 100;
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
+	//CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pTextureAnimation, ncbElementBytes);
 	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, m_pFireParticleTexture, 17, false);
 
 }
@@ -200,7 +216,7 @@ void CParticleShader::AnimateObjects(float fTimeElapsed)
 			// 총알을 계속 그리지 않고, 지워주어야 프레임레이트를 올릴 수 있다.
 		if (distance >= MaxBulletDistance)
 		{
-			cout << "플레이어 파티클 거리벗어남 삭제" << endl;
+			cout << "총알 날라가는 파티클 거리벗어남 삭제" << endl;
 			delete (*iter);
 			iter = m_FireParticleList.erase(iter);
 		}

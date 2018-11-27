@@ -61,8 +61,8 @@ using Microsoft::WRL::ComPtr;
 using namespace std;
 
 enum OBJECT_TYPE {FRAME_PLAYER, FRAME_ENEMY, BULLET};
-const double DISTANCE_TO_TARGET_OBJECT = 5.0f;
-
+const float DISTANCE_TO_TARGET_OBJECT = 5.0f;
+const float ANIMATION_COOLTIME = 0.1f;
 #define DIR_FORWARD			0x01
 #define DIR_BACKWARD			0x02
 #define DIR_LEFT						0x04

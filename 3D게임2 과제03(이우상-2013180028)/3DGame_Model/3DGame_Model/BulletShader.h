@@ -2,6 +2,8 @@
 #include "Shader.h"
 #include "Bullet.h"
 #include "FramePlayer.h"
+#include "ExplosionParticle.h"
+#include "ExplosionParticleShader.h"
 
 class CBulletShader : public CTexturedShader
 {
@@ -26,6 +28,8 @@ public:
 
 	CGameObject* GetBullet()			const { return m_pBullet; }
 
+	void SetExplosionParticleShader(CExplosionParticleShader* pExplosionParticleShader) { m_pExplosionParticleShader = pExplosionParticleShader; }
+
 private:
 	int											m_nObjects = 0;
 
@@ -40,5 +44,8 @@ private:
 	list<CGameObject*>		m_BulletList;
 
 	const double MaxBulletDistance = 250.f;
+
+	CExplosionParticleShader*			m_pExplosionParticleShader{ nullptr };
+	CExplosionParticle*						m_pExplosionParticle{ nullptr };
 };
 

@@ -1,28 +1,25 @@
 #pragma once
 #include "GameObject.h"
 
-struct CB_TEXTURE_ANIMATION
-{
-	XMFLOAT4X4	m_xmf4x4World;
-	UINT					m_elapsedTime = 0;
-	int						m_frameSheet = 1;
-};
-
-class CParticle : public CGameObject
+class CExplosionParticle : public CGameObject
 {
 public:
-	CParticle();
-	virtual ~CParticle();
+	CExplosionParticle();
+	virtual ~CExplosionParticle();
 
-	virtual void Move(XMFLOAT3& vDirection, float fSpeed);
 	void Rotate(XMFLOAT3& xmf3RotationAxis, float fAngle);
 
 	virtual void Animate(float fElapsedTime);
 	virtual void OnPrepareRender();
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
 
+	float GetExplosionTime()	const { return m_ExplosionTime; }
+	bool GetOnExplosion()		const { return m_OnExplosion; }
+
 	float elapsedTime = 0.f;
-	//int elapsedTime = 0;
 	int AnimationFrame = 1;
+private:
+	float m_ExplosionTime = 0.f;
+	bool m_OnExplosion = false;
 };
 

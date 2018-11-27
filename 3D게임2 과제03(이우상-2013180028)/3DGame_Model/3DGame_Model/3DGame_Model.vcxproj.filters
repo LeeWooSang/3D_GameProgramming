@@ -76,6 +76,12 @@
     <Filter Include="소스 파일\Object\GameObject\Particle">
       <UniqueIdentifier>{ade6b61c-653e-4473-a39a-1cbd78b88ffe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Shader\ExplosionParticleShader">
+      <UniqueIdentifier>{b658b611-050f-4294-a001-4eb7cfedcef3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\GameObject\ExplosionParticle">
+      <UniqueIdentifier>{3eae2811-d003-41cb-8acc-40ba00287201}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -141,6 +147,12 @@
     <ClInclude Include="Particle.h">
       <Filter>소스 파일\Object\GameObject\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="ExplosionParticle.h">
+      <Filter>소스 파일\Object\GameObject\ExplosionParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionParticleShader.h">
+      <Filter>소스 파일\Shader\ExplosionParticleShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Model.cpp">
@@ -199,6 +211,12 @@
     </ClCompile>
     <ClCompile Include="Particle.cpp">
       <Filter>소스 파일\Object\GameObject\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionParticleShader.cpp">
+      <Filter>소스 파일\Shader\ExplosionParticleShader</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionParticle.cpp">
+      <Filter>소스 파일\Object\GameObject\ExplosionParticle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

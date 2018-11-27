@@ -154,6 +154,12 @@ void CBulletShader::AnimateObjects(float fTimeElapsed)
 		if (distance >= MaxBulletDistance)
 		{
 			cout << "플레이어 총알 거리벗어남 삭제" << endl;
+			if (m_pExplosionParticleShader)
+			{
+				// 마지막에 터지는 파티클을 총알의 위치에 생성
+				m_pExplosionParticleShader->Initialize((*iter)->GetPosition());
+			}
+			// 총알 삭제
 			delete (*iter);
 			iter = m_BulletList.erase(iter);
 		}
