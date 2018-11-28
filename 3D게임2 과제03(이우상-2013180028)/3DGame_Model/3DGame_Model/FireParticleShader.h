@@ -1,13 +1,13 @@
 #pragma once
 #include "Shader.h"
-#include "Particle.h"
+#include "FireParticle.h"
 #include "FramePlayer.h"
 
-class CParticleShader : public CTexturedShader
+class CFireParticleShader : public CTexturedShader
 {
 public:
-	CParticleShader();
-	virtual ~CParticleShader();
+	CFireParticleShader();
+	virtual ~CFireParticleShader();
 
 	virtual void CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature);
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
@@ -20,7 +20,7 @@ public:
 	virtual void ReleaseShaderVariables();
 	virtual void ReleaseUploadBuffers();
 
-	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	bool Initialize(CGameObject* pBullet, int id);
 	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext = NULL);
 	virtual void ReleaseObjects();
 	virtual void AnimateObjects(float fTimeElapsed);
@@ -28,8 +28,7 @@ public:
 
 	CFramePlayer* GetFramePlayer() const { return m_pFramePlayer; }
 	void SetFramePlayer(CFramePlayer* p) { m_pFramePlayer = p; }
-
-	void SetBullet(CGameObject* pBullet) { m_pBullet = pBullet; }
+	void SetDeleteFireParticleID(int id) { m_DeleteID = id; }
 private:
 	int											m_nObjects = 0;
 
@@ -44,9 +43,10 @@ private:
 	CMaterial*						m_pFireParticleMaterial{ nullptr };
 	list<CGameObject*>		m_FireParticleList;
 
-	CGameObject*					m_pBullet{ nullptr };
 	CFramePlayer*					m_pFramePlayer{ nullptr };
 
-	const double MaxBulletDistance = 250.f;
+	const double					MaxBulletDistance = 250.f;
+		
+	int										m_DeleteID = 0;
 };
 

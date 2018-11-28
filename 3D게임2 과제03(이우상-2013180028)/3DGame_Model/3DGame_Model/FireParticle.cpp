@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "Particle.h"
-#include "ParticleShader.h"
+#include "FireParticle.h"
+#include "FireParticleShader.h"
 
-CParticle::CParticle()
+CFireParticle::CFireParticle()
 {
 	m_xmf3RotationAxis = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	m_xmf3MovingDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
@@ -12,22 +12,22 @@ CParticle::CParticle()
 	SetOOBB(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 1.5f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
-CParticle::~CParticle()
+CFireParticle::~CFireParticle()
 {
 }
 
-void CParticle::Move(XMFLOAT3& vDirection, float fSpeed)
+void CFireParticle::Move(XMFLOAT3& vDirection, float fSpeed)
 {
 	SetPosition(m_xmf4x4World._41 + vDirection.x * fSpeed, m_xmf4x4World._42 + vDirection.y * fSpeed, m_xmf4x4World._43 + vDirection.z * fSpeed);
 }
 
-void CParticle::Rotate(XMFLOAT3& xmf3RotationAxis, float fAngle)
+void CFireParticle::Rotate(XMFLOAT3& xmf3RotationAxis, float fAngle)
 {
 	XMFLOAT4X4 mtxRotate = Matrix4x4::RotationAxis(xmf3RotationAxis, fAngle);
 	m_xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_xmf4x4World);
 }
 
-void CParticle::Animate(float fElapsedTime)
+void CFireParticle::Animate(float fElapsedTime)
 {
 	elapsedTime += fElapsedTime * 5;
 
@@ -45,11 +45,11 @@ void CParticle::Animate(float fElapsedTime)
 	//XMStoreFloat4(&m_xmOOBBTransformed.Orientation, XMQuaternionNormalize(XMLoadFloat4(&m_xmOOBBTransformed.Orientation)));
 }
 
-void CParticle::OnPrepareRender()
+void CFireParticle::OnPrepareRender()
 {
 }
 
-void CParticle::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+void CFireParticle::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	OnPrepareRender();
 

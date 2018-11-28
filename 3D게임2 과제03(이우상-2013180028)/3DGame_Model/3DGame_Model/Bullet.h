@@ -13,5 +13,15 @@ public:
 	virtual void Animate(float fElapsedTime);
 	virtual void OnPrepareRender();
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+
+	void SetCollision(bool Collision) { m_Collision = Collision; }
+	bool GetCollision()	const { return m_Collision; }
+
+	void SetID(int id) { m_ID = id; }
+	int GetID()	const { return m_ID; }
+
+private:
+	bool m_Collision = false;
+	int m_ID;
 };
 

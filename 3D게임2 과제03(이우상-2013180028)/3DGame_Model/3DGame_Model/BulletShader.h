@@ -2,6 +2,10 @@
 #include "Shader.h"
 #include "Bullet.h"
 #include "FramePlayer.h"
+
+#include "FireParticleShader.h"
+#include "FireParticle.h"
+
 #include "ExplosionParticle.h"
 #include "ExplosionParticleShader.h"
 
@@ -26,8 +30,9 @@ public:
 	CFramePlayer* GetFramePlayer() const { return m_pFramePlayer; }
 	void SetFramePlayer(CFramePlayer* p) { m_pFramePlayer = p; }
 
-	CGameObject* GetBullet()			const { return m_pBullet; }
 	list<CGameObject*>& GetBulletList() { return m_BulletList; }
+
+	void SetParticleShader(CFireParticleShader* pFireParticleShader) { m_pFireParticleShader = pFireParticleShader; }
 	void SetExplosionParticleShader(CExplosionParticleShader* pExplosionParticleShader) { m_pExplosionParticleShader = pExplosionParticleShader; }
 private:
 	int											m_nObjects = 0;
@@ -35,14 +40,16 @@ private:
 	ID3D12Resource*					m_pd3dcbGameObjects = NULL;
 	CB_GAMEOBJECT_INFO*		m_pcbMappedGameObjects = NULL;
 
-	CGameObject*					m_pBullet{ nullptr };
 	CCubeMeshTextured*		m_pBulletTexturedMesh{ nullptr };
 	CTexture*							m_pBulletTexture{ nullptr };
 	CMaterial*						m_pBulletMaterial{ nullptr };
 	CFramePlayer*					m_pFramePlayer{ nullptr };
 	list<CGameObject*>		m_BulletList;
 
-	const double MaxBulletDistance = 250.f;
+	const double					MaxBulletDistance = 250.f;
+	static int							m_BulletCount;
+	CFireParticleShader*							m_pFireParticleShader{ nullptr };
+	CFireParticle*										m_pFireParticle{ nullptr };
 
 	CExplosionParticleShader*			m_pExplosionParticleShader{ nullptr };
 	CExplosionParticle*						m_pExplosionParticle{ nullptr };

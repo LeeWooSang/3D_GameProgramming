@@ -8,11 +8,11 @@ struct CB_TEXTURE_ANIMATION
 	int						m_frameSheet = 1;
 };
 
-class CParticle : public CGameObject
+class CFireParticle : public CGameObject
 {
 public:
-	CParticle();
-	virtual ~CParticle();
+	CFireParticle();
+	virtual ~CFireParticle();
 
 	virtual void Move(XMFLOAT3& vDirection, float fSpeed);
 	void Rotate(XMFLOAT3& xmf3RotationAxis, float fAngle);
@@ -24,5 +24,14 @@ public:
 	float elapsedTime = 0.f;
 	//int elapsedTime = 0;
 	int AnimationFrame = 1;
+
+	void SetCollision(bool Collision) { m_Collision = Collision; }
+	bool GetCollision()	const { return m_Collision; }
+
+	void SetID(int id) { m_ID = id; }
+	int GetID()	const { return m_ID; }
+private:
+	bool m_Collision = false;
+	int m_ID;
 };
 

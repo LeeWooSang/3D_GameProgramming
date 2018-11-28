@@ -1,6 +1,6 @@
 #pragma once
 #include "Shader.h"
-#include "Particle.h"
+#include "FireParticle.h"
 #include "FramePlayer.h"
 #include "Bullet.h"
 

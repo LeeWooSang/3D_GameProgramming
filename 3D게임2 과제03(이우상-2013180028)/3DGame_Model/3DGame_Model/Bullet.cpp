@@ -9,7 +9,7 @@ CBullet::CBullet()
 	m_fRotationSpeed = 900.f;
 	m_fMovingSpeed = 120.f;
 
-	SetOOBB(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 1.5f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+	SetOOBB(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.25f, 1.25f, 2.5f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
 CBullet::~CBullet()

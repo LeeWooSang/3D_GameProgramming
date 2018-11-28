@@ -87,8 +87,8 @@ void CExplosionParticleShader::UpdateShaderVariables(ID3D12GraphicsCommandList *
 		(*iter)->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 		CB_TEXTURE_ANIMATION* pMappedTextureAnimation = (CB_TEXTURE_ANIMATION *)((UINT8 *)m_pMappedTextureAnimation + (i * ncbElementBytes));
 		XMStoreFloat4x4(&pMappedTextureAnimation->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&(*iter)->m_xmf4x4World)));
-		pMappedTextureAnimation->m_elapsedTime = ((CParticle*)(*iter))->elapsedTime;
-		pMappedTextureAnimation->m_frameSheet = ((CParticle*)(*iter))->AnimationFrame;
+		pMappedTextureAnimation->m_elapsedTime = ((CFireParticle*)(*iter))->elapsedTime;
+		pMappedTextureAnimation->m_frameSheet = ((CFireParticle*)(*iter))->AnimationFrame;
 		++i;
 	}
 
@@ -195,7 +195,7 @@ void CExplosionParticleShader::AnimateObjects(float fTimeElapsed)
 	//	}
 	//	else
 	//	{
-	//		((CParticle*)(*iter))->Animate(fTimeElapsed);
+	//		((CFireParticle*)(*iter))->Animate(fTimeElapsed);
 	//		++iter;
 	//	}
 	//}

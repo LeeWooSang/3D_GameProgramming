@@ -58,6 +58,7 @@ using Microsoft::WRL::ComPtr;
 #include <vector>
 #include <list>
 #include <random>
+#include <string>
 using namespace std;
 
 enum OBJECT_TYPE {FRAME_PLAYER, FRAME_ENEMY, BULLET};

@@ -60,9 +60,6 @@
     <Filter Include="소스 파일\Shader\BulletShader">
       <UniqueIdentifier>{20226473-871f-4966-905e-940a44c3ef75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\ParticleShader">
-      <UniqueIdentifier>{e2e65fd6-b536-41b5-9304-c931922fc824}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Default_Header">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
@@ -84,6 +81,9 @@
     </Filter>
     <Filter Include="소스 파일\Mesh &amp; FrameMesh\Mesh">
       <UniqueIdentifier>{f6043d8b-e277-4d4f-8657-173399bdc880}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\FireParticleShader">
+      <UniqueIdentifier>{e2e65fd6-b536-41b5-9304-c931922fc824}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -141,12 +141,6 @@
     <ClInclude Include="BulletShader.h">
       <Filter>소스 파일\Shader\BulletShader</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleShader.h">
-      <Filter>소스 파일\Shader\ParticleShader</Filter>
-    </ClInclude>
-    <ClInclude Include="Particle.h">
-      <Filter>소스 파일\Object\GameObject\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="ExplosionParticle.h">
       <Filter>소스 파일\Object\GameObject\ExplosionParticle</Filter>
     </ClInclude>
@@ -158,6 +152,12 @@
     </ClInclude>
     <ClInclude Include="FrameMesh.h">
       <Filter>소스 파일\Mesh &amp; FrameMesh\FrameMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="FireParticleShader.h">
+      <Filter>소스 파일\Shader\FireParticleShader</Filter>
+    </ClInclude>
+    <ClInclude Include="FireParticle.h">
+      <Filter>소스 파일\Object\GameObject\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -206,12 +206,6 @@
     <ClCompile Include="BulletShader.cpp">
       <Filter>소스 파일\Shader\BulletShader</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleShader.cpp">
-      <Filter>소스 파일\Shader\ParticleShader</Filter>
-    </ClCompile>
-    <ClCompile Include="Particle.cpp">
-      <Filter>소스 파일\Object\GameObject\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="ExplosionParticleShader.cpp">
       <Filter>소스 파일\Shader\ExplosionParticleShader</Filter>
     </ClCompile>
@@ -223,6 +217,12 @@
     </ClCompile>
     <ClCompile Include="FrameMesh.cpp">
       <Filter>소스 파일\Mesh &amp; FrameMesh\FrameMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="FireParticleShader.cpp">
+      <Filter>소스 파일\Shader\FireParticleShader</Filter>
+    </ClCompile>
+    <ClCompile Include="FireParticle.cpp">
+      <Filter>소스 파일\Object\GameObject\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,15 +1,15 @@
 #include "stdafx.h"
-#include "ParticleShader.h"
+#include "FireParticleShader.h"
 
-CParticleShader::CParticleShader()
+CFireParticleShader::CFireParticleShader()
 {
 }
 
-CParticleShader::~CParticleShader()
+CFireParticleShader::~CFireParticleShader()
 {
 }
 
-void CParticleShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature)
+void CFireParticleShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature)
 {
 	m_nPipelineStates = 1;
 	m_ppd3dPipelineStates = new ID3D12PipelineState*[m_nPipelineStates];
@@ -17,7 +17,7 @@ void CParticleShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CShader::CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 }
 
-D3D12_RASTERIZER_DESC CParticleShader::CreateRasterizerState()
+D3D12_RASTERIZER_DESC CFireParticleShader::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
@@ -37,7 +37,7 @@ D3D12_RASTERIZER_DESC CParticleShader::CreateRasterizerState()
 	return(d3dRasterizerDesc);
 }
 
-D3D12_BLEND_DESC CParticleShader::CreateBlendState()
+D3D12_BLEND_DESC CFireParticleShader::CreateBlendState()
 {
 	D3D12_BLEND_DESC d3dBlendDesc;
 	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
@@ -57,17 +57,17 @@ D3D12_BLEND_DESC CParticleShader::CreateBlendState()
 	return(d3dBlendDesc);
 }
 
-D3D12_SHADER_BYTECODE CParticleShader::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+D3D12_SHADER_BYTECODE CFireParticleShader::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSFireParticle", "vs_5_1", ppd3dShaderBlob));
 }
 
-D3D12_SHADER_BYTECODE CParticleShader::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+D3D12_SHADER_BYTECODE CFireParticleShader::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSFireParticle", "ps_5_1", ppd3dShaderBlob));
 }
 
-void CParticleShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+void CFireParticleShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	//UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
 	//m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
@@ -79,7 +79,7 @@ void CParticleShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12Grap
 	m_pTextureAnimation->Map(0, NULL, (void**)&m_pMappedTextureAnimation);
 }
 
-void CParticleShader::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+void CFireParticleShader::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	//UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	UINT ncbElementBytes = ((sizeof(CB_TEXTURE_ANIMATION) + 255) & ~255); //256의 배수
@@ -94,15 +94,15 @@ void CParticleShader::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dComma
 		(*iter)->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 		CB_TEXTURE_ANIMATION* pMappedTextureAnimation = (CB_TEXTURE_ANIMATION *)((UINT8 *)m_pMappedTextureAnimation + (i * ncbElementBytes));
 		XMStoreFloat4x4(&pMappedTextureAnimation->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&(*iter)->m_xmf4x4World)));
-		pMappedTextureAnimation->m_elapsedTime = ((CParticle*)(*iter))->elapsedTime;
-		pMappedTextureAnimation->m_frameSheet = ((CParticle*)(*iter))->AnimationFrame;
+		pMappedTextureAnimation->m_elapsedTime = ((CFireParticle*)(*iter))->elapsedTime;
+		pMappedTextureAnimation->m_frameSheet = ((CFireParticle*)(*iter))->AnimationFrame;
 		++i;
 	}
 
 
 }
 
-void CParticleShader::ReleaseShaderVariables()
+void CFireParticleShader::ReleaseShaderVariables()
 {
 	if (m_pd3dcbGameObjects)
 	{
@@ -119,53 +119,40 @@ void CParticleShader::ReleaseShaderVariables()
 	CTexturedShader::ReleaseShaderVariables();
 }
 
-void CParticleShader::ReleaseUploadBuffers()
+void CFireParticleShader::ReleaseUploadBuffers()
 {
 	for (auto iter = m_FireParticleList.begin(); iter != m_FireParticleList.end(); ++iter)
 		(*iter)->ReleaseUploadBuffers();
 	
 }
 
-bool CParticleShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+bool CFireParticleShader::Initialize(CGameObject* pBullet, int id)
 {
-	switch (nMessageID)
+	if (pBullet)
 	{
-	case WM_KEYDOWN:
-		switch (wParam)
-		{
-			// 총알 발사 키
-		case VK_CONTROL:
-		{
-			if (m_pBullet)
-			{
-				CGameObject* pParticle = new CParticle;
-				pParticle->SetMesh(m_pFireParticleMesh);
-				pParticle->SetMaterial(m_pFireParticleMaterial);
-				pParticle->SetLook(m_pFramePlayer->GetLookVector());
-				//// 또한 플레이어의 Up벡터, Right벡터도 똑같이 설정해주어야 플레이어가 회전했을 때,
-				//// 총알 모양도 회전이 된 모양으로 바뀐다.
-				pParticle->SetUp(m_pFramePlayer->GetUpVector());
-				pParticle->SetRight(m_pFramePlayer->GetRightVector());
-				//// 총알의 생성위치는 플레이어의 위치로 설정
-				pParticle->SetPosition(m_pBullet->GetPosition().x, m_pBullet->GetPosition().y, m_pBullet->GetPosition().z);
-				// 총알이 나아가는 방향은 총알이 바라보는 방향으로 준다.
-				pParticle->SetMovingDirection(pParticle->GetLook());
-				m_FireParticleList.push_back(pParticle);
-				cout << "총알 파티클 생성 됨" << endl;
-			}
-			break;
-		}
-		default:
-			break;
-		}
-		break;
-	default:
-		break;
+		CGameObject* pParticle = new CFireParticle;
+		// id 설정
+		((CFireParticle*)pParticle)->SetID(id);
+		pParticle->SetMesh(m_pFireParticleMesh);
+		pParticle->SetMaterial(m_pFireParticleMaterial);
+		pParticle->SetLook(m_pFramePlayer->GetLookVector());
+		//// 또한 플레이어의 Up벡터, Right벡터도 똑같이 설정해주어야 플레이어가 회전했을 때,
+		//// 총알 모양도 회전이 된 모양으로 바뀐다.
+		pParticle->SetUp(m_pFramePlayer->GetUpVector());
+		pParticle->SetRight(m_pFramePlayer->GetRightVector());
+		//// 총알의 생성위치는 플레이어의 위치로 설정
+		pParticle->SetPosition(pBullet->GetPosition());
+		// 총알이 나아가는 방향은 총알이 바라보는 방향으로 준다.
+		pParticle->SetMovingDirection(pParticle->GetLook());
+		m_FireParticleList.push_back(pParticle);
+		cout << "총알 파티클 생성 됨" << endl;
+
+		return true;
 	}
-	return(false);
+	return false;
 }
 
-void CParticleShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+void CFireParticleShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
 	// 불꽃 파티클 메쉬 생성
 	// 총알의 모델좌표계에서 -5만큼 뒤에 위치하게 생성
@@ -184,12 +171,11 @@ void CParticleShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	m_nObjects = 100;
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-	//CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
 	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pTextureAnimation, ncbElementBytes);
 	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, m_pFireParticleTexture, 17, false);
 
 }
-void CParticleShader::ReleaseObjects()
+void CFireParticleShader::ReleaseObjects()
 {
 	for (auto iter = m_FireParticleList.begin(); iter != m_FireParticleList.end(); )
 	{
@@ -200,36 +186,27 @@ void CParticleShader::ReleaseObjects()
 	m_FireParticleList.clear();
 }
 
-void CParticleShader::AnimateObjects(float fTimeElapsed)
+void CFireParticleShader::AnimateObjects(float fTimeElapsed)
 {
-	double distance = 0.f;
-
-	// 플레이어의 총알 리스트를 루프를 통해 순회하면서, 애니메이트 시켜준다.
 	for (auto iter = m_FireParticleList.begin(); iter != m_FireParticleList.end();)
 	{
-		// 플레이어 위치와 총알의 위치 거리를 계산하는 공식이다. 
-		distance = sqrt((pow(((*iter)->GetPosition().x - m_pFramePlayer->GetPosition().x), 2.0)
-			+ pow(((*iter)->GetPosition().y - m_pFramePlayer->GetPosition().y), 2.0)
-			+ pow(((*iter)->GetPosition().z - m_pFramePlayer->GetPosition().z), 2.0)));
-
-		// 플레이어와 총알의 거리가 250m보다 커지면, 총알의 유효사거리를 벗어난거므로
-			// 총알을 계속 그리지 않고, 지워주어야 프레임레이트를 올릴 수 있다.
-		if (distance >= MaxBulletDistance)
+		// 총알이 충돌된 상태
+		if (((CFireParticle*)(*iter))->GetID() == m_DeleteID)
 		{
-			cout << "총알 날라가는 파티클 거리벗어남 삭제" << endl;
+			//cout << "총알이 삭제되서 날라가는 Fire파티클 삭제" << endl;
 			delete (*iter);
 			iter = m_FireParticleList.erase(iter);
 		}
 		else
 		{
-			((CParticle*)(*iter))->Animate(fTimeElapsed);
+			((CFireParticle*)(*iter))->Animate(fTimeElapsed);
 			++iter;
 		}
 	}
 }
 
 
-void CParticleShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+void CFireParticleShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	CTexturedShader::Render(pd3dCommandList, pCamera);
 	UpdateShaderVariables(pd3dCommandList);

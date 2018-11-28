@@ -98,7 +98,8 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pSuperCobraObject->Rotate(0.0f, -90.0f, 0.0f);
 	pSuperCobraObject->SetType(FRAME_ENEMY);
 	pSuperCobraObject->SetMovingSpeed(urd_Speed(dre));
-	pSuperCobraObject->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(4.4564136, 4.075218, 13.4293), XMFLOAT4(0., 0., 0., 1.));
+	//pSuperCobraObject->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(4.4564136, 4.075218, 13.4293), XMFLOAT4(0., 0., 0., 1.));
+	pSuperCobraObject->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(2.4564136, 2.075218, 8.4293), XMFLOAT4(0., 0., 0., 1.));
 	m_ppFrameObjects[0] = pSuperCobraObject;
 
 	CGunshipObject *pGunshipObject = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -128,7 +129,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	}
 	if (!m_pFireParticleShader)
 	{
-		m_pFireParticleShader = new CParticleShader;
+		m_pFireParticleShader = new CFireParticleShader;
 		m_pFireParticleShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 		m_pFireParticleShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
 	}
@@ -512,9 +513,8 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case VK_CONTROL:
 			if (m_pBulletShader && m_pFramePlayer && m_pFireParticleShader)
 			{
+				m_pBulletShader->SetParticleShader(m_pFireParticleShader);
 				m_pBulletShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
-				m_pFireParticleShader->SetBullet(m_pBulletShader->GetBullet());
-				m_pFireParticleShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 			}
 
 			break;
@@ -623,8 +623,8 @@ void CScene::CheckObjectByObjectCollisions()
 					{
 						(*iter)->SetFrameObjectCollided(m_ppFrameObjects[i]);
 						m_ppFrameObjects[i]->SetObjectCollided((*iter));
-
 						cout << i << "¹øÂ° ¸ó½ºÅÍ¶û Ãæµ¹ µÊ?" << endl;
+						((CBullet*)(*iter))->SetCollision(true);
 					}
 				}
 			}
