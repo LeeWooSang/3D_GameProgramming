@@ -233,9 +233,10 @@ void CParticleShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera
 {
 	CTexturedShader::Render(pd3dCommandList, pCamera);
 	UpdateShaderVariables(pd3dCommandList);
-
+	XMFLOAT3 xmf3CameraPosition = pCamera->GetPosition();
 	for (auto iter = m_FireParticleList.begin(); iter != m_FireParticleList.end(); ++iter)
 	{
+		//(*iter)->SetLookAt(xmf3CameraPosition, XMFLOAT3(0.f, 1.f, 0.f));
 		((*iter))->Render(pd3dCommandList, pCamera);
 	}
 }

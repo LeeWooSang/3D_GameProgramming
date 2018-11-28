@@ -23,7 +23,7 @@ void CExplosionParticle::Animate(float fElapsedTime)
 {
 	elapsedTime += fElapsedTime * 5;
 	m_ExplosionTime += fElapsedTime;
-	if (m_ExplosionTime > 3.f)
+	if (m_ExplosionTime > 1.f)
 	{
 		m_OnExplosion = true;
 	}
