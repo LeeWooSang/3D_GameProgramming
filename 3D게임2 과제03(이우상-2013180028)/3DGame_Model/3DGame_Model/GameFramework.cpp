@@ -445,6 +445,7 @@ void CGameFramework::BuildObjects()
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 	CFrameAirplanePlayer* pFrameAirplanePlayer = new CFrameAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
 	pFrameAirplanePlayer->SetPosition(XMFLOAT3(500.0f, 300.0f, 500.0f));
+	pFrameAirplanePlayer->SetOOBB(XMFLOAT3(0., - 0.4104749, - 0.1651983), XMFLOAT3(5.527609, 3.596935, 13.77832), XMFLOAT4(0., 0., 0., 1.));
 	m_pFramePlayer = pFrameAirplanePlayer;
 	m_pScene->SetFramePlayer(m_pFramePlayer);
 

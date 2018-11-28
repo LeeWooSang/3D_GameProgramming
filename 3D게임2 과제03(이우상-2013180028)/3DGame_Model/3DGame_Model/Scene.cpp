@@ -98,6 +98,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pSuperCobraObject->Rotate(0.0f, -90.0f, 0.0f);
 	pSuperCobraObject->SetType(FRAME_ENEMY);
 	pSuperCobraObject->SetMovingSpeed(urd_Speed(dre));
+	pSuperCobraObject->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(4.4564136, 4.075218, 13.4293), XMFLOAT4(0., 0., 0., 1.));
 	m_ppFrameObjects[0] = pSuperCobraObject;
 
 	CGunshipObject *pGunshipObject = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -105,6 +106,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pGunshipObject->Rotate(0.0f, 90.0f, 0.0f);
 	pGunshipObject->SetType(FRAME_ENEMY);
 	pGunshipObject->SetMovingSpeed(urd_Speed(dre));
+	pGunshipObject->SetOOBB(XMFLOAT3(0., 1.012005, -4.939685), XMFLOAT3(4.68473, 4.079505, 13.53696), XMFLOAT4(0., 0., 0., 1.));
 	m_ppFrameObjects[1] = pGunshipObject;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -557,6 +559,8 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		m_pExplosionParticleShader->AnimateObjects(fTimeElapsed);
 		m_pFireParticleShader->AnimateObjects(fTimeElapsed);
 
+		CheckObjectByObjectCollisions();
+
 		if (m_pLights)
 		{
 			m_pLights[1].m_xmf3Position = m_pFramePlayer->GetPosition();
@@ -603,3 +607,27 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 
 }
 
+void CScene::CheckObjectByObjectCollisions()
+{
+	if (m_pFramePlayer)
+	{
+		// 총알과 몬스터와의 충돌체크
+		if (m_ppFrameObjects && m_pBulletShader)
+		{
+			list<CGameObject*> pBulletList = m_pBulletShader->GetBulletList();
+			for (auto iter = pBulletList.begin(); iter != pBulletList.end(); ++iter)
+			{
+				for (int i = 0; i < m_nFrameObjects; ++i)
+				{
+					if ((*iter)->m_xmOOBB.Intersects(m_ppFrameObjects[i]->m_xmOOBB))
+					{
+						(*iter)->SetFrameObjectCollided(m_ppFrameObjects[i]);
+						m_ppFrameObjects[i]->SetObjectCollided((*iter));
+
+						cout << i << "번째 몬스터랑 충돌 됨?" << endl;
+					}
+				}
+			}
+		}
+	}
+}

@@ -27,9 +27,8 @@ public:
 	void SetFramePlayer(CFramePlayer* p) { m_pFramePlayer = p; }
 
 	CGameObject* GetBullet()			const { return m_pBullet; }
-
+	list<CGameObject*>& GetBulletList() { return m_BulletList; }
 	void SetExplosionParticleShader(CExplosionParticleShader* pExplosionParticleShader) { m_pExplosionParticleShader = pExplosionParticleShader; }
-
 private:
 	int											m_nObjects = 0;
 

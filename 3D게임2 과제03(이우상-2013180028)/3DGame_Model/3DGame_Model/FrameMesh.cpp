@@ -61,6 +61,7 @@ void CFrameMesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet)
 
 CStandardMesh::CStandardMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList) : CFrameMesh(pd3dDevice, pd3dCommandList)
 {
+	m_xmOOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
 CStandardMesh::~CStandardMesh()

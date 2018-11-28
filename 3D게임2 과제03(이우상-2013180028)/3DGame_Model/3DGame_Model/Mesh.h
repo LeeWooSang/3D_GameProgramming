@@ -75,7 +75,7 @@ public:
     virtual ~CMesh();
 
 private:
-	int								m_nReferences = 0;
+	int											m_nReferences = 0;
 
 public:
 	void AddRef() { m_nReferences++; }
@@ -103,8 +103,12 @@ protected:
 	UINT							m_nStartIndex = 0;
 	int								m_nBaseVertex = 0;
 
+	BoundingOrientedBox			m_xmOOBB;
+	
 public:
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList);
+
+	BoundingOrientedBox GetBoundingBox() { return m_xmOOBB; }
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -34,6 +34,7 @@ protected:
 
 	UINT							m_nType = 0x00;
 
+	BoundingOrientedBox		m_xmOOBB;
 	XMFLOAT3						m_xmf3AABBCenter = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3						m_xmf3AABBExtents = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
@@ -41,24 +42,25 @@ protected:
 	UINT							m_nSlot = 0;
 	UINT							m_nOffset = 0;
 
-protected:
-	int								m_nVertices = 0;
+	int												m_nVertices = 0;
 
-	XMFLOAT3						*m_pxmf3Positions = NULL;
+	XMFLOAT3*								m_pxmf3Positions = NULL;
 
-	ID3D12Resource					*m_pd3dPositionBuffer = NULL;
-	ID3D12Resource					*m_pd3dPositionUploadBuffer = NULL;
-	D3D12_VERTEX_BUFFER_VIEW		m_d3dPositionBufferView;
+	ID3D12Resource*						m_pd3dPositionBuffer = NULL;
+	ID3D12Resource*						m_pd3dPositionUploadBuffer = NULL;
+	D3D12_VERTEX_BUFFER_VIEW	m_d3dPositionBufferView;
 
-	int								m_nSubMeshes = 0;
-	int								*m_pnSubSetIndices = NULL;
-	UINT							**m_ppnSubSetIndices = NULL;
+	int												m_nSubMeshes = 0;
+	int*											m_pnSubSetIndices = NULL;
+	UINT**										m_ppnSubSetIndices = NULL;
 
-	ID3D12Resource					**m_ppd3dSubSetIndexBuffers = NULL;
-	ID3D12Resource					**m_ppd3dSubSetIndexUploadBuffers = NULL;
-	D3D12_INDEX_BUFFER_VIEW			*m_pd3dSubSetIndexBufferViews = NULL;
+	ID3D12Resource**					m_ppd3dSubSetIndexBuffers = NULL;
+	ID3D12Resource**					m_ppd3dSubSetIndexUploadBuffers = NULL;
+	D3D12_INDEX_BUFFER_VIEW*	m_pd3dSubSetIndexBufferViews = NULL;
 
 public:
+
+	BoundingOrientedBox GetBoundingBox() { return m_xmOOBB; }
 	UINT GetType() { return(m_nType); }
 
 	virtual void ReleaseUploadBuffers();

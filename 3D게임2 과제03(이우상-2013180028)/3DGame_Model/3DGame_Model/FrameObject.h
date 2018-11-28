@@ -2,6 +2,7 @@
 
 #include "FrameMesh.h"
 #include "Camera.h"
+#include "GameObject.h"
 
 class CShader;
 class CStandardShader;
@@ -113,7 +114,9 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
+class CGameObject;
+
 class CFrameObject
 {
 public:
@@ -187,6 +190,15 @@ public:
 
 	UINT GetMeshType() { return((m_pMesh) ? m_pMesh->GetType() : 0x00); }
 
+	BoundingOrientedBox m_xmOOBB;
+	BoundingOrientedBox m_xmOOBBTransformed;
+	BoundingOrientedBox GetBoundingBox() { return m_xmOOBB; }
+	void SetOOBB(XMFLOAT3& xmCenter, XMFLOAT3& xmExtents, XMFLOAT4& xmOrientation)
+	{ m_xmOOBBTransformed = m_xmOOBB = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation); }
+
+	CGameObject* GetObjectCollided() { return m_pObjectCollided; }
+	void SetObjectCollided(CGameObject* value) { m_pObjectCollided = value; }
+
 public:
 	void LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, CFrameObject *pParent, FILE *pInFile);
 
@@ -215,6 +227,7 @@ protected:
 	XMFLOAT3						m_xmf3Up;
 	XMFLOAT3						m_xmf3Look;
 
+	CGameObject*		m_pObjectCollided{ nullptr };
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

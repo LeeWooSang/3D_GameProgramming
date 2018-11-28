@@ -15,9 +15,6 @@
     <Filter Include="소스 파일\Camera">
       <UniqueIdentifier>{b893368a-6923-4873-8121-ba2df018441b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Mesh">
-      <UniqueIdentifier>{d63d739a-c375-46b2-8361-3af28d0cabe3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Shader">
       <UniqueIdentifier>{6f7042d4-c575-4d38-98d0-710895063daf}</UniqueIdentifier>
     </Filter>
@@ -38,9 +35,6 @@
     </Filter>
     <Filter Include="소스 파일\TextureLoader\WICTexture">
       <UniqueIdentifier>{c4aad44d-4c2b-4bc6-a4a7-4956860602b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Mesh\FrameMesh">
-      <UniqueIdentifier>{89a534a5-4599-4e29-b942-6ae941821ebf}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Object">
       <UniqueIdentifier>{f7e2d53b-d5c8-43a6-b5b2-2b770c2ee229}</UniqueIdentifier>
@@ -82,6 +76,15 @@
     <Filter Include="소스 파일\Object\GameObject\ExplosionParticle">
       <UniqueIdentifier>{3eae2811-d003-41cb-8acc-40ba00287201}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Mesh &amp; FrameMesh">
+      <UniqueIdentifier>{d63d739a-c375-46b2-8361-3af28d0cabe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh &amp; FrameMesh\FrameMesh">
+      <UniqueIdentifier>{380b4075-b581-4116-8b72-2a69f2279408}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh &amp; FrameMesh\Mesh">
+      <UniqueIdentifier>{f6043d8b-e277-4d4f-8657-173399bdc880}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -101,9 +104,6 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>소스 파일\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>소스 파일\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>소스 파일\Shader</Filter>
@@ -153,6 +153,12 @@
     <ClInclude Include="ExplosionParticleShader.h">
       <Filter>소스 파일\Shader\ExplosionParticleShader</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>소스 파일\Mesh &amp; FrameMesh\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameMesh.h">
+      <Filter>소스 파일\Mesh &amp; FrameMesh\FrameMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Model.cpp">
@@ -166,9 +172,6 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>소스 파일\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>소스 파일\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>소스 파일\Shader</Filter>
@@ -194,9 +197,6 @@
     <ClCompile Include="FrameObject.cpp">
       <Filter>소스 파일\Object\FrameObject</Filter>
     </ClCompile>
-    <ClCompile Include="FrameMesh.cpp">
-      <Filter>소스 파일\Mesh\FrameMesh</Filter>
-    </ClCompile>
     <ClCompile Include="FramePlayer.cpp">
       <Filter>소스 파일\Object\FrameObject\FramePlayer</Filter>
     </ClCompile>
@@ -217,6 +217,12 @@
     </ClCompile>
     <ClCompile Include="ExplosionParticle.cpp">
       <Filter>소스 파일\Object\GameObject\ExplosionParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일\Mesh &amp; FrameMesh\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameMesh.cpp">
+      <Filter>소스 파일\Mesh &amp; FrameMesh\FrameMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

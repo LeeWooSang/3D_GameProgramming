@@ -38,9 +38,10 @@ void CBullet::Animate(float fElapsedTime)
 	// 총알의 이동속도가 0이 아니면 이동을 한다.
 	if (m_fMovingSpeed != 0.0f)
 		Move(m_xmf3MovingDirection, m_fMovingSpeed * fElapsedTime);
+
 	// 총알의 충돌박스를 계속 애니메이트 해주어야 총알의 위치가 변함에따라 충돌 박스도 같이 위치가 변한다.
-	//m_xmOOBBTransformed.Transform(m_xmOOBB, XMLoadFloat4x4(&m_xmf4x4World));
-	//XMStoreFloat4(&m_xmOOBBTransformed.Orientation, XMQuaternionNormalize(XMLoadFloat4(&m_xmOOBBTransformed.Orientation)));
+	m_xmOOBBTransformed.Transform(m_xmOOBB, XMLoadFloat4x4(&m_xmf4x4World));
+	XMStoreFloat4(&m_xmOOBBTransformed.Orientation, XMQuaternionNormalize(XMLoadFloat4(&m_xmOOBBTransformed.Orientation)));
 }
 
 void CBullet::OnPrepareRender()

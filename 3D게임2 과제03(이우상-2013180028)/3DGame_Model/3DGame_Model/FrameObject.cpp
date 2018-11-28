@@ -356,6 +356,9 @@ void CFrameObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 			SetPosition(Vector3::Add(xmf3Position, Temp));
 		}	
 	}
+
+	m_xmOOBBTransformed.Transform(m_xmOOBB, XMLoadFloat4x4(&m_xmf4x4World));
+	XMStoreFloat4(&m_xmOOBBTransformed.Orientation, XMQuaternionNormalize(XMLoadFloat4(&m_xmOOBBTransformed.Orientation)));
 }
 
 CFrameObject *CFrameObject::FindFrame(char *pstrFrameName)

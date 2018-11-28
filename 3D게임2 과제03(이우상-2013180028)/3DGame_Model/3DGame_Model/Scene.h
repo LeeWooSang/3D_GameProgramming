@@ -65,6 +65,7 @@ public:
 	CFramePlayer* GetFramePlayer() const { return m_pFramePlayer; }
 	void SetFramePlayer(CFramePlayer* p) { m_pFramePlayer = p; }
 
+	void CheckObjectByObjectCollisions();
 protected:
 	ID3D12RootSignature*		m_pd3dGraphicsRootSignature = NULL;
 	CShader**						m_ppShaders = NULL;
