@@ -62,17 +62,21 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUSrvDescriptorStartHandle() { return(m_d3dSrvCPUDescriptorStartHandle); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUSrvDescriptorStartHandle() { return(m_d3dSrvGPUDescriptorStartHandle); }
 
+	virtual void CreateGraphicsRootSignature(ID3D12Device *pd3dDevice) { }
+	ID3D12RootSignature*	GetGraphicsRootSignature()	{ return m_pd3dGraphicsRootSignature; }
 protected:
-	ID3D12PipelineState**				m_ppd3dPipelineStates = NULL;
-	int												m_nPipelineStates = 0;
+	ID3D12PipelineState**									m_ppd3dPipelineStates = NULL;
+	int																	m_nPipelineStates = 0;
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_d3dPipelineStateDesc;
 
 
-	ID3D12DescriptorHeap*			m_pd3dCbvSrvDescriptorHeap = NULL;
-	D3D12_CPU_DESCRIPTOR_HANDLE		m_d3dCbvCPUDescriptorStartHandle;
-	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorStartHandle;
-	D3D12_CPU_DESCRIPTOR_HANDLE		m_d3dSrvCPUDescriptorStartHandle;
-	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dSrvGPUDescriptorStartHandle;
+	ID3D12DescriptorHeap*								m_pd3dCbvSrvDescriptorHeap = NULL;
+	D3D12_CPU_DESCRIPTOR_HANDLE				m_d3dCbvCPUDescriptorStartHandle;
+	D3D12_GPU_DESCRIPTOR_HANDLE				m_d3dCbvGPUDescriptorStartHandle;
+	D3D12_CPU_DESCRIPTOR_HANDLE				m_d3dSrvCPUDescriptorStartHandle;
+	D3D12_GPU_DESCRIPTOR_HANDLE				m_d3dSrvGPUDescriptorStartHandle;
+
+	ID3D12RootSignature*									m_pd3dGraphicsRootSignature = NULL;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

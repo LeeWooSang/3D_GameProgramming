@@ -85,6 +85,9 @@
     <Filter Include="소스 파일\Shader\FireParticleShader">
       <UniqueIdentifier>{e2e65fd6-b536-41b5-9304-c931922fc824}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Shader\PostProcessingShader">
+      <UniqueIdentifier>{691e16d7-8757-4505-8bef-2b0180292a0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -159,6 +162,9 @@
     <ClInclude Include="FireParticle.h">
       <Filter>소스 파일\Object\GameObject\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="PostProcessingShader.h">
+      <Filter>소스 파일\Shader\PostProcessingShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Model.cpp">
@@ -223,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="FireParticle.cpp">
       <Filter>소스 파일\Object\GameObject\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessingShader.cpp">
+      <Filter>소스 파일\Shader\PostProcessingShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

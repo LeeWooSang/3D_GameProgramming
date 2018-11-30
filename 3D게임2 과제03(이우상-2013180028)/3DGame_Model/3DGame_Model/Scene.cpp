@@ -90,25 +90,41 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	CFrameMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0, 17 + 2 + 1); 
 	BuildDefaultLightsAndMaterials();
 
+	//m_nFrameObjects = 2;
 	m_nFrameObjects = 2;
 	m_ppFrameObjects = new CFrameObject*[m_nFrameObjects];
 
-	CSuperCobraObject *pSuperCobraObject = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	pSuperCobraObject->SetPosition(400.0f, 300.0f, 400.0f);
+	CSuperCobraObject* pSuperCobraObject = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pSuperCobraObject->SetPosition(400.f, 300.f, 400.f);
 	pSuperCobraObject->Rotate(0.0f, -90.0f, 0.0f);
 	pSuperCobraObject->SetType(FRAME_ENEMY);
 	pSuperCobraObject->SetMovingSpeed(urd_Speed(dre));
-	//pSuperCobraObject->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(4.4564136, 4.075218, 13.4293), XMFLOAT4(0., 0., 0., 1.));
 	pSuperCobraObject->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(2.4564136, 2.075218, 8.4293), XMFLOAT4(0., 0., 0., 1.));
 	m_ppFrameObjects[0] = pSuperCobraObject;
 
 	CGunshipObject *pGunshipObject = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	pGunshipObject->SetPosition(450.0f, 300.0f, 450.0f);
+	pGunshipObject->SetPosition(550.f, 300.f, 550.f);
 	pGunshipObject->Rotate(0.0f, 90.0f, 0.0f);
 	pGunshipObject->SetType(FRAME_ENEMY);
 	pGunshipObject->SetMovingSpeed(urd_Speed(dre));
 	pGunshipObject->SetOOBB(XMFLOAT3(0., 1.012005, -4.939685), XMFLOAT3(4.68473, 4.079505, 13.53696), XMFLOAT4(0., 0., 0., 1.));
 	m_ppFrameObjects[1] = pGunshipObject;
+
+	//CSuperCobraObject* pSuperCobraObject2 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pSuperCobraObject2->SetPosition(450.f, 300.f, 450.f);
+	//pSuperCobraObject2->Rotate(0.0f, -90.0f, 0.0f);
+	//pSuperCobraObject2->SetType(FRAME_ENEMY);
+	//pSuperCobraObject2->SetMovingSpeed(urd_Speed(dre));
+	//pSuperCobraObject2->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(2.4564136, 2.075218, 8.4293), XMFLOAT4(0., 0., 0., 1.));
+	//m_ppFrameObjects[2] = pSuperCobraObject2;
+
+	//CGunshipObject* pGunshipObject2 = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pGunshipObject2->SetPosition(550.f, 300.0f, 550.f);
+	//pGunshipObject2->Rotate(0.0f, 90.0f, 0.0f);
+	//pGunshipObject2->SetType(FRAME_ENEMY);
+	//pGunshipObject2->SetMovingSpeed(urd_Speed(dre));
+	//pGunshipObject2->SetOOBB(XMFLOAT3(0., 1.012005, -4.939685), XMFLOAT3(4.68473, 4.079505, 13.53696), XMFLOAT4(0., 0., 0., 1.));
+	//m_ppFrameObjects[3] = pGunshipObject2;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
@@ -244,8 +260,8 @@ void CScene::ReleaseUploadBuffers()
 
 ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
 {
-	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
-	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[15];
+	ID3D12RootSignature*				pd3dGraphicsRootSignature = NULL;
+	D3D12_DESCRIPTOR_RANGE	pd3dDescriptorRanges[15];
 
 	pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 	pd3dDescriptorRanges[0].NumDescriptors = 1;
