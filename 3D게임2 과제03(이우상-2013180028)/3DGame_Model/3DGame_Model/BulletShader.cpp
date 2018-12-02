@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "BulletShader.h"
 
+// static 변수
+int CBulletShader::m_BulletCount = 0;
 CBulletShader::CBulletShader()
 {
 }
@@ -57,6 +59,12 @@ D3D12_SHADER_BYTECODE CBulletShader::CreatePixelShader(ID3DBlob **ppd3dShaderBlo
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSBullet", "ps_5_1", ppd3dShaderBlob));
 }
 
+void CBulletShader::ReleaseUploadBuffers()
+{
+	for (auto iter = m_BulletList.begin(); iter != m_BulletList.end(); ++iter)
+		(*iter)->ReleaseUploadBuffers();
+}
+
 void CBulletShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
 	// 총알로 사용할 큐브 메쉬 생성
@@ -89,9 +97,10 @@ bool CBulletShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPAR
 			if (m_pFramePlayer)
 			{
 				CGameObject* pBullet = new CBullet;
+				// ID는 1번부터 시작
+				((CBullet*)pBullet)->SetID(++m_BulletCount);
 				pBullet->SetMesh(m_pBulletTexturedMesh);
 				pBullet->SetMaterial(m_pBulletMaterial);
-
 				pBullet->SetLook(m_pFramePlayer->GetLookVector());
 				// 또한 플레이어의 Up벡터, Right벡터도 똑같이 설정해주어야 플레이어가 회전했을 때,
 				// 총알 모양도 회전이 된 모양으로 바뀐다.
@@ -101,8 +110,9 @@ bool CBulletShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPAR
 				pBullet->SetPosition(m_pFramePlayer->GetPosition());
 				// 총알이 나아가는 방향은 총알이 바라보는 방향으로 준다.
 				pBullet->SetMovingDirection(pBullet->GetLook());
-				cout << "총알 생성 됨" << endl;
 				m_BulletList.push_back(pBullet);
+				cout << "총알 생성 됨" << endl;
+				m_pFireParticleShader->Initialize(pBullet, m_BulletCount);
 			}
 			break;
 		}
@@ -135,57 +145,62 @@ void CBulletShader::AnimateObjects(float fTimeElapsed)
 {
 	double distance = 0.f;
 
-	// 플레이어의 총알 리스트를 루프를 통해 순회하면서, 애니메이트 시켜준다.
-	for (auto iter = m_BulletList.begin(); iter != m_BulletList.end();)
+	if (m_pExplosionParticleShader)
 	{
-		// 플레이어 위치와 총알의 위치 거리를 계산하는 공식이다. 
-		distance = sqrt( (pow(((*iter)->GetPosition().x - m_pFramePlayer->GetPosition().x), 2.0)
-				+ pow(((*iter)->GetPosition().y - m_pFramePlayer->GetPosition().y), 2.0)
-				+ pow(((*iter)->GetPosition().z - m_pFramePlayer->GetPosition().z), 2.0)) );
-
-		// 플레이어와 총알의 거리가 250m보다 커지면, 총알의 유효사거리를 벗어난거므로
-			// 총알을 계속 그리지 않고, 지워주어야 프레임레이트를 올릴 수 있다.
-		if (distance >= MaxBulletDistance)
+		// 플레이어의 총알 리스트를 루프를 통해 순회하면서, 애니메이트 시켜준다.
+		for (auto iter = m_BulletList.begin(); iter != m_BulletList.end();)
 		{
-			cout << "플레이어 총알 거리벗어남 삭제" << endl;
-			delete (*iter);
-			iter = m_BulletList.erase(iter);
+			// 총알이 충돌이라면
+			if (((CBullet*)(*iter))->GetCollision() == true)
+			{
+				// 삭제해야하는 Fire파티클 ID를 넘겨준다.
+				m_pFireParticleShader->SetDeleteFireParticleID(((CBullet*)(*iter))->GetID());
+
+				// 마지막에 터지는 파티클을 총알의 위치에 생성
+				m_pExplosionParticleShader->Initialize((*iter)->GetPosition());
+
+				// 총알 삭제
+				delete (*iter);
+				iter = m_BulletList.erase(iter);
+			}
+			// 충돌된 총알이 아니면
+			else
+			{
+				// 플레이어 위치와 총알의 위치 거리를 계산하는 공식이다. 
+				distance = sqrt((pow(((*iter)->GetPosition().x - m_pFramePlayer->GetPosition().x), 2.0)
+					+ pow(((*iter)->GetPosition().y - m_pFramePlayer->GetPosition().y), 2.0)
+					+ pow(((*iter)->GetPosition().z - m_pFramePlayer->GetPosition().z), 2.0)));
+
+				// 플레이어와 총알의 거리가 250m보다 커지면, 총알의 유효사거리를 벗어난거므로
+					// 총알을 계속 그리지 않고, 지워주어야 프레임레이트를 올릴 수 있다.
+				if (distance >= MaxBulletDistance)
+				{
+					// 삭제해야하는 Fire파티클 ID를 넘겨준다.
+					m_pFireParticleShader->SetDeleteFireParticleID(((CBullet*)(*iter))->GetID());
+
+					// 마지막에 터지는 파티클을 총알의 위치에 생성
+					m_pExplosionParticleShader->Initialize((*iter)->GetPosition());
+
+					// 총알 삭제
+					delete (*iter);
+					iter = m_BulletList.erase(iter);
+					cout << "플레이어 총알 거리벗어남 삭제" << endl;
+				}
+				else
+				{
+					((CBullet*)(*iter))->Animate(fTimeElapsed);
+					++iter;
+				}
+			}
 		}
-		else
-		{
-			((CBullet*)(*iter))->Animate(fTimeElapsed);
-			++iter;
-		}
-			
-		//cout << "총알 위치 : " << (*iter)->GetPosition().x
-		//	<< ", " << (*iter)->GetPosition().y
-		//	<< ", " << (*iter)->GetPosition().z << endl;
 	}
-}
-
-void CBulletShader::ReleaseUploadBuffers()
-{
-	if (m_ppObjects)
-	{
-		//for (int j = 0; j < m_nObjects; j++) 
-		//	if (m_ppObjects[j]) m_ppObjects[j]->ReleaseUploadBuffers();
-
-		for (auto iter = m_BulletList.begin(); iter != m_BulletList.end(); ++iter)
-			(*iter)->ReleaseUploadBuffers();
-	}
-
-
 }
 
 void CBulletShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	CTexturedShader::Render(pd3dCommandList, pCamera);
 	UpdateShaderVariables(pd3dCommandList);
-	//for (int j = 0; j < m_nObjects; j++)
-	//{
-	//	if (m_ppObjects[j])
-	//		m_ppObjects[j]->Render(pd3dCommandList, pCamera);
-	//}
+
 	for (auto iter = m_BulletList.begin(); iter != m_BulletList.end(); ++iter)
 	{
 		((*iter))->Render(pd3dCommandList, pCamera);

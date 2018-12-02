@@ -6,7 +6,7 @@
 
 #include "Mesh.h"
 #include "Camera.h"
-
+#include "FrameObject.h"
 class CShader;
 
 struct CB_GAMEOBJECT_INFO
@@ -54,6 +54,9 @@ public:
 	void ReleaseShaderVariables();
 
 	void LoadTextureFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, wchar_t *pszFileName, UINT nIndex);
+	void LoadTextureFromWICFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, wchar_t *pszFileName, UINT nIndex);
+
+	ID3D12Resource *CreateTexture(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, UINT nWidth, UINT nHeight, DXGI_FORMAT dxgiFormat, D3D12_RESOURCE_FLAGS d3dResourceFlags, D3D12_RESOURCE_STATES d3dResourceStates, D3D12_CLEAR_VALUE *pd3dClearValue, UINT nIndex);
 
 	int GetTextures() { return(m_nTextures); }
 	ID3D12Resource *GetTexture(int nIndex) { return(m_ppd3dTextures[nIndex]); }
@@ -94,6 +97,7 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
+class CFrameObject;
 class CGameObject
 {
 public:
@@ -114,10 +118,12 @@ public:
 
 	BoundingOrientedBox m_xmOOBB;
 	BoundingOrientedBox m_xmOOBBTransformed;
+	BoundingOrientedBox GetBoundingBox() { return m_xmOOBB; }
 	void SetOOBB(XMFLOAT3& xmCenter, XMFLOAT3& xmExtents, XMFLOAT4& xmOrientation)
-	{
-		m_xmOOBBTransformed = m_xmOOBB = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation);
-	}
+	{ m_xmOOBBTransformed = m_xmOOBB = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation); }
+
+	CFrameObject* GetFrameObjectCollided() { return m_pFrameObjectCollided; }
+	void SetFrameObjectCollided(CFrameObject* value) { m_pFrameObjectCollided = value; }
 
 protected:
 	ID3D12Resource*							m_pd3dcbGameObject = NULL;
@@ -134,6 +140,7 @@ protected:
 	XMFLOAT3	m_xmf3Up;
 	XMFLOAT3	m_xmf3Look;
 
+	CFrameObject*	m_pFrameObjectCollided{ nullptr };
 public:
 	void SetMesh(int nIndex, CMesh *pMesh);
 	void SetMesh(CMesh* pMesh);

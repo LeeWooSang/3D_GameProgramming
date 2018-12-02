@@ -307,7 +307,7 @@ void CFrameObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 	if (m_pSibling) m_pSibling->Animate(fTimeElapsed, pxmf4x4Parent);
 	if (m_pChild) m_pChild->Animate(fTimeElapsed, &m_xmf4x4World);
 
-	if (m_Type == FRAME_ENEMY)
+	if (m_Type == FRAME_ENEMY && m_pTarget)
 	{
 		// 몬스터나 보스 몬스터의 월드 좌표를 임시변수에 넣어준다
 		XMFLOAT3 xmf3Position(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
@@ -356,6 +356,9 @@ void CFrameObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 			SetPosition(Vector3::Add(xmf3Position, Temp));
 		}	
 	}
+
+	m_xmOOBBTransformed.Transform(m_xmOOBB, XMLoadFloat4x4(&m_xmf4x4World));
+	XMStoreFloat4(&m_xmOOBBTransformed.Orientation, XMQuaternionNormalize(XMLoadFloat4(&m_xmOOBBTransformed.Orientation)));
 }
 
 CFrameObject *CFrameObject::FindFrame(char *pstrFrameName)

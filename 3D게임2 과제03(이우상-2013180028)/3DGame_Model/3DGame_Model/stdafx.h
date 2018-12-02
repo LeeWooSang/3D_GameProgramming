@@ -58,11 +58,12 @@ using Microsoft::WRL::ComPtr;
 #include <vector>
 #include <list>
 #include <random>
+#include <string>
 using namespace std;
 
 enum OBJECT_TYPE {FRAME_PLAYER, FRAME_ENEMY, BULLET};
-const double DISTANCE_TO_TARGET_OBJECT = 5.0f;
-
+const float DISTANCE_TO_TARGET_OBJECT = 5.0f;
+const float ANIMATION_COOLTIME = 0.1f;
 #define DIR_FORWARD			0x01
 #define DIR_BACKWARD			0x02
 #define DIR_LEFT						0x04
@@ -89,8 +90,10 @@ extern ID3D12Resource *CreateTextureResourceFromDDSFile(ID3D12Device *pd3dDevice
 extern ID3D12Resource *CreateTextureResourceFromWICFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, wchar_t *pszFileName, ID3D12Resource **ppd3dUploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 extern D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(D3D12_RESOURCE_DESC d3dResourceDesc, UINT nTextureType);
 
-#define RANDOM_COLOR	XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX))
+extern ID3D12Resource *CreateTexture2DResource(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, UINT nWidth, UINT nHeight, DXGI_FORMAT dxgiFormat, D3D12_RESOURCE_FLAGS d3dResourceFlags, D3D12_RESOURCE_STATES d3dResourceStates, D3D12_CLEAR_VALUE *pd3dClearValue);
+extern void SynchronizeResourceTransition(ID3D12GraphicsCommandList *pd3dCommandList, ID3D12Resource *pd3dResource, D3D12_RESOURCE_STATES d3dStateBefore, D3D12_RESOURCE_STATES d3dStateAfter);
 
+#define RANDOM_COLOR	XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX))
 #define EPSILON				1.0e-10f
 
 inline bool IsZero(float fValue) { return((fabsf(fValue) < EPSILON)); }

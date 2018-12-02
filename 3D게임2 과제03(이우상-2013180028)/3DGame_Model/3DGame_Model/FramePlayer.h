@@ -13,8 +13,8 @@ protected:
 	float           			m_fYaw;
 	float           			m_fRoll;
 
-	XMFLOAT3					m_xmf3Velocity;
-	XMFLOAT3     				m_xmf3Gravity;
+	XMFLOAT3			m_xmf3Velocity;
+	XMFLOAT3     		m_xmf3Gravity;
 	float           			m_fMaxVelocityXZ;
 	float           			m_fMaxVelocityY;
 	float           			m_fFriction;

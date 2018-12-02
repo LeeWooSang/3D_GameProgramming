@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -23,7 +23,7 @@
     <ProjectGuid>{21EBF064-9B53-44DD-962D-CC838B503825}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>My3DGameModel</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -151,14 +151,22 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="BulletShader.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="UIShader.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
+    <ClInclude Include="ExplosionParticle.h" />
+    <ClInclude Include="ExplosionParticleShader.h" />
+    <ClInclude Include="FirstPersonUI.h" />
+    <ClInclude Include="FrameMesh.h" />
     <ClInclude Include="FrameObject.h" />
     <ClInclude Include="FramePlayer.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="FireParticle.h" />
+    <ClInclude Include="FireParticleShader.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PostProcessingShader.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
@@ -172,14 +180,21 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="BulletShader.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="UIShader.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
+    <ClCompile Include="ExplosionParticle.cpp" />
+    <ClCompile Include="ExplosionParticleShader.cpp" />
+    <ClCompile Include="FirstPersonUI.cpp" />
     <ClCompile Include="FrameMesh.cpp" />
     <ClCompile Include="FrameObject.cpp" />
     <ClCompile Include="FramePlayer.cpp" />
     <ClCompile Include="GameFramework.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="FireParticle.cpp" />
+    <ClCompile Include="FireParticleShader.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PostProcessingShader.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stdafx.cpp">

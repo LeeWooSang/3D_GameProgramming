@@ -70,50 +70,85 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	//XMFLOAT3 xmf3Scale(8.0f, 4.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.5f, 0.0f, 0.0f);
 
-//#ifdef _WITH_TERRAIN_PARTITION
-//	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 17, 17, xmf3Scale, xmf4Color);
-//#else
-//	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
-//#endif
-//
-//	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-//
-//	m_nShaders = 1;
-//	m_ppShaders = new CShader*[m_nShaders];
-//
-//	CBillboardObjectsShader *pObjectShader = new CBillboardObjectsShader();
-//	pObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-//	pObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
-//	m_ppShaders[0] = pObjectShader;
+#ifdef _WITH_TERRAIN_PARTITION
+	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 17, 17, xmf3Scale, xmf4Color);
+#else
+	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
+#endif
+
+	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+
+	m_nShaders = 1;
+	m_ppShaders = new CShader*[m_nShaders];
+
+	CBillboardObjectsShader *pObjectShader = new CBillboardObjectsShader();
+	pObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+	m_ppShaders[0] = pObjectShader;
 
 	//SuperCobra(17), Gunship(2), Player:Mi24(1)
 	CFrameMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0, 17 + 2 + 1); 
 	BuildDefaultLightsAndMaterials();
 
+	//m_nFrameObjects = 2;
 	m_nFrameObjects = 2;
 	m_ppFrameObjects = new CFrameObject*[m_nFrameObjects];
 
-	CSuperCobraObject *pSuperCobraObject = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	pSuperCobraObject->SetPosition(400.0f, 300.0f, 400.0f);
+	CSuperCobraObject* pSuperCobraObject = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pSuperCobraObject->SetPosition(400.f, 300.f, 400.f);
 	pSuperCobraObject->Rotate(0.0f, -90.0f, 0.0f);
 	pSuperCobraObject->SetType(FRAME_ENEMY);
 	pSuperCobraObject->SetMovingSpeed(urd_Speed(dre));
+	pSuperCobraObject->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(2.4564136, 2.075218, 8.4293), XMFLOAT4(0., 0., 0., 1.));
 	m_ppFrameObjects[0] = pSuperCobraObject;
 
 	CGunshipObject *pGunshipObject = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	pGunshipObject->SetPosition(450.0f, 300.0f, 450.0f);
+	pGunshipObject->SetPosition(550.f, 300.f, 550.f);
 	pGunshipObject->Rotate(0.0f, 90.0f, 0.0f);
 	pGunshipObject->SetType(FRAME_ENEMY);
 	pGunshipObject->SetMovingSpeed(urd_Speed(dre));
+	pGunshipObject->SetOOBB(XMFLOAT3(0., 1.012005, -4.939685), XMFLOAT3(4.68473, 4.079505, 13.53696), XMFLOAT4(0., 0., 0., 1.));
 	m_ppFrameObjects[1] = pGunshipObject;
+
+	//CSuperCobraObject* pSuperCobraObject2 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pSuperCobraObject2->SetPosition(450.f, 300.f, 450.f);
+	//pSuperCobraObject2->Rotate(0.0f, -90.0f, 0.0f);
+	//pSuperCobraObject2->SetType(FRAME_ENEMY);
+	//pSuperCobraObject2->SetMovingSpeed(urd_Speed(dre));
+	//pSuperCobraObject2->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(2.4564136, 2.075218, 8.4293), XMFLOAT4(0., 0., 0., 1.));
+	//m_ppFrameObjects[2] = pSuperCobraObject2;
+
+	//CGunshipObject* pGunshipObject2 = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pGunshipObject2->SetPosition(550.f, 300.0f, 550.f);
+	//pGunshipObject2->Rotate(0.0f, 90.0f, 0.0f);
+	//pGunshipObject2->SetType(FRAME_ENEMY);
+	//pGunshipObject2->SetMovingSpeed(urd_Speed(dre));
+	//pGunshipObject2->SetOOBB(XMFLOAT3(0., 1.012005, -4.939685), XMFLOAT3(4.68473, 4.079505, 13.53696), XMFLOAT4(0., 0., 0., 1.));
+	//m_ppFrameObjects[3] = pGunshipObject2;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	if (!m_pBulletShader)
 	{
 		m_pBulletShader = new CBulletShader;
-		((CTexturedShader*)m_pBulletShader)->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+		m_pBulletShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 		m_pBulletShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
+
+		if (!m_pExplosionParticleShader)
+		{
+			m_pExplosionParticleShader = new CExplosionParticleShader;
+			m_pExplosionParticleShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+			m_pExplosionParticleShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
+		}
+
+		m_pBulletShader->SetExplosionParticleShader(m_pExplosionParticleShader);
+	}
+
+	if (!m_pFireParticleShader)
+	{
+		m_pFireParticleShader = new CFireParticleShader;
+		m_pFireParticleShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+		m_pFireParticleShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
 	}
 }
 
@@ -161,6 +196,20 @@ void CScene::ReleaseObjects()
 		m_pBulletShader->ReleaseObjects();
 		delete m_pBulletShader;
 	}
+
+	if (m_pFireParticleShader)
+	{
+		m_pFireParticleShader->ReleaseShaderVariables();
+		m_pFireParticleShader->ReleaseObjects();
+		delete m_pFireParticleShader;
+	}
+
+	if (m_pExplosionParticleShader)
+	{
+		m_pExplosionParticleShader->ReleaseShaderVariables();
+		m_pExplosionParticleShader->ReleaseObjects();
+		delete m_pExplosionParticleShader;
+	}
 }
 
 void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -202,12 +251,18 @@ void CScene::ReleaseUploadBuffers()
 
 	if (m_pBulletShader)
 		m_pBulletShader->ReleaseUploadBuffers();
+
+	if (m_pFireParticleShader)
+		m_pFireParticleShader->ReleaseUploadBuffers();
+
+	if (m_pExplosionParticleShader)
+		m_pExplosionParticleShader->ReleaseUploadBuffers();
 }
 
 ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
 {
-	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
-	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[13];
+	ID3D12RootSignature*				pd3dGraphicsRootSignature = NULL;
+	D3D12_DESCRIPTOR_RANGE	pd3dDescriptorRanges[15];
 
 	pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 	pd3dDescriptorRanges[0].NumDescriptors = 1;
@@ -289,7 +344,19 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dDescriptorRanges[12].RegisterSpace = 0;
 	pd3dDescriptorRanges[12].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER pd3dRootParameters[17];
+	pd3dDescriptorRanges[13].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	pd3dDescriptorRanges[13].NumDescriptors = 1;
+	pd3dDescriptorRanges[13].BaseShaderRegister = 15; //t15: FireParticleTexture
+	pd3dDescriptorRanges[13].RegisterSpace = 0;
+	pd3dDescriptorRanges[13].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	pd3dDescriptorRanges[14].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+	pd3dDescriptorRanges[14].NumDescriptors = 1;
+	pd3dDescriptorRanges[14].BaseShaderRegister = 5; // b5 : cbTextureAnimation
+	pd3dDescriptorRanges[14].RegisterSpace = 0;
+	pd3dDescriptorRanges[14].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_ROOT_PARAMETER pd3dRootParameters[19];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 0; //Player
@@ -301,6 +368,7 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dRootParameters[1].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
+	// GameObject 월드 행렬
 	pd3dRootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	pd3dRootParameters[2].DescriptorTable.NumDescriptorRanges = 1;
 	pd3dRootParameters[2].DescriptorTable.pDescriptorRanges = &pd3dDescriptorRanges[0];
@@ -380,6 +448,18 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dRootParameters[16].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[12]);
 	pd3dRootParameters[16].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
+	// 불꽃 파티클
+	pd3dRootParameters[17].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[17].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[17].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[13]);
+	pd3dRootParameters[17].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	// 텍스처 애니메이션 시간
+	pd3dRootParameters[18].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[18].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[18].DescriptorTable.pDescriptorRanges = &pd3dDescriptorRanges[14];
+	pd3dRootParameters[18].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
 	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[2];
 
 	pd3dSamplerDescs[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -448,8 +528,12 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 
 		// 총알 발사 키
 		case VK_CONTROL:
-			if (m_pBulletShader && m_pFramePlayer)
+			if (m_pBulletShader && m_pFramePlayer && m_pFireParticleShader)
+			{
+				m_pBulletShader->SetParticleShader(m_pFireParticleShader);
 				m_pBulletShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+			}
+
 			break;
 
 		default:
@@ -474,25 +558,31 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 	}
 
-	for (int i = 0; i < m_nFrameObjects; i++)
-	{
-		if(m_pFramePlayer)
-			m_ppFrameObjects[i]->SetTarget(m_pFramePlayer);
-		m_ppFrameObjects[i]->Animate(fTimeElapsed, NULL);
-	}
-
-	for (int i = 0; i < m_nFrameObjects; i++) 
-		m_ppFrameObjects[i]->UpdateTransform(NULL);
-
 	if (m_pFramePlayer)
 	{
+		for (int i = 0; i < m_nFrameObjects; i++)
+		{
+			m_ppFrameObjects[i]->SetTarget(m_pFramePlayer);
+			m_ppFrameObjects[i]->Animate(fTimeElapsed, NULL);
+		}
+
+		for (int i = 0; i < m_nFrameObjects; i++)
+			m_ppFrameObjects[i]->UpdateTransform(NULL);
+
 		m_pBulletShader->SetFramePlayer(m_pFramePlayer);
+		m_pExplosionParticleShader->SetFramePlayer(m_pFramePlayer);
+		m_pFireParticleShader->SetFramePlayer(m_pFramePlayer);
 		m_pBulletShader->AnimateObjects(fTimeElapsed);
-	}
-	if (m_pLights)
-	{
-		m_pLights[1].m_xmf3Position = m_pFramePlayer->GetPosition();
-		m_pLights[1].m_xmf3Direction = m_pFramePlayer->GetLookVector();
+		m_pExplosionParticleShader->AnimateObjects(fTimeElapsed);
+		m_pFireParticleShader->AnimateObjects(fTimeElapsed);
+
+		CheckObjectByObjectCollisions();
+
+		if (m_pLights)
+		{
+			m_pLights[1].m_xmf3Position = m_pFramePlayer->GetPosition();
+			m_pLights[1].m_xmf3Direction = m_pFramePlayer->GetLookVector();
+		}
 	}
 }
 
@@ -504,24 +594,56 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
 	pCamera->UpdateShaderVariables(pd3dCommandList);
 
-	//if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
-	//if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
+	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
+	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
 
-
-	//for (int i = 0; i < m_nShaders; i++)
-	//{
-	//	m_ppShaders[i]->Render(pd3dCommandList, pCamera);
-	//}
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_ppShaders[i]->Render(pd3dCommandList, pCamera);
+	}
 
 	UpdateShaderVariables(pd3dCommandList);
 
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(7, d3dcbLightsGpuVirtualAddress); //Lights
 
-	for (int i = 0; i < m_nFrameObjects; i++) 
-		m_ppFrameObjects[i]->Render(pd3dCommandList, pCamera);
+	if (m_pFramePlayer)
+	{
+		for (int i = 0; i < m_nFrameObjects; i++)
+			m_ppFrameObjects[i]->Render(pd3dCommandList, pCamera);
 
-	if(m_pBulletShader && m_pFramePlayer)
-		m_pBulletShader->Render(pd3dCommandList, pCamera);
+		if (m_pBulletShader)
+			m_pBulletShader->Render(pd3dCommandList, pCamera);
+
+		if (m_pExplosionParticleShader)
+			m_pExplosionParticleShader->Render(pd3dCommandList, pCamera);
+
+		if (m_pFireParticleShader)
+			m_pFireParticleShader->Render(pd3dCommandList, pCamera);
+	}
 }
 
+void CScene::CheckObjectByObjectCollisions()
+{
+	if (m_pFramePlayer)
+	{
+		// 총알과 몬스터와의 충돌체크
+		if (m_ppFrameObjects && m_pBulletShader)
+		{
+			list<CGameObject*> pBulletList = m_pBulletShader->GetBulletList();
+			for (auto iter = pBulletList.begin(); iter != pBulletList.end(); ++iter)
+			{
+				for (int i = 0; i < m_nFrameObjects; ++i)
+				{
+					if ((*iter)->m_xmOOBB.Intersects(m_ppFrameObjects[i]->m_xmOOBB))
+					{
+						(*iter)->SetFrameObjectCollided(m_ppFrameObjects[i]);
+						m_ppFrameObjects[i]->SetObjectCollided((*iter));
+						cout << i << "번째 몬스터랑 충돌 됨?" << endl;
+						((CBullet*)(*iter))->SetCollision(true);
+					}
+				}
+			}
+		}
+	}
+}
