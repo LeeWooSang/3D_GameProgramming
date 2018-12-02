@@ -135,7 +135,7 @@ float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) :
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 float4 PSBillboard(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	float4 cColor = gtxtTexture.Sample(gWrapSamplerState, input.uv);
@@ -144,7 +144,7 @@ float4 PSBillboard(VS_TEXTURED_OUTPUT input) : SV_TARGET
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 float4 PSSkyBox(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	float4 cColor = gtxtTexture.Sample(gClampSamplerState, input.uv);

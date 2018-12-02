@@ -70,21 +70,21 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	//XMFLOAT3 xmf3Scale(8.0f, 4.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.5f, 0.0f, 0.0f);
 
-#ifdef _WITH_TERRAIN_PARTITION
-	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 17, 17, xmf3Scale, xmf4Color);
-#else
-	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
-#endif
-
-	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-
-	m_nShaders = 1;
-	m_ppShaders = new CShader*[m_nShaders];
-
-	CBillboardObjectsShader *pObjectShader = new CBillboardObjectsShader();
-	pObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	pObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
-	m_ppShaders[0] = pObjectShader;
+//#ifdef _WITH_TERRAIN_PARTITION
+//	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 17, 17, xmf3Scale, xmf4Color);
+//#else
+//	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
+//#endif
+//
+//	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+//
+//	m_nShaders = 1;
+//	m_ppShaders = new CShader*[m_nShaders];
+//
+//	CBillboardObjectsShader *pObjectShader = new CBillboardObjectsShader();
+//	pObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+//	pObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+//	m_ppShaders[0] = pObjectShader;
 
 	//SuperCobra(17), Gunship(2), Player:Mi24(1)
 	CFrameMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0, 17 + 2 + 1); 
@@ -114,8 +114,6 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 		m_pBulletShader = new CBulletShader;
 		((CTexturedShader*)m_pBulletShader)->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 		m_pBulletShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
-
-		//m_pBulletShader->SetFramePlayer(m_pFramePlayer);
 	}
 }
 
@@ -506,13 +504,14 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
 	pCamera->UpdateShaderVariables(pd3dCommandList);
 
-	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
-	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
+	//if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
+	//if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
 
-	for (int i = 0; i < m_nShaders; i++)
-	{
-		m_ppShaders[i]->Render(pd3dCommandList, pCamera);
-	}
+
+	//for (int i = 0; i < m_nShaders; i++)
+	//{
+	//	m_ppShaders[i]->Render(pd3dCommandList, pCamera);
+	//}
 
 	UpdateShaderVariables(pd3dCommandList);
 

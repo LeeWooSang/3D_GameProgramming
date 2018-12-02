@@ -14,11 +14,11 @@ public:
 	virtual ~CFrameTexture();
 
 private:
-	int								m_nReferences = 0;
+	int											m_nReferences = 0;
 
-	UINT							m_nTextureType = RESOURCE_TEXTURE2D;
+	UINT										m_nTextureType = RESOURCE_TEXTURE2D;
 
-	int								m_nTextures = 0;
+	int											m_nTextures = 0;
 	ID3D12Resource					**m_ppd3dTextures = NULL;
 	ID3D12Resource					**m_ppd3dTextureUploadBuffers;
 
