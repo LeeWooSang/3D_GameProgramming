@@ -362,12 +362,12 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					m_pCamera = m_pFramePlayer->ChangeCamera(FIRST_PERSON_CAMERA, m_GameTimer.GetTimeElapsed());
 					break;
 				case VK_F2:
-					if (m_pFirstPersonUIShader)
+					if (m_pFirstPersonUIShader->GetFirstPersonUI() != nullptr)
 						m_pFirstPersonUIShader->DeleteUI();
 					m_pCamera = m_pFramePlayer->ChangeCamera(SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());
 					break;
 				case VK_F3:
-					if (m_pFirstPersonUIShader)
+					if (m_pFirstPersonUIShader->GetFirstPersonUI() != nullptr)
 						m_pFirstPersonUIShader->DeleteUI();
 					m_pCamera = m_pFramePlayer->ChangeCamera(THIRD_PERSON_CAMERA, m_GameTimer.GetTimeElapsed());
 					break;
@@ -485,7 +485,6 @@ void CGameFramework::BuildObjects()
 		m_pFirstPersonUIShader = new CUIShader;
 		m_pFirstPersonUIShader->CreateShader(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
 		m_pFirstPersonUIShader->BuildObjects(m_pd3dDevice, m_pd3dCommandList, NULL);
-		//m_pFirstPersonUIShader->GetFirstPersonUI()->SetCamera(m_pFramePlayer->GetCamera());
 	}
 
 
@@ -552,19 +551,13 @@ void CGameFramework::ProcessInput()
 				if (pKeysBuffer[VK_RBUTTON] & 0xF0)
 					m_pFramePlayer->Rotate(cyDelta, 0.0f, -cxDelta);
 				else
-				{
 					m_pFramePlayer->Rotate(cyDelta, cxDelta, 0.0f);
-					m_pFirstPersonUIShader->GetFirstPersonUI()->Rotate(cyDelta, cxDelta, 0.0f);
-				}
-
 			}
 			if (dwDirection) 
 				m_pFramePlayer->Move(dwDirection, 50.0f * m_GameTimer.GetTimeElapsed(), true);
 		}
 	}
 	m_pFramePlayer->Update(m_GameTimer.GetTimeElapsed());
-	//m_pFirstPersonUIShader->GetFirstPersonUI()->Update(m_GameTimer.GetTimeElapsed());
-
 }
 
 void CGameFramework::AnimateObjects()
@@ -660,7 +653,7 @@ void CGameFramework::FrameAdvance()
 	// 플레이어 랜더
 	m_pFramePlayer->Render(m_pd3dCommandList, m_pCamera);
 	// 1인칭 UI 랜더
-	if (m_pFirstPersonUIShader)
+	if (m_pFirstPersonUIShader->GetFirstPersonUI() != nullptr)
 		m_pFirstPersonUIShader->Render(m_pd3dCommandList, m_pCamera);
 
 	::SynchronizeResourceTransition(m_pd3dCommandList, m_ppd3dSwapChainBackBuffers[m_nSwapChainBufferIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
