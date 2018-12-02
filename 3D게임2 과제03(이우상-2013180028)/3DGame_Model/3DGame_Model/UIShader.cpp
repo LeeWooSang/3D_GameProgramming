@@ -121,7 +121,7 @@ void CUIShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList
 	m_pFirstPersonUIMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 20.f, 20.f, 0.0f, 0.0f, 0.0f, 0.0f);
 	// 1인칭 UI 텍스처 생성
 	m_pFirstPersonUITexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pFirstPersonUITexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/FirstPersonMode.dds", 0);
+	m_pFirstPersonUITexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/FirstPersonUI.dds", 0);
 	// 1인칭 UI 재질 생성
 	m_pFirstPersonUIMaterial = new CMaterial;
 	m_pFirstPersonUIMaterial->SetTexture(m_pFirstPersonUITexture);
