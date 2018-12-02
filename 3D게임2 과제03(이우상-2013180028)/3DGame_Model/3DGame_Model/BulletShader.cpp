@@ -71,7 +71,7 @@ void CBulletShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	m_pBulletTexturedMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 2.5f, 2.5f, 5.f);
 	// 총알로 사용할 텍스처 생성
 	m_pBulletTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pBulletTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Box.dds", 0);
+	m_pBulletTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Bullet.dds", 0);
 	// 총알의 재질을 만들어 줌
 	m_pBulletMaterial = new CMaterial;
 	m_pBulletMaterial->SetTexture(m_pBulletTexture);

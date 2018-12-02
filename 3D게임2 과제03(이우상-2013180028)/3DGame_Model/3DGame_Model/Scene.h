@@ -1,11 +1,14 @@
 #pragma once
 
 #include "FramePlayer.h"
+#include "SkyBox.h"
+#include "Terrain.h"
+
 #include "Shader.h"
+#include "BillboardObjectsShader.h"
 #include "BulletShader.h"
 #include "FireParticleShader.h"
 #include "ExplosionParticleShader.h"
-
 
 #define MAX_LIGHTS			16 
 #define POINT_LIGHT			1
@@ -62,7 +65,7 @@ public:
 	void ReleaseShaderVariables();
 	void ReleaseUploadBuffers();
 
-	CHeightMapTerrain* GetTerrain() { return(m_pTerrain); }
+	CTerrain* GetTerrain() { return(m_pTerrain); }
 	CFramePlayer* GetFramePlayer() const { return m_pFramePlayer; }
 	void SetFramePlayer(CFramePlayer* p) { m_pFramePlayer = p; }
 
@@ -72,7 +75,7 @@ protected:
 	CShader**						m_ppShaders = NULL;
 	int										m_nShaders = 0;
 
-	CHeightMapTerrain*			m_pTerrain = NULL;
+	CTerrain*							m_pTerrain = NULL;
 	CSkyBox*							m_pSkyBox = NULL;
 
 	CFrameObject**				m_ppFrameObjects = NULL;

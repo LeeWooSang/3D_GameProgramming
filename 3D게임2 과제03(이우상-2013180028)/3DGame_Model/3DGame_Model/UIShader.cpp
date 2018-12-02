@@ -108,6 +108,7 @@ bool CUIShader::Initialize()
 		m_pFirstPersonUI->SetMesh(m_pFirstPersonUIMesh);
 		// 재질을 설정해줌
 		m_pFirstPersonUI->SetMaterial(m_pFirstPersonUIMaterial);
+		//m_FirstPersonUIList.push_back(m_pFirstPersonUI);
 		cout << "1인칭 UI 생성" << endl;
 		return true;
 	}
@@ -133,7 +134,7 @@ void CUIShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList
 
 void CUIShader::ReleaseObjects()
 {
-	m_pFirstPersonUI->DeleteMesh();
+	m_pFirstPersonUIMesh->Release();
 	DeleteUI();
 }
 

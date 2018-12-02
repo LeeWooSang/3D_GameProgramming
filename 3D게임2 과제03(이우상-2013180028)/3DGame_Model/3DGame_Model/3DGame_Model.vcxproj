@@ -23,7 +23,7 @@
     <ProjectGuid>{21EBF064-9B53-44DD-962D-CC838B503825}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>My3DGameModel</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -148,9 +148,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="3DGame_Model.h" />
+    <ClInclude Include="BillboardObject.h" />
+    <ClInclude Include="BillboardObjectsShader.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="BulletShader.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="GunShip.h" />
+    <ClInclude Include="Mi24.h" />
+    <ClInclude Include="MirrorShader.h" />
+    <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="SkyBoxShader.h" />
+    <ClInclude Include="SuperCobra.h" />
+    <ClInclude Include="Terrain.h" />
+    <ClInclude Include="TerrainShader.h" />
+    <ClInclude Include="TexturedShader.h" />
     <ClInclude Include="UIShader.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
@@ -177,9 +188,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Model.cpp" />
+    <ClCompile Include="BillboardObject.cpp" />
+    <ClCompile Include="BillboardObjectsShader.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="BulletShader.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="GunShip.cpp" />
+    <ClCompile Include="Mi24.cpp" />
+    <ClCompile Include="MirrorShader.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="SkyBoxShader.cpp" />
+    <ClCompile Include="SuperCobra.cpp" />
+    <ClCompile Include="Terrain.cpp" />
+    <ClCompile Include="TerrainShader.cpp" />
+    <ClCompile Include="TexturedShader.cpp" />
     <ClCompile Include="UIShader.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="ExplosionParticle.cpp" />

@@ -1,5 +1,5 @@
 #pragma once
-#include "Shader.h"
+#include "TexturedShader.h"
 #include "FirstPersonUI.h"
 
 class CUIShader : public CTexturedShader
@@ -27,14 +27,13 @@ public:
 	CFirstPersonUI* GetFirstPersonUI()	const { return m_pFirstPersonUI; }
 	void SetFirstPersonUI(CFirstPersonUI* pFirstPersonUI) { m_pFirstPersonUI = pFirstPersonUI; }
 private:
-	ID3D12Resource*				m_pd3dcbGameObject = NULL;
-	CB_GAMEOBJECT_INFO*	m_pcbMappedGameObject = NULL;
-
 	CTexturedRectMesh*		m_pFirstPersonUIMesh{ nullptr };
 	CTexture*							m_pFirstPersonUITexture{ nullptr };
 	CMaterial*						m_pFirstPersonUIMaterial{ nullptr };
 	CFirstPersonUI*				m_pFirstPersonUI{ nullptr };
 	
 	int										m_nObjects = 0;
+
+	list<CGameObject*>		m_FirstPersonUIList;
 };
 

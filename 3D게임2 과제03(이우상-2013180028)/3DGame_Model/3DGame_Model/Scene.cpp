@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Scene.h"
+#include "SuperCobra.h"
+#include "GunShip.h"
 
 CScene::CScene()
 {
@@ -70,23 +72,18 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	//XMFLOAT3 xmf3Scale(8.0f, 4.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.5f, 0.0f, 0.0f);
 
-#ifdef _WITH_TERRAIN_PARTITION
-	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 17, 17, xmf3Scale, xmf4Color);
-#else
-	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
-#endif
-
+	m_pTerrain = new CTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	m_nShaders = 1;
 	m_ppShaders = new CShader*[m_nShaders];
 
-	CBillboardObjectsShader *pObjectShader = new CBillboardObjectsShader();
-	pObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	pObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
-	m_ppShaders[0] = pObjectShader;
+	CBillboardObjectsShader* pBillboardObjectsShader = new CBillboardObjectsShader();
+	pBillboardObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pBillboardObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+	m_ppShaders[0] = pBillboardObjectsShader;
 
-	//SuperCobra(17), Gunship(2), Player:Mi24(1)
+	//SuperCobra(17), GunShip(2), Player:Mi24(1)
 	CFrameMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0, 17 + 2 + 1); 
 	BuildDefaultLightsAndMaterials();
 
@@ -94,7 +91,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_nFrameObjects = 2;
 	m_ppFrameObjects = new CFrameObject*[m_nFrameObjects];
 
-	CSuperCobraObject* pSuperCobraObject = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	CSuperCobra* pSuperCobraObject = new CSuperCobra(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pSuperCobraObject->SetPosition(400.f, 300.f, 400.f);
 	pSuperCobraObject->Rotate(0.0f, -90.0f, 0.0f);
 	pSuperCobraObject->SetType(FRAME_ENEMY);
@@ -102,7 +99,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pSuperCobraObject->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(2.4564136, 2.075218, 8.4293), XMFLOAT4(0., 0., 0., 1.));
 	m_ppFrameObjects[0] = pSuperCobraObject;
 
-	CGunshipObject *pGunshipObject = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	CGunShip* pGunshipObject = new CGunShip(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pGunshipObject->SetPosition(550.f, 300.f, 550.f);
 	pGunshipObject->Rotate(0.0f, 90.0f, 0.0f);
 	pGunshipObject->SetType(FRAME_ENEMY);
