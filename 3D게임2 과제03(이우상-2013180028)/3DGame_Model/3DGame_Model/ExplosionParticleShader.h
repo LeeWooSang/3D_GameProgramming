@@ -50,6 +50,6 @@ private:
 	CGameObject*					m_pBullet{ nullptr };
 	CFramePlayer*					m_pFramePlayer{ nullptr };
 
-	const double MaxBulletDistance = 250.f;
+	const double					MaxBulletDistance = 250.f;
 };
 

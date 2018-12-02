@@ -151,10 +151,12 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="BulletShader.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="UIShader.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="ExplosionParticle.h" />
     <ClInclude Include="ExplosionParticleShader.h" />
+    <ClInclude Include="FirstPersonUI.h" />
     <ClInclude Include="FrameMesh.h" />
     <ClInclude Include="FrameObject.h" />
     <ClInclude Include="FramePlayer.h" />
@@ -178,9 +180,11 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="BulletShader.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="UIShader.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="ExplosionParticle.cpp" />
     <ClCompile Include="ExplosionParticleShader.cpp" />
+    <ClCompile Include="FirstPersonUI.cpp" />
     <ClCompile Include="FrameMesh.cpp" />
     <ClCompile Include="FrameObject.cpp" />
     <ClCompile Include="FramePlayer.cpp" />

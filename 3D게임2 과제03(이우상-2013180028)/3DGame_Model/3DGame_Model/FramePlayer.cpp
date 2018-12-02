@@ -155,9 +155,12 @@ void CFramePlayer::Update(float fTimeElapsed)
 	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
-	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
+	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) 
+		m_pCamera->Update(m_xmf3Position, fTimeElapsed);
+	if (m_pCameraUpdatedContext) 
+		OnCameraUpdateCallback(fTimeElapsed);
+	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) 
+		m_pCamera->SetLookAt(m_xmf3Position);
 	m_pCamera->RegenerateViewMatrix();
 
 	fLength = Vector3::Length(m_xmf3Velocity);
@@ -268,10 +271,11 @@ void CFrameAirplanePlayer::OnPrepareRender()
 	CFramePlayer::OnPrepareRender();
 }
 
-CCamera *CFrameAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
+CCamera* CFrameAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 {
 	DWORD nCurrentCameraMode = (m_pCamera) ? m_pCamera->GetMode() : 0x00;
-	if (nCurrentCameraMode == nNewCameraMode) return(m_pCamera);
+	if (nCurrentCameraMode == nNewCameraMode) 
+		return(m_pCamera);
 	switch (nNewCameraMode)
 	{
 	case FIRST_PERSON_CAMERA:

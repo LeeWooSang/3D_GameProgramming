@@ -7,6 +7,7 @@
 #include "FramePlayer.h"
 #include "Scene.h"
 #include "PostProcessingShader.h"
+#include "UIShader.h"
 
 class CGameFramework
 {
@@ -91,6 +92,8 @@ private:
 
 	CScene*										m_pScene = NULL;
 	CFramePlayer*								m_pFramePlayer = NULL;
+	CUIShader*									m_pFirstPersonUIShader{ nullptr };
+
 	CCamera*										m_pCamera = NULL;
 
 	POINT											m_ptOldCursorPos;

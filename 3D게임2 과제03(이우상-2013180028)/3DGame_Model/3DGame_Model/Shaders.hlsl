@@ -1,27 +1,3 @@
-//#define _WITH_CONSTANT_BUFFER_SYNTAX
-
-#ifdef _WITH_CONSTANT_BUFFER_SYNTAX
-struct CB_PLAYER_INFO
-{
-	matrix		mtxWorld;
-};
-
-struct CB_GAMEOBJECT_INFO
-{
-	matrix		mtxWorld;
-};
-
-struct CB_CAMERA_INFO
-{
-	matrix		mtxView;
-	matrix		mtxProjection;
-	float3		CameraPosition;
-};
-
-ConstantBuffer<CB_PLAYER_INFO> gcbPlayerObjectInfo : register(b0);
-ConstantBuffer<CB_CAMERA_INFO> gcbCameraInfo : register(b1);
-ConstantBuffer<CB_GAMEOBJECT_INFO> gcbGameObjectInfo : register(b2);
-#else
 cbuffer cbPlayerInfo : register(b0)
 {
 	matrix		gmtxPlayerWorld : packoffset(c0);
@@ -39,10 +15,9 @@ cbuffer cbGameObjectInfo : register(b2)
 	matrix		gmtxWorld : packoffset(c0);
 };
 
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 struct VS_DIFFUSED_INPUT
 {
 	float3 position : POSITION;
@@ -122,6 +97,7 @@ VS_TEXTURED_OUTPUT VSTextured(VS_TEXTURED_INPUT input)
 	output.position = mul(mul(mul(float4(input.position, 1.0f), gcbGameObjectInfo.mtxWorld), gcbCameraInfo.mtxView), gcbCameraInfo.mtxProjection);
 #else
 	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxWorld), gmtxView), gmtxProjection);
+	//output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxWorld), gmtxView), gmtxOrthoProjection);
 #endif
 	output.uv = input.uv;
 
@@ -495,21 +471,55 @@ float4 PSFireParticle(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	// uv ÁÂÇ¥ ÀÌµ¿
 	float2 texUV = input.uv;
-	//if (elapsedTime >= 0.1f)
-	//{
-	//	if (frameSheet < 6)
-	//	{
-	//texUV.x = texUV.x * 1 / 6 + elapsedTime;
-	//	}
-	//}
-	texUV.x = texUV.x / 6.0f + elapsedTime * (1.0f / 6.0f);
-	//texUV.x = texUV.x * 1 / 6 + frameSheet * (int)elapsedTime;
 
-	//texUV.y = texUV.y * 0.25;
+	texUV.x = texUV.x / 6.0f + elapsedTime * (1.0f / 6.0f);
 
 	float4 cColor = FireParticleTexture.Sample(gWrapSamplerState, texUV);
 
-//	float4 cColor = FireParticleTexture.Sample(gWrapSamplerState, input.uv);
+	return(cColor);
+}
 
+VS_TEXTURED_OUTPUT VSFirstPersonUI(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURED_OUTPUT output;
+
+	if (nVertexID == 0)
+	{
+		output.position = float4(-1.f, 1.f, 0.f, 1.f);
+		output.uv = float2(1.f, 0.f);
+	}
+	else if (nVertexID == 1)
+	{
+		output.position = float4(-1.f, -1.f, 0.f, 1.f);
+		output.uv = float2(1.f, 1.f);
+	}
+	else if (nVertexID == 2)
+	{
+		output.position = float4(1.f, -1.f, 0.f, 1.f);
+		output.uv = float2(0.f, 1.f);
+	}
+	else if (nVertexID == 3)
+	{
+		output.position = float4(1.f, -1.f, 0.f, 1.f);
+		output.uv = float2(0.f, 1.f);
+	}
+	else if (nVertexID == 4)
+	{
+		output.position = float4(1.f, 1.f, 0.f, 1.f);
+		output.uv = float2(0.f, 0.f);
+	}
+	else if (nVertexID == 5)
+	{
+		output.position = float4(-1.f, 1.f, 0.f, 1.f);
+		output.uv = float2(1.f, 0.f);
+	}
+
+	return(output);
+}
+
+
+float4 PSFirstPersonUI(VS_TEXTURED_OUTPUT input) : SV_TARGET
+{
+	float4 cColor = gtxtTexture.Sample(gClampSamplerState, input.uv);
 	return(cColor);
 }

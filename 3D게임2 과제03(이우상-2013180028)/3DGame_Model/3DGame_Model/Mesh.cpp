@@ -529,7 +529,7 @@ CTexturedRectMesh::CTexturedRectMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCom
 	CTexturedVertex pVertices[6];
 
 	float fx = (fWidth * 0.5f) + fxPosition, fy = (fHeight * 0.5f) + fyPosition, fz = (fDepth * 0.5f) + fzPosition;
-
+	
 	if (fWidth == 0.0f)
 	{
 		if (fxPosition > 0.0f)

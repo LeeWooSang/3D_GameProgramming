@@ -88,6 +88,12 @@
     <Filter Include="소스 파일\Shader\PostProcessingShader">
       <UniqueIdentifier>{691e16d7-8757-4505-8bef-2b0180292a0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Shader\UIShader">
+      <UniqueIdentifier>{3a355438-8846-45e4-bb08-3b0bfaf63643}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\GameObject\FirstPersonUI">
+      <UniqueIdentifier>{729c0d80-351f-4249-8cc1-6b23e22d09cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -165,6 +171,12 @@
     <ClInclude Include="PostProcessingShader.h">
       <Filter>소스 파일\Shader\PostProcessingShader</Filter>
     </ClInclude>
+    <ClInclude Include="FirstPersonUI.h">
+      <Filter>소스 파일\Object\GameObject\FirstPersonUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIShader.h">
+      <Filter>소스 파일\Shader\UIShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGame_Model.cpp">
@@ -232,6 +244,12 @@
     </ClCompile>
     <ClCompile Include="PostProcessingShader.cpp">
       <Filter>소스 파일\Shader\PostProcessingShader</Filter>
+    </ClCompile>
+    <ClCompile Include="FirstPersonUI.cpp">
+      <Filter>소스 파일\Object\GameObject\FirstPersonUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIShader.cpp">
+      <Filter>소스 파일\Shader\UIShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -48,8 +48,8 @@ private:
 
 	const double					MaxBulletDistance = 250.f;
 	static int							m_BulletCount;
-	CFireParticleShader*							m_pFireParticleShader{ nullptr };
-	CFireParticle*										m_pFireParticle{ nullptr };
+	CFireParticleShader*			m_pFireParticleShader{ nullptr };
+	CFireParticle*					m_pFireParticle{ nullptr };
 
 	CExplosionParticleShader*			m_pExplosionParticleShader{ nullptr };
 	CExplosionParticle*						m_pExplosionParticle{ nullptr };

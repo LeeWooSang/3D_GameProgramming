@@ -143,6 +143,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 		m_pBulletShader->SetExplosionParticleShader(m_pExplosionParticleShader);
 	}
+
 	if (!m_pFireParticleShader)
 	{
 		m_pFireParticleShader = new CFireParticleShader;
@@ -620,7 +621,6 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 		if (m_pFireParticleShader)
 			m_pFireParticleShader->Render(pd3dCommandList, pCamera);
 	}
-
 }
 
 void CScene::CheckObjectByObjectCollisions()

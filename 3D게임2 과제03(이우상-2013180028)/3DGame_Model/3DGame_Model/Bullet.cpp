@@ -50,7 +50,6 @@ void CBullet::OnPrepareRender()
 
 void CBullet::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
-	//CGameObject::Render(pd3dCommandList, pCamera);
 	OnPrepareRender();
 
 	if (m_pMaterial)
