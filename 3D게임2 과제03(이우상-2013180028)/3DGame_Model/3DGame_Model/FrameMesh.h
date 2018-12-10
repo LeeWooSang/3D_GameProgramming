@@ -30,17 +30,17 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 protected:
-	char							m_pstrMeshName[256] = { 0 };
+	char											m_pstrMeshName[256] = { 0 };
 
-	UINT							m_nType = 0x00;
+	UINT											m_nType = 0x00;
 
-	BoundingOrientedBox		m_xmOOBB;
-	XMFLOAT3						m_xmf3AABBCenter = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	XMFLOAT3						m_xmf3AABBExtents = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	BoundingOrientedBox				m_xmOOBB;
+	XMFLOAT3								m_xmf3AABBCenter = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3								m_xmf3AABBExtents = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-	D3D12_PRIMITIVE_TOPOLOGY		m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	UINT							m_nSlot = 0;
-	UINT							m_nOffset = 0;
+	D3D12_PRIMITIVE_TOPOLOGY	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	UINT											m_nSlot = 0;
+	UINT											m_nOffset = 0;
 
 	int												m_nVertices = 0;
 
@@ -62,6 +62,9 @@ public:
 
 	BoundingOrientedBox GetBoundingBox() { return m_xmOOBB; }
 	UINT GetType() { return(m_nType); }
+
+	//광선과 메쉬의 교차를 검사하고 교차하는 횟수와 거리를 반환하는 함수이다. 
+	int CheckRayIntersection(XMFLOAT3& xmRayPosition, XMFLOAT3& xmRayDirection, float *pfNearHitDistance);
 
 	virtual void ReleaseUploadBuffers();
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet);

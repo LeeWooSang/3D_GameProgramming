@@ -108,7 +108,6 @@ bool CUIShader::Initialize()
 		m_pFirstPersonUI->SetMesh(m_pFirstPersonUIMesh);
 		// 재질을 설정해줌
 		m_pFirstPersonUI->SetMaterial(m_pFirstPersonUIMaterial);
-		//m_FirstPersonUIList.push_back(m_pFirstPersonUI);
 		cout << "1인칭 UI 생성" << endl;
 		return true;
 	}
@@ -117,7 +116,6 @@ bool CUIShader::Initialize()
 
 void CUIShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
-
 	// 1인칭 UI 메쉬
 	m_pFirstPersonUIMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 20.f, 20.f, 0.0f, 0.0f, 0.0f, 0.0f);
 	// 1인칭 UI 텍스처 생성

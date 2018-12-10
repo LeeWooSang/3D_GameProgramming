@@ -69,10 +69,6 @@ D3D12_SHADER_BYTECODE CFireParticleShader::CreatePixelShader(ID3DBlob **ppd3dSha
 
 void CFireParticleShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	//UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
-	//m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
-	//m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
-
 	// 텍스처 애니메이션
 	UINT ncbElementBytes = ((sizeof(CB_TEXTURE_ANIMATION) + 255) & ~255); //256의 배수
 	m_pTextureAnimation = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
@@ -81,16 +77,11 @@ void CFireParticleShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12
 
 void CFireParticleShader::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	//UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	UINT ncbElementBytes = ((sizeof(CB_TEXTURE_ANIMATION) + 255) & ~255); //256의 배수
 	int i = 0;
 	for (auto iter = m_FireParticleList.begin(); iter != m_FireParticleList.end(); ++iter)
 	{
 		// ★★★★★
-		//(*iter)->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
-		//CB_GAMEOBJECT_INFO *pbMappedcbGameObject = (CB_GAMEOBJECT_INFO *)((UINT8 *)m_pcbMappedGameObjects + (i * ncbElementBytes));
-		//XMStoreFloat4x4(&pbMappedcbGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&(*iter)->m_xmf4x4World)));
-		//
 		(*iter)->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 		CB_TEXTURE_ANIMATION* pMappedTextureAnimation = (CB_TEXTURE_ANIMATION *)((UINT8 *)m_pMappedTextureAnimation + (i * ncbElementBytes));
 		XMStoreFloat4x4(&pMappedTextureAnimation->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&(*iter)->m_xmf4x4World)));
@@ -104,12 +95,6 @@ void CFireParticleShader::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dC
 
 void CFireParticleShader::ReleaseShaderVariables()
 {
-	if (m_pd3dcbGameObjects)
-	{
-		m_pd3dcbGameObjects->Unmap(0, NULL);
-		m_pd3dcbGameObjects->Release();
-	}
-
 	if (m_pTextureAnimation)
 	{
 		m_pTextureAnimation->Unmap(0, NULL);
@@ -136,11 +121,11 @@ bool CFireParticleShader::Initialize(CGameObject* pBullet, int id)
 		pParticle->SetMesh(m_pFireParticleMesh);
 		pParticle->SetMaterial(m_pFireParticleMaterial);
 		pParticle->SetLook(m_pFramePlayer->GetLookVector());
-		//// 또한 플레이어의 Up벡터, Right벡터도 똑같이 설정해주어야 플레이어가 회전했을 때,
-		//// 총알 모양도 회전이 된 모양으로 바뀐다.
+		// 또한 플레이어의 Up벡터, Right벡터도 똑같이 설정해주어야 플레이어가 회전했을 때,
+		// 총알 모양도 회전이 된 모양으로 바뀐다.
 		pParticle->SetUp(m_pFramePlayer->GetUpVector());
 		pParticle->SetRight(m_pFramePlayer->GetRightVector());
-		//// 총알의 생성위치는 플레이어의 위치로 설정
+		// 총알의 생성위치는 플레이어의 위치로 설정
 		pParticle->SetPosition(pBullet->GetPosition());
 		// 총알이 나아가는 방향은 총알이 바라보는 방향으로 준다.
 		pParticle->SetMovingDirection(pParticle->GetLook());
@@ -167,7 +152,7 @@ void CFireParticleShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsC
 	m_pFireParticleMaterial = new CMaterial;
 	m_pFireParticleMaterial->SetTexture(m_pFireParticleTexture);
 
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+	UINT ncbElementBytes = ((sizeof(CB_TEXTURE_ANIMATION) + 255) & ~255);
 	m_nObjects = 100;
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -210,10 +195,8 @@ void CFireParticleShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCa
 {
 	CTexturedShader::Render(pd3dCommandList, pCamera);
 	UpdateShaderVariables(pd3dCommandList);
-	XMFLOAT3 xmf3CameraPosition = pCamera->GetPosition();
 	for (auto iter = m_FireParticleList.begin(); iter != m_FireParticleList.end(); ++iter)
 	{
-		//(*iter)->SetLookAt(xmf3CameraPosition, XMFLOAT3(0.f, 1.f, 0.f));
 		((*iter))->Render(pd3dCommandList, pCamera);
 	}
 }

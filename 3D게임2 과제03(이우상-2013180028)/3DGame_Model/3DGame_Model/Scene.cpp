@@ -504,8 +504,28 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	return(pd3dGraphicsRootSignature);
 }
 
-bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, CCamera* pCamera)
 {
+	switch (nMessageID)
+	{
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+		//마우스가 눌려지면 마우스 픽킹을 하여 선택한 게임 객체를 찾는다. 
+		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam), pCamera);
+		if (m_pSelectedObject)
+			cout << "피킹됨" << endl;
+		else
+			cout << "피킹안됨" << endl;
+		break;
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+		::ReleaseCapture();
+		break;
+	case WM_MOUSEMOVE:
+		break;
+	default:
+		break;
+	}
 	return(false);
 }
 
@@ -530,7 +550,6 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				m_pBulletShader->SetParticleShader(m_pFireParticleShader);
 				m_pBulletShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 			}
-
 			break;
 
 		default:
@@ -636,11 +655,40 @@ void CScene::CheckObjectByObjectCollisions()
 					{
 						(*iter)->SetFrameObjectCollided(m_ppFrameObjects[i]);
 						m_ppFrameObjects[i]->SetObjectCollided((*iter));
-						cout << i << "번째 몬스터랑 충돌 됨?" << endl;
+						cout << i << "번째 몬스터랑 충돌 됨" << endl;
 						((CBullet*)(*iter))->SetCollision(true);
 					}
 				}
 			}
 		}
 	}
+}
+
+CFrameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient, CCamera *pCamera) 
+{
+	if (!pCamera) 
+		return(NULL);
+	XMFLOAT4X4 xmf4x4View = pCamera->GetViewMatrix(); 
+	XMFLOAT4X4 xmf4x4Projection = pCamera->GetProjectionMatrix(); 
+	D3D12_VIEWPORT d3dViewport = pCamera->GetViewport();
+	XMFLOAT3 xmf3PickPosition; 
+	/*화면 좌표계의 점 (xClient, yClient)를 화면 좌표 변환의 역변환과 투영 변환의 역변환을 한다. 
+	그 결과는 카메라 좌표계의 점이다. 투영 평면이 카메라에서 z-축으로 거리가 1이므로 z-좌표는 1로 설정한다.*/ 
+	xmf3PickPosition.x = (((2.0f * xClient) / d3dViewport.Width) - 1) / xmf4x4Projection._11;
+	xmf3PickPosition.y = -(((2.0f * yClient) / d3dViewport.Height) - 1) / xmf4x4Projection._22; 
+	xmf3PickPosition.z = 1.0f;
+	int nIntersected = 0; 
+	float fHitDistance = FLT_MAX, fNearestHitDistance = FLT_MAX;
+
+	CFrameObject* pSelectedObject = NULL;
+	for (int i = 0; i < m_nFrameObjects; ++i)
+	{
+		nIntersected = m_ppFrameObjects[i]->PickObjectByRayIntersection(xmf3PickPosition, xmf4x4View, &fHitDistance);
+		if ((nIntersected > 0) && (fHitDistance < fNearestHitDistance))
+		{
+			fNearestHitDistance = fHitDistance;
+			pSelectedObject = m_ppFrameObjects[i];
+		}
+	}
+	return pSelectedObject;
 }

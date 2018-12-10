@@ -517,7 +517,6 @@ VS_TEXTURED_OUTPUT VSFirstPersonUI(uint nVertexID : SV_VertexID)
 	return(output);
 }
 
-
 float4 PSFirstPersonUI(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	float4 cColor = gtxtTexture.Sample(gClampSamplerState, input.uv);

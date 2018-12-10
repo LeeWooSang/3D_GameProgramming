@@ -762,3 +762,31 @@ CFrameObject* CFrameObject::LoadGeometryFromFile(ID3D12Device *pd3dDevice, ID3D1
 
 	return(pGameObject);
 }
+
+void CFrameObject::GenerateRayForPicking(XMFLOAT3& xmf3PickPosition, XMFLOAT4X4& xmf4x4View, XMFLOAT3 *pxmf3PickRayOrigin, XMFLOAT3 *pxmf3PickRayDirection)
+{
+	XMFLOAT4X4 xmf4x4WorldView = Matrix4x4::Multiply(m_xmf4x4World, xmf4x4View); 
+	XMFLOAT4X4 xmf4x4Inverse = Matrix4x4::Inverse(xmf4x4WorldView);
+	XMFLOAT3 xmf3CameraOrigin(0.0f, 0.0f, 0.0f); 
+	//카메라 좌표계의 원점을 모델 좌표계로 변환한다. 
+	*pxmf3PickRayOrigin = Vector3::TransformCoord(xmf3CameraOrigin, xmf4x4Inverse); 
+	//카메라 좌표계의 점(마우스 좌표를 역변환하여 구한 점)을 모델 좌표계로 변환한다.
+	*pxmf3PickRayDirection= Vector3::TransformCoord(xmf3PickPosition, xmf4x4Inverse);
+	//광선의 방향 벡터를 구한다.
+	*pxmf3PickRayDirection = Vector3::Normalize(Vector3::Subtract(*pxmf3PickRayDirection, *pxmf3PickRayOrigin));
+}
+
+int CFrameObject::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition, XMFLOAT4X4& xmf4x4View, float *pfHitDistance)
+{
+		int nIntersected = 0; 
+		if (m_pMesh)
+		{
+			XMFLOAT3 xmf3PickRayOrigin, xmf3PickRayDirection; 
+			//모델 좌표계의 광선을 생성한다. 
+			GenerateRayForPicking(xmf3PickPosition, xmf4x4View, &xmf3PickRayOrigin, &xmf3PickRayDirection);
+			//모델 좌표계의 광선과 메쉬의 교차를 검사한다. 
+			nIntersected = m_pMesh->CheckRayIntersection(xmf3PickRayOrigin, xmf3PickRayDirection, pfHitDistance);
+		}
+		return nIntersected; 
+}
+

@@ -102,19 +102,21 @@ bool CBulletShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPAR
 				pBullet->SetMesh(m_pBulletTexturedMesh);
 				pBullet->SetMaterial(m_pBulletMaterial);
 				pBullet->SetLook(m_pFramePlayer->GetLookVector());
+
 				// 또한 플레이어의 Up벡터, Right벡터도 똑같이 설정해주어야 플레이어가 회전했을 때,
 				// 총알 모양도 회전이 된 모양으로 바뀐다.
 				pBullet->SetUp(m_pFramePlayer->GetUpVector());
 				pBullet->SetRight(m_pFramePlayer->GetRightVector());
 				// 총알의 생성위치는 플레이어의 위치로 설정
 				pBullet->SetPosition(m_pFramePlayer->GetPosition());
+				//pBullet->SetPosition(m_pFramePlayer->GetCamera()->GetPosition());
 				// 총알이 나아가는 방향은 총알이 바라보는 방향으로 준다.
 				pBullet->SetMovingDirection(pBullet->GetLook());
 				m_BulletList.push_back(pBullet);
 				cout << "총알 생성 됨" << endl;
 				m_pFireParticleShader->Initialize(pBullet, m_BulletCount);
 			}
-			break;
+			return true;
 		}
 		default:
 			break;

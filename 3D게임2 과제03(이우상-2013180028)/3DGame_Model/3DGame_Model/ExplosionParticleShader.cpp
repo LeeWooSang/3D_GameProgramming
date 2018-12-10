@@ -97,12 +97,6 @@ void CExplosionParticleShader::UpdateShaderVariables(ID3D12GraphicsCommandList *
 
 void CExplosionParticleShader::ReleaseShaderVariables()
 {
-	if (m_pd3dcbGameObjects)
-	{
-		m_pd3dcbGameObjects->Unmap(0, NULL);
-		m_pd3dcbGameObjects->Release();
-	}
-
 	if (m_pTextureAnimation)
 	{
 		m_pTextureAnimation->Unmap(0, NULL);
@@ -141,7 +135,7 @@ void CExplosionParticleShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Grap
 	m_pExplosionParticleMaterial = new CMaterial;
 	m_pExplosionParticleMaterial->SetTexture(m_pExplosionParticleTexture);
 
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+	UINT ncbElementBytes = ((sizeof(CB_TEXTURE_ANIMATION) + 255) & ~255);
 	m_nObjects = 100;
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);

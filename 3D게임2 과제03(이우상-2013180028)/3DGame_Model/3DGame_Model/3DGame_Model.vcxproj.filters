@@ -18,9 +18,6 @@
     <Filter Include="소스 파일\Shader">
       <UniqueIdentifier>{6f7042d4-c575-4d38-98d0-710895063daf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Scene">
-      <UniqueIdentifier>{43fbae9f-08cd-40ba-b563-26add27a9893}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\TextureLoader">
       <UniqueIdentifier>{db017f8a-2d47-4be3-b6c2-6ac99ec52910}</UniqueIdentifier>
     </Filter>
@@ -126,6 +123,9 @@
     </Filter>
     <Filter Include="소스 파일\Object\FrameObject\GunShip">
       <UniqueIdentifier>{d099d642-6fb2-4269-bedc-e304ce012f52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Scene">
+      <UniqueIdentifier>{43fbae9f-08cd-40ba-b563-26add27a9893}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
