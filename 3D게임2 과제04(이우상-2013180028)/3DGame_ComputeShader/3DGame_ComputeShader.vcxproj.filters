@@ -1,0 +1,420 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source\Object">
+      <UniqueIdentifier>{b0f259d6-2f86-4055-b7c8-0f95dd674b1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\FrameObject">
+      <UniqueIdentifier>{3867d1d5-5aae-43eb-8fbf-49a628841142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\FrameObject\FramePlayer">
+      <UniqueIdentifier>{818ef248-bdc1-49e6-83a3-9937d6d4ce11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\FrameObject\GunShip">
+      <UniqueIdentifier>{c45a8f5a-c574-4454-bf6e-cd72c9d3f022}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\FrameObject\Mi24">
+      <UniqueIdentifier>{289ddaef-cb06-41b7-b17b-a2e3336185aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\FrameObject\SuperCobra">
+      <UniqueIdentifier>{4e0ddcbd-7b9d-4212-800f-ead1a3970e0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\GameObject">
+      <UniqueIdentifier>{118f59bd-e43e-47e3-9cd6-e9afe2f02c7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\GameObject\BillboardObject">
+      <UniqueIdentifier>{f28bcd0f-c4d0-4e15-a609-cee69fadc769}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\GameObject\Missile">
+      <UniqueIdentifier>{1590625b-06d1-471c-b613-02f5c9a90b42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\GameObject\ExplosionParticle">
+      <UniqueIdentifier>{4463993c-bcf3-40d4-a8bd-08961fbca4b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\GameObject\FrieParticle">
+      <UniqueIdentifier>{9566d367-2871-4d8d-81ef-4b08bbc86107}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\GameObject\FirstPersonUI">
+      <UniqueIdentifier>{4dbcef01-77a3-46b5-8b41-1c9d057584be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\GameObject\Player">
+      <UniqueIdentifier>{f08743ae-9dba-4750-9465-99a5c8db940e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\GameObject\SkyBox">
+      <UniqueIdentifier>{c52709cf-4cfa-4dfa-bebc-3a82010c0c12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\GameObject\Terrain">
+      <UniqueIdentifier>{2af0cb09-cffb-4b52-93c8-1525b61991f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object\GameObject\Font">
+      <UniqueIdentifier>{64d6780e-6fd7-4eea-9a10-8eaaa90f12df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Mesh &amp; FrameMesh">
+      <UniqueIdentifier>{d87fbb13-6593-4b69-946d-0fb158f1d4c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Mesh &amp; FrameMesh\FrameMesh">
+      <UniqueIdentifier>{07da7690-8c18-446b-b3a8-79d9f8a17ef7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Mesh &amp; FrameMesh\Mesh">
+      <UniqueIdentifier>{719cb7a2-6e81-4797-9135-93591698b3b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Camera">
+      <UniqueIdentifier>{101123fe-c562-40f4-87f2-f736a3127f89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader">
+      <UniqueIdentifier>{d3f4cf68-345e-4a27-b5f8-e2e09ea8c726}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader">
+      <UniqueIdentifier>{ca2b3d29-b353-4862-a987-ef3f1d232887}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader\MissileShader">
+      <UniqueIdentifier>{eb9b5d6b-1b0f-4106-a95f-6e9504334e92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader\BillboardObjectsShader">
+      <UniqueIdentifier>{1abdf93b-4f2f-4072-9826-6d5045533f77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader\FireParticleShader">
+      <UniqueIdentifier>{74a2171a-1557-4aa2-8258-05bd5bafe1b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader\ExplosionParticleShader">
+      <UniqueIdentifier>{9ef0130e-61d0-4f94-b3cf-a054faf43f58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader\SkyBoxShader">
+      <UniqueIdentifier>{582c41f7-4cb2-43a2-8f6c-73c2031db131}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader\TerrainShader">
+      <UniqueIdentifier>{ac8f004a-7e22-4c0a-9fa9-3bdcd82865de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader\UIShader">
+      <UniqueIdentifier>{14efb0d9-0825-48b9-8360-70bbaf8c4fad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader\FontShader">
+      <UniqueIdentifier>{9524d340-1f9e-45a6-8264-4e00e2636b4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader\TenthFontShader">
+      <UniqueIdentifier>{5e3b1039-8567-465d-8205-8cdb23fbcfa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\TexturedShader\MissileUIShader">
+      <UniqueIdentifier>{dc352b88-84c9-45d5-b7fd-68adea8b5aca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\HLSL">
+      <UniqueIdentifier>{215d65f8-8d8a-4db2-ac7e-77afe37ef24d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\PostProcessingShader">
+      <UniqueIdentifier>{59f43443-a163-49d1-aaaa-d579cd73d5b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader\BlurringShader">
+      <UniqueIdentifier>{75bf31a2-6548-4f9c-a1e3-ee57f6fb6741}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Scene">
+      <UniqueIdentifier>{fc985d5e-1d27-4487-9185-d95a7802d351}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\GameTimer">
+      <UniqueIdentifier>{08ca25e7-a3bb-4098-a569-9791239f5dee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\TextureLoader">
+      <UniqueIdentifier>{b6fcf401-5c09-4b53-a0f7-c08e04dfe25b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\TextureLoader\DDS">
+      <UniqueIdentifier>{7d7097ff-8dae-431a-9c38-171af6a772c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\TextureLoader\WIC">
+      <UniqueIdentifier>{2cea3502-58e0-4132-8310-b4d25bd246be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Main">
+      <UniqueIdentifier>{f518684e-7aa9-4b51-b1b6-95fd0f98fac0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\GameFramework">
+      <UniqueIdentifier>{808ab8e8-5c4f-44d8-9407-4020fab25b68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UIManager">
+      <UniqueIdentifier>{0d968c40-0537-44d2-976f-619912fa96ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{a20d74a4-73c5-4aca-9778-71630f036380}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Default">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header\Stdafx">
+      <UniqueIdentifier>{70b7bdb8-669d-4dd5-9887-dc1009e99834}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Header\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="BillboardObject.h">
+      <Filter>Source\Object\GameObject\BillboardObject</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameObject.h">
+      <Filter>Source\Object\FrameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="FramePlayer.h">
+      <Filter>Source\Object\FrameObject\FramePlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionParticle.h">
+      <Filter>Source\Object\GameObject\ExplosionParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="FireParticle.h">
+      <Filter>Source\Object\GameObject\FrieParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameMesh.h">
+      <Filter>Source\Mesh &amp; FrameMesh\FrameMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="BillboardObjectsShader.h">
+      <Filter>Source\Shader\TexturedShader\BillboardObjectsShader</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionParticleShader.h">
+      <Filter>Source\Shader\TexturedShader\ExplosionParticleShader</Filter>
+    </ClInclude>
+    <ClInclude Include="FireParticleShader.h">
+      <Filter>Source\Shader\TexturedShader\FireParticleShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Mi24.h">
+      <Filter>Source\Object\FrameObject\Mi24</Filter>
+    </ClInclude>
+    <ClInclude Include="GunShip.h">
+      <Filter>Source\Object\FrameObject\GunShip</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Source\Object\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Source\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Source\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Source\Object\GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>Source\Object\GameObject\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Source\Mesh &amp; FrameMesh\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxShader.h">
+      <Filter>Source\Shader\TexturedShader\SkyBoxShader</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperCobra.h">
+      <Filter>Source\Object\FrameObject\SuperCobra</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Source\Object\GameObject\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>Source\Shader\TexturedShader\TerrainShader</Filter>
+    </ClInclude>
+    <ClInclude Include="UIShader.h">
+      <Filter>Source\Shader\TexturedShader\UIShader</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedShader.h">
+      <Filter>Source\Shader\TexturedShader</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>Source\GameTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader12.h">
+      <Filter>Source\TextureLoader\DDS</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader12.h">
+      <Filter>Source\TextureLoader\WIC</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>Source\TextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessingShader.h">
+      <Filter>Source\Shader\PostProcessingShader</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework.h">
+      <Filter>Source\GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>Source\Object\GameObject\FirstPersonUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FontShader.h">
+      <Filter>Source\Shader\TexturedShader\FontShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Source\Object\GameObject\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="TenthFontShader.h">
+      <Filter>Source\Shader\TexturedShader\TenthFontShader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlurringShader.h">
+      <Filter>Source\Shader\BlurringShader</Filter>
+    </ClInclude>
+    <ClInclude Include="MissileShader.h">
+      <Filter>Source\Shader\TexturedShader\MissileShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Missile.h">
+      <Filter>Source\Object\GameObject\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="MissileUIShader.h">
+      <Filter>Source\Shader\TexturedShader\MissileUIShader</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>Source\UIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Stdafx.h">
+      <Filter>Header\Stdafx</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BillboardObject.cpp">
+      <Filter>Source\Object\GameObject\BillboardObject</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameObject.cpp">
+      <Filter>Source\Object\FrameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="FramePlayer.cpp">
+      <Filter>Source\Object\FrameObject\FramePlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionParticle.cpp">
+      <Filter>Source\Object\GameObject\ExplosionParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="FireParticle.cpp">
+      <Filter>Source\Object\GameObject\FrieParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameMesh.cpp">
+      <Filter>Source\Mesh &amp; FrameMesh\FrameMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardObjectsShader.cpp">
+      <Filter>Source\Shader\TexturedShader\BillboardObjectsShader</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionParticleShader.cpp">
+      <Filter>Source\Shader\TexturedShader\ExplosionParticleShader</Filter>
+    </ClCompile>
+    <ClCompile Include="FireParticleShader.cpp">
+      <Filter>Source\Shader\TexturedShader\FireParticleShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Mi24.cpp">
+      <Filter>Source\Object\FrameObject\Mi24</Filter>
+    </ClCompile>
+    <ClCompile Include="GunShip.cpp">
+      <Filter>Source\Object\FrameObject\GunShip</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source\Object\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source\Object\GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>Source\Object\GameObject\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source\Mesh &amp; FrameMesh\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxShader.cpp">
+      <Filter>Source\Shader\TexturedShader\SkyBoxShader</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperCobra.cpp">
+      <Filter>Source\Object\FrameObject\SuperCobra</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source\Object\GameObject\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainShader.cpp">
+      <Filter>Source\Shader\TexturedShader\TerrainShader</Filter>
+    </ClCompile>
+    <ClCompile Include="UIShader.cpp">
+      <Filter>Source\Shader\TexturedShader\UIShader</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedShader.cpp">
+      <Filter>Source\Shader\TexturedShader</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>Source\GameTimer</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader12.cpp">
+      <Filter>Source\TextureLoader\DDS</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader12.cpp">
+      <Filter>Source\TextureLoader\WIC</Filter>
+    </ClCompile>
+    <ClCompile Include="3DGame_ComputeShader.cpp">
+      <Filter>Source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessingShader.cpp">
+      <Filter>Source\Shader\PostProcessingShader</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework.cpp">
+      <Filter>Source\GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Source\Object\GameObject\FirstPersonUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FontShader.cpp">
+      <Filter>Source\Shader\TexturedShader\FontShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Source\Object\GameObject\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="TenthFontShader.cpp">
+      <Filter>Source\Shader\TexturedShader\TenthFontShader</Filter>
+    </ClCompile>
+    <ClCompile Include="BlurringShader.cpp">
+      <Filter>Source\Shader\BlurringShader</Filter>
+    </ClCompile>
+    <ClCompile Include="MissileShader.cpp">
+      <Filter>Source\Shader\TexturedShader\MissileShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Missile.cpp">
+      <Filter>Source\Object\GameObject\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="MissileUIShader.cpp">
+      <Filter>Source\Shader\TexturedShader\MissileUIShader</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>Source\UIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Stdafx.cpp">
+      <Filter>Header\Stdafx</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="3DGame_ComputeShader.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="3DGame_ComputeShader.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders.hlsl">
+      <Filter>Source\Shader\HLSL</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

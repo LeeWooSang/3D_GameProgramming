@@ -18,9 +18,6 @@
     <Filter Include="소스 파일\Shader">
       <UniqueIdentifier>{6f7042d4-c575-4d38-98d0-710895063daf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Scene">
-      <UniqueIdentifier>{43fbae9f-08cd-40ba-b563-26add27a9893}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\TextureLoader">
       <UniqueIdentifier>{db017f8a-2d47-4be3-b6c2-6ac99ec52910}</UniqueIdentifier>
     </Filter>
@@ -57,18 +54,12 @@
     <Filter Include="소스 파일\Object\GameObject\Bullet">
       <UniqueIdentifier>{c90b6a8a-c408-402c-b8b7-c9f2c943f631}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\BulletShader">
-      <UniqueIdentifier>{20226473-871f-4966-905e-940a44c3ef75}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Default_Header">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
     <Filter Include="소스 파일\Object\GameObject\Particle">
       <UniqueIdentifier>{ade6b61c-653e-4473-a39a-1cbd78b88ffe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Shader\ExplosionParticleShader">
-      <UniqueIdentifier>{b658b611-050f-4294-a001-4eb7cfedcef3}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Object\GameObject\ExplosionParticle">
       <UniqueIdentifier>{3eae2811-d003-41cb-8acc-40ba00287201}</UniqueIdentifier>
@@ -82,17 +73,59 @@
     <Filter Include="소스 파일\Mesh &amp; FrameMesh\Mesh">
       <UniqueIdentifier>{f6043d8b-e277-4d4f-8657-173399bdc880}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\FireParticleShader">
-      <UniqueIdentifier>{e2e65fd6-b536-41b5-9304-c931922fc824}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Shader\PostProcessingShader">
       <UniqueIdentifier>{691e16d7-8757-4505-8bef-2b0180292a0e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\UIShader">
-      <UniqueIdentifier>{3a355438-8846-45e4-bb08-3b0bfaf63643}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Object\GameObject\FirstPersonUI">
       <UniqueIdentifier>{729c0d80-351f-4249-8cc1-6b23e22d09cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\MirrorShader">
+      <UniqueIdentifier>{46f78558-f72b-47aa-9b28-a03803e66caa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader">
+      <UniqueIdentifier>{6b1b0ab8-9d7b-4e99-9685-74ca579d2d8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader\FireParticleShader">
+      <UniqueIdentifier>{e2e65fd6-b536-41b5-9304-c931922fc824}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader\ExplosionParticleShader">
+      <UniqueIdentifier>{b658b611-050f-4294-a001-4eb7cfedcef3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader\BulletShader">
+      <UniqueIdentifier>{20226473-871f-4966-905e-940a44c3ef75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader\UIShader">
+      <UniqueIdentifier>{3a355438-8846-45e4-bb08-3b0bfaf63643}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader\SkyBoxShader">
+      <UniqueIdentifier>{d580564b-138c-4b33-acab-b627dc119354}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader\TerrainShader">
+      <UniqueIdentifier>{5882f634-e064-4b26-ba92-7bb992aefd40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\GameObject\Terrain">
+      <UniqueIdentifier>{3ec3291e-8fdc-4185-9ff6-1498f0f483e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\GameObject\SkyBox">
+      <UniqueIdentifier>{1dac0661-6394-4aa0-8bec-d496f39550a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\TexturedShader\BillboardObjectsShader">
+      <UniqueIdentifier>{27c8ec7e-f481-480c-afdc-5a9c8b9c71dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\GameObject\BillboardObject">
+      <UniqueIdentifier>{8e2ec951-92f8-4518-a9fc-f311bbb46c11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\FrameObject\Mi24">
+      <UniqueIdentifier>{9e245a93-b1db-4df6-8080-2550dd40ce6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\FrameObject\SuperCobra">
+      <UniqueIdentifier>{494b87dd-cfcd-44b3-85a6-1fb7b56a3ce8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\FrameObject\GunShip">
+      <UniqueIdentifier>{d099d642-6fb2-4269-bedc-e304ce012f52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Scene">
+      <UniqueIdentifier>{43fbae9f-08cd-40ba-b563-26add27a9893}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -148,13 +181,13 @@
       <Filter>소스 파일\Object\GameObject\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="BulletShader.h">
-      <Filter>소스 파일\Shader\BulletShader</Filter>
+      <Filter>소스 파일\Shader\TexturedShader\BulletShader</Filter>
     </ClInclude>
     <ClInclude Include="ExplosionParticle.h">
       <Filter>소스 파일\Object\GameObject\ExplosionParticle</Filter>
     </ClInclude>
     <ClInclude Include="ExplosionParticleShader.h">
-      <Filter>소스 파일\Shader\ExplosionParticleShader</Filter>
+      <Filter>소스 파일\Shader\TexturedShader\ExplosionParticleShader</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>소스 파일\Mesh &amp; FrameMesh\Mesh</Filter>
@@ -163,7 +196,7 @@
       <Filter>소스 파일\Mesh &amp; FrameMesh\FrameMesh</Filter>
     </ClInclude>
     <ClInclude Include="FireParticleShader.h">
-      <Filter>소스 파일\Shader\FireParticleShader</Filter>
+      <Filter>소스 파일\Shader\TexturedShader\FireParticleShader</Filter>
     </ClInclude>
     <ClInclude Include="FireParticle.h">
       <Filter>소스 파일\Object\GameObject\Particle</Filter>
@@ -175,7 +208,40 @@
       <Filter>소스 파일\Object\GameObject\FirstPersonUI</Filter>
     </ClInclude>
     <ClInclude Include="UIShader.h">
-      <Filter>소스 파일\Shader\UIShader</Filter>
+      <Filter>소스 파일\Shader\TexturedShader\UIShader</Filter>
+    </ClInclude>
+    <ClInclude Include="MirrorShader.h">
+      <Filter>소스 파일\Shader\MirrorShader</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedShader.h">
+      <Filter>소스 파일\Shader\TexturedShader</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>소스 파일\Shader\TexturedShader\TerrainShader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxShader.h">
+      <Filter>소스 파일\Shader\TexturedShader\SkyBoxShader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>소스 파일\Object\GameObject\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="BillboardObjectsShader.h">
+      <Filter>소스 파일\Shader\TexturedShader\BillboardObjectsShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>소스 파일\Object\GameObject\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="BillboardObject.h">
+      <Filter>소스 파일\Object\GameObject\BillboardObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperCobra.h">
+      <Filter>소스 파일\Object\FrameObject\SuperCobra</Filter>
+    </ClInclude>
+    <ClInclude Include="GunShip.h">
+      <Filter>소스 파일\Object\FrameObject\GunShip</Filter>
+    </ClInclude>
+    <ClInclude Include="Mi24.h">
+      <Filter>소스 파일\Object\FrameObject\Mi24</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -222,10 +288,10 @@
       <Filter>소스 파일\Object\GameObject\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="BulletShader.cpp">
-      <Filter>소스 파일\Shader\BulletShader</Filter>
+      <Filter>소스 파일\Shader\TexturedShader\BulletShader</Filter>
     </ClCompile>
     <ClCompile Include="ExplosionParticleShader.cpp">
-      <Filter>소스 파일\Shader\ExplosionParticleShader</Filter>
+      <Filter>소스 파일\Shader\TexturedShader\ExplosionParticleShader</Filter>
     </ClCompile>
     <ClCompile Include="ExplosionParticle.cpp">
       <Filter>소스 파일\Object\GameObject\ExplosionParticle</Filter>
@@ -237,7 +303,7 @@
       <Filter>소스 파일\Mesh &amp; FrameMesh\FrameMesh</Filter>
     </ClCompile>
     <ClCompile Include="FireParticleShader.cpp">
-      <Filter>소스 파일\Shader\FireParticleShader</Filter>
+      <Filter>소스 파일\Shader\TexturedShader\FireParticleShader</Filter>
     </ClCompile>
     <ClCompile Include="FireParticle.cpp">
       <Filter>소스 파일\Object\GameObject\Particle</Filter>
@@ -249,7 +315,40 @@
       <Filter>소스 파일\Object\GameObject\FirstPersonUI</Filter>
     </ClCompile>
     <ClCompile Include="UIShader.cpp">
-      <Filter>소스 파일\Shader\UIShader</Filter>
+      <Filter>소스 파일\Shader\TexturedShader\UIShader</Filter>
+    </ClCompile>
+    <ClCompile Include="MirrorShader.cpp">
+      <Filter>소스 파일\Shader\MirrorShader</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedShader.cpp">
+      <Filter>소스 파일\Shader\TexturedShader</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainShader.cpp">
+      <Filter>소스 파일\Shader\TexturedShader\TerrainShader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxShader.cpp">
+      <Filter>소스 파일\Shader\TexturedShader\SkyBoxShader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>소스 파일\Object\GameObject\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardObjectsShader.cpp">
+      <Filter>소스 파일\Shader\TexturedShader\BillboardObjectsShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>소스 파일\Object\GameObject\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardObject.cpp">
+      <Filter>소스 파일\Object\GameObject\BillboardObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperCobra.cpp">
+      <Filter>소스 파일\Object\FrameObject\SuperCobra</Filter>
+    </ClCompile>
+    <ClCompile Include="GunShip.cpp">
+      <Filter>소스 파일\Object\FrameObject\GunShip</Filter>
+    </ClCompile>
+    <ClCompile Include="Mi24.cpp">
+      <Filter>소스 파일\Object\FrameObject\Mi24</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,14 @@
 #pragma once
 
 #include "FramePlayer.h"
+#include "SkyBox.h"
+#include "Terrain.h"
+
 #include "Shader.h"
+#include "BillboardObjectsShader.h"
 #include "BulletShader.h"
 #include "FireParticleShader.h"
 #include "ExplosionParticleShader.h"
-
 
 #define MAX_LIGHTS			16 
 #define POINT_LIGHT			1
@@ -42,7 +45,7 @@ public:
     CScene();
     ~CScene();
 
-	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, CCamera* pCamera);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
 	void BuildDefaultLightsAndMaterials();
@@ -62,17 +65,21 @@ public:
 	void ReleaseShaderVariables();
 	void ReleaseUploadBuffers();
 
-	CHeightMapTerrain* GetTerrain() { return(m_pTerrain); }
+	CTerrain* GetTerrain() { return(m_pTerrain); }
 	CFramePlayer* GetFramePlayer() const { return m_pFramePlayer; }
 	void SetFramePlayer(CFramePlayer* p) { m_pFramePlayer = p; }
+	//void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
 
 	void CheckObjectByObjectCollisions();
+	CFrameObject *PickObjectPointedByCursor(int xClient, int yClient, CCamera *pCamera);
+
 protected:
 	ID3D12RootSignature*		m_pd3dGraphicsRootSignature = NULL;
 	CShader**						m_ppShaders = NULL;
 	int										m_nShaders = 0;
 
-	CHeightMapTerrain*			m_pTerrain = NULL;
+//	CCamera*							m_pCamera{ nullptr };
+	CTerrain*							m_pTerrain = NULL;
 	CSkyBox*							m_pSkyBox = NULL;
 
 	CFrameObject**				m_ppFrameObjects = NULL;
@@ -88,4 +95,6 @@ protected:
 	CBulletShader*					m_pBulletShader{ nullptr };
 	CFireParticleShader*				m_pFireParticleShader{ nullptr };
 	CExplosionParticleShader*	m_pExplosionParticleShader{ nullptr };
+
+	CFrameObject*					m_pSelectedObject{ nullptr };
 };

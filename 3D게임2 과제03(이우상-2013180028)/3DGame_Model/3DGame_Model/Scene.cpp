@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Scene.h"
+#include "SuperCobra.h"
+#include "GunShip.h"
 
 CScene::CScene()
 {
@@ -70,45 +72,40 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	//XMFLOAT3 xmf3Scale(8.0f, 4.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.5f, 0.0f, 0.0f);
 
-#ifdef _WITH_TERRAIN_PARTITION
-	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 17, 17, xmf3Scale, xmf4Color);
-#else
-	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
-#endif
-
+	m_pTerrain = new CTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	m_nShaders = 1;
 	m_ppShaders = new CShader*[m_nShaders];
 
-	CBillboardObjectsShader *pObjectShader = new CBillboardObjectsShader();
-	pObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	pObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
-	m_ppShaders[0] = pObjectShader;
+	CBillboardObjectsShader* pBillboardObjectsShader = new CBillboardObjectsShader();
+	pBillboardObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pBillboardObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+	m_ppShaders[0] = pBillboardObjectsShader;
 
-	//SuperCobra(17), Gunship(2), Player:Mi24(1)
+	//SuperCobra(17), GunShip(2), Player:Mi24(1)
 	CFrameMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0, 17 + 2 + 1); 
 	BuildDefaultLightsAndMaterials();
 
-	//m_nFrameObjects = 2;
-	//m_nFrameObjects = 2;
-	//m_ppFrameObjects = new CFrameObject*[m_nFrameObjects];
+	m_nFrameObjects = 2;
+	m_ppFrameObjects = new CFrameObject*[m_nFrameObjects];
 
-	//CSuperCobraObject* pSuperCobraObject = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//pSuperCobraObject->SetPosition(400.f, 300.f, 400.f);
-	//pSuperCobraObject->Rotate(0.0f, -90.0f, 0.0f);
-	//pSuperCobraObject->SetType(FRAME_ENEMY);
-	//pSuperCobraObject->SetMovingSpeed(urd_Speed(dre));
-	//pSuperCobraObject->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(2.4564136, 2.075218, 8.4293), XMFLOAT4(0., 0., 0., 1.));
-	//m_ppFrameObjects[0] = pSuperCobraObject;
+	CSuperCobra* pSuperCobraObject = new CSuperCobra(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pSuperCobraObject->SetPosition(400.f, 300.f, 400.f);
+	pSuperCobraObject->Rotate(0.0f, -90.0f, 0.0f);
+	pSuperCobraObject->SetType(FRAME_ENEMY);
+	pSuperCobraObject->SetMovingSpeed(urd_Speed(dre));
+	pSuperCobraObject->SetOOBB(XMFLOAT3(-0.001031488, 2.160218, 3.875377), XMFLOAT3(2.4564136, 2.075218, 8.4293), XMFLOAT4(0., 0., 0., 1.));
+	m_ppFrameObjects[0] = pSuperCobraObject;
 
-	//CGunshipObject *pGunshipObject = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//pGunshipObject->SetPosition(550.f, 300.f, 550.f);
-	//pGunshipObject->Rotate(0.0f, 90.0f, 0.0f);
-	//pGunshipObject->SetType(FRAME_ENEMY);
-	//pGunshipObject->SetMovingSpeed(urd_Speed(dre));
-	//pGunshipObject->SetOOBB(XMFLOAT3(0., 1.012005, -4.939685), XMFLOAT3(4.68473, 4.079505, 13.53696), XMFLOAT4(0., 0., 0., 1.));
-	//m_ppFrameObjects[1] = pGunshipObject;
+	CGunShip* pGunshipObject = new CGunShip(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pGunshipObject->SetPosition(550.f, 300.f, 550.f);
+	pGunshipObject->Rotate(0.0f, 90.0f, 0.0f);
+	pGunshipObject->SetType(FRAME_ENEMY);
+	pGunshipObject->SetMovingSpeed(urd_Speed(dre));
+	pGunshipObject->SetOOBB(XMFLOAT3(0., 1.012005, -4.939685), XMFLOAT3(4.68473, 4.079505, 13.53696), XMFLOAT4(0., 0., 0., 1.));
+	m_ppFrameObjects[1] = pGunshipObject;
+
 
 	//CSuperCobraObject* pSuperCobraObject2 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	//pSuperCobraObject2->SetPosition(450.f, 300.f, 450.f);
@@ -507,8 +504,28 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	return(pd3dGraphicsRootSignature);
 }
 
-bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, CCamera* pCamera)
 {
+	switch (nMessageID)
+	{
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+		//마우스가 눌려지면 마우스 픽킹을 하여 선택한 게임 객체를 찾는다. 
+		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam), pCamera);
+		if (m_pSelectedObject)
+			cout << "피킹됨" << endl;
+		else
+			cout << "피킹안됨" << endl;
+		break;
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+		::ReleaseCapture();
+		break;
+	case WM_MOUSEMOVE:
+		break;
+	default:
+		break;
+	}
 	return(false);
 }
 
@@ -533,7 +550,6 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				m_pBulletShader->SetParticleShader(m_pFireParticleShader);
 				m_pBulletShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 			}
-
 			break;
 
 		default:
@@ -639,11 +655,40 @@ void CScene::CheckObjectByObjectCollisions()
 					{
 						(*iter)->SetFrameObjectCollided(m_ppFrameObjects[i]);
 						m_ppFrameObjects[i]->SetObjectCollided((*iter));
-						cout << i << "번째 몬스터랑 충돌 됨?" << endl;
+						cout << i << "번째 몬스터랑 충돌 됨" << endl;
 						((CBullet*)(*iter))->SetCollision(true);
 					}
 				}
 			}
 		}
 	}
+}
+
+CFrameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient, CCamera *pCamera) 
+{
+	if (!pCamera) 
+		return(NULL);
+	XMFLOAT4X4 xmf4x4View = pCamera->GetViewMatrix(); 
+	XMFLOAT4X4 xmf4x4Projection = pCamera->GetProjectionMatrix(); 
+	D3D12_VIEWPORT d3dViewport = pCamera->GetViewport();
+	XMFLOAT3 xmf3PickPosition; 
+	/*화면 좌표계의 점 (xClient, yClient)를 화면 좌표 변환의 역변환과 투영 변환의 역변환을 한다. 
+	그 결과는 카메라 좌표계의 점이다. 투영 평면이 카메라에서 z-축으로 거리가 1이므로 z-좌표는 1로 설정한다.*/ 
+	xmf3PickPosition.x = (((2.0f * xClient) / d3dViewport.Width) - 1) / xmf4x4Projection._11;
+	xmf3PickPosition.y = -(((2.0f * yClient) / d3dViewport.Height) - 1) / xmf4x4Projection._22; 
+	xmf3PickPosition.z = 1.0f;
+	int nIntersected = 0; 
+	float fHitDistance = FLT_MAX, fNearestHitDistance = FLT_MAX;
+
+	CFrameObject* pSelectedObject = NULL;
+	for (int i = 0; i < m_nFrameObjects; ++i)
+	{
+		nIntersected = m_ppFrameObjects[i]->PickObjectByRayIntersection(xmf3PickPosition, xmf4x4View, &fHitDistance);
+		if ((nIntersected > 0) && (fHitDistance < fNearestHitDistance))
+		{
+			fNearestHitDistance = fHitDistance;
+			pSelectedObject = m_ppFrameObjects[i];
+		}
+	}
+	return pSelectedObject;
 }

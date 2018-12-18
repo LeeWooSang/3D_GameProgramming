@@ -324,11 +324,12 @@ void CGameFramework::OnResizeBackBuffers()
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	if (m_pScene) m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 	switch (nMessageID)
 	{
 		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:
+			if (m_pScene)
+				m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam, m_pCamera);
 			::SetCapture(hWnd);
 			::GetCursorPos(&m_ptOldCursorPos);
 			break;
@@ -359,7 +360,13 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				case VK_F1:
 					if (m_pFirstPersonUIShader)
 						m_pFirstPersonUIShader->Initialize();
+
 					m_pCamera = m_pFramePlayer->ChangeCamera(FIRST_PERSON_CAMERA, m_GameTimer.GetTimeElapsed());
+					m_pFramePlayer->SetPosition(m_pCamera->GetPosition());
+
+					cout << m_pFramePlayer->GetPosition().x << ", "
+						<< m_pFramePlayer->GetPosition().y << ", "
+						<< m_pFramePlayer->GetPosition().z << endl;
 					break;
 				case VK_F2:
 					if (m_pFirstPersonUIShader->GetFirstPersonUI() != nullptr)
@@ -486,7 +493,6 @@ void CGameFramework::BuildObjects()
 		m_pFirstPersonUIShader->CreateShader(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
 		m_pFirstPersonUIShader->BuildObjects(m_pd3dDevice, m_pd3dCommandList, NULL);
 	}
-
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -634,6 +640,7 @@ void CGameFramework::FrameAdvance()
 	m_pd3dCommandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = m_pd3dDsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+	
 	m_pd3dCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 	//m_pd3dCommandList->OMSetRenderTargets(m_nOffScreenRenderTargetBuffers, m_pd3dOffScreenRenderTargetBufferCPUHandles, TRUE, &m_d3dDsvDepthStencilBufferCPUHandle);
@@ -654,7 +661,9 @@ void CGameFramework::FrameAdvance()
 	m_pFramePlayer->Render(m_pd3dCommandList, m_pCamera);
 	// 1ÀÎÄª UI ·£´õ
 	if (m_pFirstPersonUIShader->GetFirstPersonUI() != nullptr)
+	{
 		m_pFirstPersonUIShader->Render(m_pd3dCommandList, m_pCamera);
+	}
 
 	::SynchronizeResourceTransition(m_pd3dCommandList, m_ppd3dSwapChainBackBuffers[m_nSwapChainBufferIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 

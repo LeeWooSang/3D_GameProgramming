@@ -1,5 +1,5 @@
 #pragma once
-#include "Shader.h"
+#include "TexturedShader.h"
 #include "FireParticle.h"
 #include "FramePlayer.h"
 
@@ -31,9 +31,6 @@ public:
 	void SetDeleteFireParticleID(int id) { m_DeleteID = id; }
 private:
 	int											m_nObjects = 0;
-
-	ID3D12Resource*					m_pd3dcbGameObjects = NULL;
-	CB_GAMEOBJECT_INFO*		m_pcbMappedGameObjects = NULL;
 
 	ID3D12Resource*					m_pTextureAnimation = NULL;
 	CB_TEXTURE_ANIMATION*	m_pMappedTextureAnimation = NULL;

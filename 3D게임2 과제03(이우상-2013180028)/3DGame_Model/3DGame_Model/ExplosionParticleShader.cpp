@@ -97,12 +97,6 @@ void CExplosionParticleShader::UpdateShaderVariables(ID3D12GraphicsCommandList *
 
 void CExplosionParticleShader::ReleaseShaderVariables()
 {
-	if (m_pd3dcbGameObjects)
-	{
-		m_pd3dcbGameObjects->Unmap(0, NULL);
-		m_pd3dcbGameObjects->Release();
-	}
-
 	if (m_pTextureAnimation)
 	{
 		m_pTextureAnimation->Unmap(0, NULL);
@@ -141,7 +135,7 @@ void CExplosionParticleShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12Grap
 	m_pExplosionParticleMaterial = new CMaterial;
 	m_pExplosionParticleMaterial->SetTexture(m_pExplosionParticleTexture);
 
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+	UINT ncbElementBytes = ((sizeof(CB_TEXTURE_ANIMATION) + 255) & ~255);
 	m_nObjects = 100;
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -175,30 +169,6 @@ void CExplosionParticleShader::AnimateObjects(float fTimeElapsed)
 			++iter;
 		}
 	}
-	//double distance = 0.f;
-
-	//// 플레이어의 총알 리스트를 루프를 통해 순회하면서, 애니메이트 시켜준다.
-	//for (auto iter = m_ExplosionParticleList.begin(); iter != m_ExplosionParticleList.end();)
-	//{
-	//	// 플레이어 위치와 총알의 위치 거리를 계산하는 공식이다. 
-	//	distance = sqrt((pow(((*iter)->GetPosition().x - m_pFramePlayer->GetPosition().x), 2.0)
-	//		+ pow(((*iter)->GetPosition().y - m_pFramePlayer->GetPosition().y), 2.0)
-	//		+ pow(((*iter)->GetPosition().z - m_pFramePlayer->GetPosition().z), 2.0)));
-
-	//	// 플레이어와 총알의 거리가 250m보다 커지면, 총알의 유효사거리를 벗어난거므로
-	//		// 총알을 계속 그리지 않고, 지워주어야 프레임레이트를 올릴 수 있다.
-	//	if (distance >= MaxBulletDistance)
-	//	{
-	//		cout << "총알 터지는 파티클 거리벗어남 삭제" << endl;
-	//		delete (*iter);
-	//		iter = m_ExplosionParticleList.erase(iter);
-	//	}
-	//	else
-	//	{
-	//		((CFireParticle*)(*iter))->Animate(fTimeElapsed);
-	//		++iter;
-	//	}
-	//}
 }
 
 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "FrameMesh.h"
 
 CFrameMesh::CFrameMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -40,6 +40,50 @@ void CFrameMesh::ReleaseUploadBuffers()
 		if (m_ppd3dSubSetIndexUploadBuffers) delete[] m_ppd3dSubSetIndexUploadBuffers;
 		m_ppd3dSubSetIndexUploadBuffers = NULL;
 	}
+}
+
+int CFrameMesh::CheckRayIntersection(XMFLOAT3& xmf3RayOrigin, XMFLOAT3& xmf3RayDirection, float *pfNearHitDistance) 
+{ 
+	// 하나의 메쉬에서 광선은 여러 개의 삼각형과 교차할 수 있다. 
+	// 교차하는 삼각형들 중 가장 가까운 삼각형을 찾는다. 
+	int nIntersections = 0; 
+	XMFLOAT3* pbPositions = m_pxmf3Positions;
+	int nOffset = (m_d3dPrimitiveTopology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST) ? 3 : 1; 
+	int m_nStride = sizeof(XMFLOAT4);
+
+	// 메쉬의 프리미티브(삼각형)들의 개수이다. 
+	// 삼각형 리스트인 경우 (정점의 개수 / 3) 또는 (인덱스의 개수 / 3), 
+	// 삼각 형 스트립의 경우 (정점의 개수 - 2) 또는 (인덱스의 개수 – 2)이다.
+	int nPrimitives = (m_d3dPrimitiveTopology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST) ? (m_nVertices / 3) : (m_nVertices - 2); 
+	if (m_nSubMeshes > 0) 
+		nPrimitives = (m_d3dPrimitiveTopology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST) ? (m_nSubMeshes / 3) : (m_nSubMeshes - 2);
+	//광선은 모델 좌표계로 표현된다. 
+	XMVECTOR xmRayOrigin = XMLoadFloat3(&xmf3RayOrigin); 
+	XMVECTOR xmRayDirection = XMLoadFloat3(&xmf3RayDirection); 
+	//모델 좌표계의 광선과 메쉬의 바운딩 박스(모델 좌표계)와의 교차를 검사한다. 
+	bool bIntersected = m_xmOOBB.Intersects(xmRayOrigin, xmRayDirection, *pfNearHitDistance);
+	//모델 좌표계의 광선이 메쉬의 바운딩 박스와 교차하면 메쉬와의 교차를 검사한다. 
+	if (bIntersected) 
+	{ 
+		float fNearHitDistance = FLT_MAX; 
+		// 메쉬의 모든 프리미티브(삼각형)들에 대하여 픽킹 광선과의 충돌을 검사한다. 
+		// 충돌하는 모든 삼각형을 찾아 광선의 시작점(실제로는 카메라 좌표계의 원점)에 가장 가까운 삼각형을 찾는다.
+		for (int i = 0; i < nPrimitives; i++)
+		{
+			XMVECTOR v0 = XMLoadFloat3((XMFLOAT3 *)(pbPositions + ((m_pnSubSetIndices) ? (m_pnSubSetIndices[(i*nOffset) + 0]) : ((i*nOffset) + 0)) * m_nStride));
+			XMVECTOR v1 = XMLoadFloat3((XMFLOAT3 *)(pbPositions + ((m_pnSubSetIndices) ? (m_pnSubSetIndices[(i*nOffset) + 1]) : ((i*nOffset) + 1)) * m_nStride));
+			XMVECTOR v2 = XMLoadFloat3((XMFLOAT3 *)(pbPositions + ((m_pnSubSetIndices) ? (m_pnSubSetIndices[(i*nOffset) + 2]) : ((i*nOffset) + 2)) * m_nStride));
+			float fHitDistance;
+			BOOL bIntersected = TriangleTests::Intersects(xmRayOrigin, xmRayDirection, v0, v1, v2, fHitDistance);
+			if (bIntersected)
+			{
+				if (fHitDistance < fNearHitDistance)
+					*pfNearHitDistance = fNearHitDistance = fHitDistance;
+				nIntersections++;
+			}
+		}
+	} 
+	return(nIntersections);
 }
 
 void CFrameMesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet)

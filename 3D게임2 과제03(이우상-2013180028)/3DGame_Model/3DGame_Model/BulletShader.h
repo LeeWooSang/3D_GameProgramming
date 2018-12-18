@@ -1,5 +1,5 @@
 #pragma once
-#include "Shader.h"
+#include "TexturedShader.h"
 #include "Bullet.h"
 #include "FramePlayer.h"
 
